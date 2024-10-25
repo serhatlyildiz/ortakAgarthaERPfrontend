@@ -8,6 +8,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { LoginComponent } from './components/login/login.component';
 import { ProductAddComponent } from './components/product-add/product-add.component';
 import { LoginGuard } from './guards/login.guard';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: ProductComponent },
@@ -20,6 +22,10 @@ export const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes), ReactiveFormsModule],
   //BrowserModule,BrowserAnimationsModule, ReactiveFormsModule,
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    // Diğer servisler...
+  ]
 })
 export class appRoutingModule { }
