@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ListResponseModel } from '../models/listResponseModel';
 import { Product } from '../models/product';
@@ -23,8 +23,17 @@ export class ProductService {
     return this.httpClient.get<ListResponseModel<Product>>(newPath); 
   }
 
+  /*
   add(product:Product):Observable<ResponseModel>{
     return this.httpClient.post<ResponseModel>(this.apiUrl+"products/add",product)
   }
+    */
+
+  add(product: Product): Observable<ResponseModel> {
+    const token = localStorage.getItem("token"); // Token'ı al
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${token}`);
+    return this.httpClient.post<ResponseModel>(this.apiUrl + "products/add", product, { headers });
+  }
+  
 
 }

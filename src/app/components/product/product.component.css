@@ -1,0 +1,12 @@
+.tooltip {
+    background-color: black;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    display: none; /* Başlangıçta gizli */
+  }
+  
+  button:hover + .tooltip {
+    display: block;
+  }
+  

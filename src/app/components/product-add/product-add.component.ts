@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./product-add.component.css'],
 })
 export class ProductAddComponent implements OnInit {
-  signupUsers: any[] = [];
+  //signupUsers: any[] = [];
 
   productAddForm:FormGroup;
   constructor(private formBuilder:FormBuilder, 

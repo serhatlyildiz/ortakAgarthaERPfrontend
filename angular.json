@@ -106,6 +106,6 @@
     "analytics": "77193b2f-327c-4911-8be8-4bdf7d373486"
   },
   "scripts": {
-    "vite": "vite"  // Vite script'i eklendi
+    "vite": "vite"
   }
 }

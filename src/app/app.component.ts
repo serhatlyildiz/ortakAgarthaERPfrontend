@@ -2,7 +2,7 @@ import { RouterOutlet } from '@angular/router'; // RouterOutlet dahil
 import { ProductComponent } from './components/product/product.component';
 import { CategoryComponent } from './components/category/category.component';
 import { NaviComponent } from './components/navi/navi.component';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { VatAddedPipe } from './pipes/vat-added.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FilterPipePipe } from './pipes/filter-pipe.pipe';

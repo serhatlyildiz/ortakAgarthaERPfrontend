@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product';
 
+
 @Component({
   selector: 'app-cart-summary',
   standalone: true,
