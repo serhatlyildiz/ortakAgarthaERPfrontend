@@ -34,6 +34,5 @@ export class ProductService {
     const headers = new HttpHeaders().set("Authorization", `Bearer ${token}`);
     return this.httpClient.post<ResponseModel>(this.apiUrl + "products/add", product, { headers });
   }
-  
 
 }

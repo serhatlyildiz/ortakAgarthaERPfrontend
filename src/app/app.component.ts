@@ -11,8 +11,6 @@ import { LoginComponent } from './components/login/login.component';
 import { Component, NgModule } from '@angular/core';
 import { ProductAddComponent } from './components/product-add/product-add.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 // Diğer importlar...
 
@@ -30,7 +28,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     FilterPipePipe,
     CommonModule,
     ReactiveFormsModule,
-    LoginComponent
+    LoginComponent,
     // Diğer bileşenler...
   ],
   templateUrl: './app.component.html',

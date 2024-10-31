@@ -1,3 +1,5 @@
+import { Category } from "./category";
+
 export interface Product{
     productId:number;
     categoryId:number;

@@ -78,7 +78,7 @@ import { VatAddedPipe } from "../../pipes/vat-added.pipe";
 import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { FilterPipePipe } from '../../pipes/filter-pipe.pipe';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { CartService } from '../../services/cart.service';
 import { createPopper } from '@popperjs/core';
 
@@ -91,6 +91,7 @@ import { createPopper } from '@popperjs/core';
     FormsModule,
     RouterOutlet,
     FilterPipePipe,
+    ToastrModule
   ],
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css'],
@@ -140,7 +141,7 @@ export class ProductComponent implements OnInit {
       if (response.success) {
         this.products = response.data;
         this.dataLoaded = true;
-        this.toastrService.success(response.message);
+        //this.toastrService.success(response.message);
       }
     });
   }
