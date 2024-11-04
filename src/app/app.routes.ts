@@ -21,7 +21,7 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), ReactiveFormsModule, BrowserAnimationsModule, ToastrModule.forRoot()],
+  imports: [RouterModule.forRoot(routes), ReactiveFormsModule],
   //BrowserModule,BrowserAnimationsModule, ReactiveFormsModule,
   exports: [RouterModule],
   providers: [

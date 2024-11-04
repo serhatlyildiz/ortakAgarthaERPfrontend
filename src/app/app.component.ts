@@ -12,6 +12,8 @@ import { Component, NgModule } from '@angular/core';
 import { ProductAddComponent } from './components/product-add/product-add.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // Diğer importlar...
 
 @Component({

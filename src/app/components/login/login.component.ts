@@ -34,9 +34,7 @@ export class LoginComponent implements OnInit {
       this.authService.login(loginModel).subscribe(response => {
         this.toastrService.info(response.message);
         localStorage.setItem("token", response.data.token);
-        
-        // Kullanıcı giriş yaptıktan sonra yönlendirme
-        this.router.navigate(['/products/add']); // products/add sayfasına yönlendir
+        this.router.navigate(['/products/add']); // Yönlendirme
       }, responseError => {
         this.toastrService.error(responseError.error);
       });
