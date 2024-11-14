@@ -1,13 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CartSummaryComponent } from "../cart-summary/cart-summary.component";
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navi',
   standalone: true,
   imports: [CartSummaryComponent],
   templateUrl: './navi.component.html',
-  styleUrl: './navi.component.css'
+  styleUrls: ['./navi.component.css']
 })
-export class NaviComponent {
+export class NaviComponent implements OnInit {
 
+  loginForm:FormGroup;
+  constructor(private formBuilder:FormBuilder, private router:Router) { }
+
+  ngOnInit(): void {
+
+  }
+
+  login() {
+        this.router.navigate(['login']); // Yönlendirme
+
+  }
 }

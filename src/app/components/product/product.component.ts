@@ -76,7 +76,6 @@ import { ProductService } from '../../services/product.service';
 import { ActivatedRoute } from '@angular/router';
 import { VatAddedPipe } from "../../pipes/vat-added.pipe";
 import { FormsModule } from '@angular/forms';
-import { RouterOutlet } from '@angular/router';
 import { FilterPipePipe } from '../../pipes/filter-pipe.pipe';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { CartService } from '../../services/cart.service';
@@ -89,7 +88,6 @@ import { createPopper } from '@popperjs/core';
     CommonModule,
     VatAddedPipe,
     FormsModule,
-    RouterOutlet,
     FilterPipePipe,
     ToastrModule
   ],
