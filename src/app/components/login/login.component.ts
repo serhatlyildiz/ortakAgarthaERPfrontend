@@ -45,7 +45,7 @@ login() {
 
           // Eğer kullanıcı admin rolüne sahipse
           if (userRoles.includes('admin')) {
-              this.router.navigate(['/products/add']); // Admin için yönlendirme
+              this.router.navigate(['/admin']); // Admin için yönlendirme
           } else {
               this.router.navigate(['/products']); // Diğer kullanıcılar için farklı bir sayfaya yönlendirme
           }
