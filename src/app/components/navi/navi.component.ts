@@ -23,4 +23,9 @@ export class NaviComponent implements OnInit {
         this.router.navigate(['login']); // Yönlendirme
 
   }
+
+  register() {
+    this.router.navigate(['register']); // Yönlendirme
+
+}
 }
