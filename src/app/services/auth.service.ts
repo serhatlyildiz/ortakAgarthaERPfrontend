@@ -40,7 +40,7 @@ export class AuthService {
 
     private isTokenExpired(token: string): boolean {
         const decoded: { exp: number } = jwtDecode(token);
-        const currentTime = Math.floor(Date.now() / 10000); // ms'yi sn'ye çevir
+        const currentTime = Math.floor(Date.now() / 1000); // ms'yi sn'ye çevir
         return decoded.exp < currentTime;
     }
 
@@ -62,7 +62,7 @@ export class AuthService {
         const token = localStorage.getItem('token');
         if (token) {
             const decodedToken: any = jwtDecode(token);
-            const expirationTime = decodedToken.exp * 10000; // Expiration time in milliseconds
+            const expirationTime = decodedToken.exp; // Expiration time in milliseconds
             const currentTime = Date.now();
             const timeLeft = expirationTime - currentTime;
 
