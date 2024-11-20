@@ -1,4 +1,4 @@
-import { RouterOutlet } from '@angular/router'; // RouterOutlet dahil
+import { RouterModule, RouterOutlet } from '@angular/router'; // RouterOutlet dahil
 import { ProductComponent } from './components/product/product.component';
 import { CategoryComponent } from './components/category/category.component';
 import { NaviComponent } from './components/navi/navi.component';
@@ -14,6 +14,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RegisterComponent } from './components/register/register.component';
 // Diğer importlar...
 
 @Component({
@@ -21,6 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   standalone: true,
   imports: [
     RouterOutlet,
+    RouterModule,
     ProductComponent,
     CategoryComponent,
     NaviComponent,
@@ -31,6 +33,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CommonModule,
     ReactiveFormsModule,
     LoginComponent,
+    RegisterComponent,
+    
     // Diğer bileşenler...
   ],
   templateUrl: './app.component.html',

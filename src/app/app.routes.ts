@@ -10,6 +10,7 @@ import { ProductAddComponent } from './components/product-add/product-add.compon
 import { LoginGuard } from './guards/login.guard';
 import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { RegisterComponent } from './components/register/register.component';
 
 
 export const routes: Routes = [
@@ -17,7 +18,8 @@ export const routes: Routes = [
   { path: 'products', component: ProductComponent },
   { path: 'products/category/:categoryId', component: ProductComponent },
   { path: 'products/add', component: ProductAddComponent, canActivate:[LoginGuard] },
-  { path: "login", component: LoginComponent }
+  { path: "login", component: LoginComponent },
+  { path: "register", component: RegisterComponent },
 ];
 
 @NgModule({

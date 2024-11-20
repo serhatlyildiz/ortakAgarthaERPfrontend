@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { HTTP_INTERCEPTORS, provideHttpClient, withFetch } from '@angular/common/http';
-import { provideRouter, Routes } from '@angular/router';
+import { provideRouter, RouterModule, Routes } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { importProvidersFrom } from '@angular/core';
 import { ProductComponent } from './app/components/product/product.component';
@@ -12,6 +12,7 @@ import { ProductAddComponent } from './app/components/product-add/product-add.co
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 import { LoginGuard } from './app/guards/login.guard';
+import { RegisterComponent } from './app/components/register/register.component';
 
 // Rota yapılandırması
 const routes: Routes = [
@@ -19,7 +20,8 @@ const routes: Routes = [
   { path: 'products', component: ProductComponent },
   { path: 'products/add', component: ProductAddComponent, canActivate:[LoginGuard] }, // 'products/add' rotası eklendi
   { path: 'products/category/:categoryId', component: ProductComponent },
-  { path: 'login', component: LoginComponent }
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
 ];
 
 bootstrapApplication(AppComponent, {
@@ -27,6 +29,7 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(withFetch()), // HttpClient desteği
     provideRouter(routes), // Router yapılandırması
     importProvidersFrom(
+      RouterModule,
       ReactiveFormsModule,
       BrowserAnimationsModule,  // Toastr için gerekli animasyonlar
       ToastrModule.forRoot({ positionClass: "toast-bottom-right" })  // Toastr yapılandırması
