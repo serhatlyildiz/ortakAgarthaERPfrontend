@@ -5,7 +5,7 @@ import { provideRouter, RouterModule, Routes } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { importProvidersFrom } from '@angular/core';
 import { ProductComponent } from './app/components/product/product.component';
-import 'bootstrap';  // Bootstrap'ı import ettiniz
+//import 'bootstrap';  // Bootstrap'ı import ettiniz
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './app/components/login/login.component';
 import { ProductAddComponent } from './app/components/product-add/product-add.component';
@@ -13,6 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 import { LoginGuard } from './app/guards/login.guard';
 import { RegisterComponent } from './app/components/register/register.component';
+import { AdminComponent } from './app/components/admin/admin.component';
 
 // Rota yapılandırması
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'products/category/:categoryId', component: ProductComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'admin', component: AdminComponent},
 ];
 
 bootstrapApplication(AppComponent, {

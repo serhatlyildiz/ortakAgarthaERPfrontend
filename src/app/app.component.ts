@@ -15,6 +15,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterComponent } from './components/register/register.component';
+import { AdminComponent } from './components/admin/admin.component';
 // Diğer importlar...
 
 @Component({
@@ -34,6 +35,7 @@ import { RegisterComponent } from './components/register/register.component';
     ReactiveFormsModule,
     LoginComponent,
     RegisterComponent,
+    AdminComponent,
     
     // Diğer bileşenler...
   ],

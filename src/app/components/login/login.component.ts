@@ -34,7 +34,7 @@ login() {
       console.log(this.loginForm.value);
       let loginModel = Object.assign({}, this.loginForm.value);
       this.authService.login(loginModel).subscribe(response => {
-          this.toastrService.info(response.message);
+          this.toastrService.success(response.message);
           localStorage.setItem("token", response.data.token);
 
           // Token'ı decode etme

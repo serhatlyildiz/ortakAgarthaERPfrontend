@@ -11,6 +11,7 @@ import { LoginGuard } from './guards/login.guard';
 import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { RegisterComponent } from './components/register/register.component';
+import { AdminComponent } from './components/admin/admin.component';
 
 
 export const routes: Routes = [
@@ -20,6 +21,7 @@ export const routes: Routes = [
   { path: 'products/add', component: ProductAddComponent, canActivate:[LoginGuard] },
   { path: "login", component: LoginComponent },
   { path: "register", component: RegisterComponent },
+  { path: "admin", component: AdminComponent},
 ];
 
 @NgModule({
