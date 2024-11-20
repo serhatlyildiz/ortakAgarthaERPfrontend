@@ -1,4 +1,4 @@
-import { bootstrapApplication } from '@angular/platform-browser';
+import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { HTTP_INTERCEPTORS, provideHttpClient, withFetch } from '@angular/common/http';
 import { provideRouter, RouterModule, Routes } from '@angular/router';
@@ -9,7 +9,7 @@ import { ProductComponent } from './app/components/product/product.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './app/components/login/login.component';
 import { ProductAddComponent } from './app/components/product-add/product-add.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 import { LoginGuard } from './app/guards/login.guard';
 import { RegisterComponent } from './app/components/register/register.component';
@@ -31,6 +31,8 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(withFetch()), // HttpClient desteği
     provideRouter(routes), // Router yapılandırması
     importProvidersFrom(
+      FormsModule,
+      BrowserModule,
       RouterModule,
       ReactiveFormsModule,
       BrowserAnimationsModule,  // Toastr için gerekli animasyonlar
