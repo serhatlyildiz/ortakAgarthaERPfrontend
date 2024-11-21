@@ -17,6 +17,15 @@
   {{ filterText }} aradınız
 </div>
 
+<select (change)="sortProducts($event.target.value)" [(ngModel)]="sortCriteria">
+  <option value="proposed" selected>Önerilen</option>
+  <option value="name">İsme A-Z</option>
+  <option value="downname">İsim Z-A</option>
+  <option value="price">Fiyat Ucuzdan Pahalıya</option>
+  <option value="downprice">Fiyat Pahalıdan Ucuza</option>
+  <option value="category">Kategoriye Göre</option>
+</select>
+
 <table *ngIf="dataLoaded" class="table table-striped">
   <thead>
     <tr>
