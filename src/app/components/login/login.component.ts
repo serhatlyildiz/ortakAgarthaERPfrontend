@@ -50,7 +50,7 @@ login() {
               this.router.navigate(['/products']); // Diğer kullanıcılar için farklı bir sayfaya yönlendirme
           }
       }, responseError => {
-          this.toastrService.error(responseError.error);
+          this.toastrService.error("Kullanıcı Bulunamadı");
       });
   }
 }

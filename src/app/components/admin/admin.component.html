@@ -4,8 +4,8 @@
             <div class="col-md-12">
                 <div class="card card-plain">
                     <div class="card-header card-header-danger">
-                        <h4 class="card-title mt-0"> Table on Plain Background</h4>
-                        <p class="card-category"> Here is a subtitle for this table</p>
+                        <h4 class="card-title mt-0"> Tüm kullanıcılar</h4>
+                        <!-- <p class="card-category"> </p> -->
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -34,14 +34,20 @@
                                         <td>{{ user.email }}</td>
                                         <td>{{ user.city }}</td>
                                         <td>{{ user.district }}</td>
-                                        <td>{{ user.address }}</td>
+                                        <td>{{ user.adress }}</td>
                                         <td>{{ user.status }}</td>
-                                        <td>{{ user.gender }}</td>
-                                        <td>{{ user.role }}</td>
+                                        <td>{{ user.cinsiyet }}</td>
+                                        <td>{{ user.roles }}</td>
                                         <td>
-                                            <button (click)="updateUser(user.id)">Update</button>
-                                            <button (click)="deleteUser(user.id)">Delete</button>
-                                            <button (click)="viewRoles(user.id)">View Roles</button>
+                                            <div class="button-group">
+                                                <button class="compact-btn" (click)="updateUser(user.id)">Güncelle</button>
+                                                <button 
+                                                    class="compact-btn" 
+                                                    [ngClass]="{ 'btn-danger': user.status, 'btn-success': !user.status }" 
+                                                    (click)="toggleStatus(user)">
+                                                    {{ user.status ? 'Sil' : 'Aktif Et' }}
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
