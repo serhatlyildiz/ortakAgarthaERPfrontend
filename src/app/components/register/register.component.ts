@@ -95,17 +95,21 @@ export class RegisterComponent implements OnInit {
     console.log('Form gönderildi.', this.registerForm.value);
     if (this.registerForm.valid) {
         const formData = this.registerForm.value;
+
+        // `iladi` ve `ilceadi` bilgilerini form verisinden alıyoruz
         const userForRegisterDto: User = {
             email: formData.email,
             password: formData.password,
             firstName: formData.firstName,
             lastName: formData.lastName,
-            city: formData.iladi,
-            district: formData.ilceadi,
+            city: formData.il,  // `iladi` bilgisi
+            district: formData.ilce,  // `ilceadi` bilgisi
             adress: formData.address,
             cinsiyet: formData.gender,
-            status: true,         
+            status: true,
         };
+
+        console.log(userForRegisterDto);  // Kullanıcı verilerini kontrol etmek için
 
         this.registerService.register(userForRegisterDto).subscribe(
             (response) => {
@@ -123,5 +127,6 @@ export class RegisterComponent implements OnInit {
         console.log('Form geçerli değil.');
     }
 }
+
   
 }

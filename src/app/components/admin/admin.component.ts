@@ -53,19 +53,26 @@ export class AdminComponent implements OnInit {
   }
 
   // Kullanıcı silme
-  deleteUser(userId: number) {
-    console.log(`Delete user with ID: ${userId}`);
-    this.userService.deleteUser(userId).subscribe({
-      next: () => {
-        this.toastrService.success('User deleted successfully.');
-        this.getUsers(); // Silmeden sonra kullanıcı listesini yenile
+  toggleStatus(user: any): void {
+    const newStatus = !user.status; // Durumu tersine çevir
+
+    // Backend'e gönderilecek kullanıcı nesnesini hazırla
+    const updatedUser = { ...user, status: newStatus };
+
+    // Durum güncellemesi API çağrısı
+    this.userService.updateUserStatus(updatedUser).subscribe({
+      next: (response) => {
+        user.status = newStatus; // Başarılı olursa durumu güncelle
+        const statusMessage = newStatus ? 'Aktif edildi' : 'Silindi';
+        this.toastrService.success(`Kullanıcı başarıyla ${statusMessage}.`);
+        console.log('Kullanıcı durumu güncellendi:', response);
       },
       error: (err) => {
-        console.error('Error deleting user:', err);
-        this.toastrService.error('Failed to delete user.');
-      },
+        console.error('Durum güncellemesi başarısız:', err);
+        this.toastrService.error("Durum güncelleme işlemi başarısız.");
+      }
     });
-  }
+}
 
   // Kullanıcı rollerini görüntüle
   viewRoles(userId: number) {

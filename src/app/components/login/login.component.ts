@@ -61,11 +61,9 @@ export class LoginComponent implements OnInit {
           } else {
             this.router.navigate(['/products']); // Diğer kullanıcılar için farklı bir sayfaya yönlendirme
           }
-        },
-        (responseError) => {
-          this.toastrService.error(responseError.error);
-        }
-      );
-    }
+
+      }, responseError => {
+          this.toastrService.error("Kullanıcı Bulunamadı");
+      });
   }
 }

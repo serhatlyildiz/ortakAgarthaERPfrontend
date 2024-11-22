@@ -10,7 +10,8 @@ export class registerService {
   constructor(private http: HttpClient) {}
 
   register(userForRegisterDto: User): Observable<any> {
-    console.log("sdasdasd");
+    console.log(userForRegisterDto.adress);
+    console.log(userForRegisterDto.city);
     return this.http.post(`http://localhost:5038/api/Auth/register`, userForRegisterDto);
   }
 }
