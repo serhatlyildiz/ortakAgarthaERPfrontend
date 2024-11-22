@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserWithRole } from '../models/userwithrole';
+import { ResponseModel } from '../models/responseModel';
 
 @Injectable({
-  providedIn: 'root' // Service, tüm uygulamada kullanılabilir olacak
+  providedIn: 'root', // Service, tüm uygulamada kullanılabilir olacak
 })
 export class UserService {
-  private apiUrl = "http://localhost:5038/api/Users";
+  private apiUrl = 'http://localhost:5038/api/Users';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // Kullanıcıları al
   getUsersWithRoles(): Observable<UserWithRole[]> {
@@ -18,7 +19,9 @@ export class UserService {
 
   // Kullanıcının rollerini al
   getRolesByUserId(userId: number): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/getrolesbyuserid?userId=${userId}`);
+    return this.http.get<string[]>(
+      `${this.apiUrl}/getrolesbyuserid?userId=${userId}`
+    );
   }
 
   // Kullanıcıyı güncelle
@@ -27,21 +30,8 @@ export class UserService {
   }
 
   // Kullanıcıyı sil
-  updateUserStatus(user: any): Observable<any> {
-    const updatedUser = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      city: user.city,
-      district: user.district,
-      adress: user.adress,
-      status: user.status,  // Durum burada true/false olabilir
-      cinsiyet: user.cinsiyet,
-      
-    };
-
-    // API'ye veri gönderme (POST isteği)
-    return this.http.post(`${this.apiUrl}/update`, updatedUser);
+  updateUserStatus(userId: number): Observable<any> {
+    let newPath = this.apiUrl + '/delete?userID=' + userId;
+    return this.http.get<any>(newPath);
   }
 }
