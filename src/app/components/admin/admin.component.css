@@ -1,52 +1,146 @@
 .button-group {
-    display: flex; /* Butonları yatay hizalar */
-    gap: 10px; /* Butonlar arasındaki boşluk */
-    justify-content: flex-start; /* Başlangıca hizalar */
+  display: flex; /* Butonları yatay hizalar */
+  gap: 10px; /* Butonlar arasındaki boşluk */
+  justify-content: flex-start; /* Başlangıca hizalar */
 }
 
 .compact-btn {
-    background-color: #007bff; /* Mavi tonunda modern bir görünüm */
-    color: #fff; /* Yazı rengini beyaz yap */
-    border: none; /* Çerçeve kaldır */
-    border-radius: 5px; /* Daha az yuvarlak köşeler */
-    padding: 6px 12px; /* Daha küçük iç boşluk */
-    font-size: 14px; /* Yazı boyutunu küçült */
-    font-weight: 500; /* Orta kalınlıkta yazı */
-    cursor: pointer; /* Tıklanabilir imleç */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Animasyon efekti */
+  background-color: #007bff; /* Mavi tonunda modern bir görünüm */
+  color: #fff; /* Yazı rengini beyaz yap */
+  border: none; /* Çerçeve kaldır */
+  border-radius: 5px; /* Daha az yuvarlak köşeler */
+  padding: 6px 12px; /* Daha küçük iç boşluk */
+  font-size: 14px; /* Yazı boyutunu küçült */
+  font-weight: 500; /* Orta kalınlıkta yazı */
+  cursor: pointer; /* Tıklanabilir imleç */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Animasyon efekti */
 }
 
 .compact-btn:hover {
-    background-color: #0056b3; /* Daha koyu bir mavi renk */
-    transform: scale(1.05); /* Hover sırasında büyüme efekti */
+  background-color: #0056b3; /* Daha koyu bir mavi renk */
+  transform: scale(1.05); /* Hover sırasında büyüme efekti */
 }
 
 .compact-btn:active {
-    background-color: #003f7f; /* Tıklandığında daha koyu bir renk */
-    transform: scale(0.95); /* Tıklandığında küçülme efekti */
+  background-color: #003f7f; /* Tıklandığında daha koyu bir renk */
+  transform: scale(0.95); /* Tıklandığında küçülme efekti */
 }
 
 .btn-danger {
-    background-color: #dc3545; /* Kırmızı */
-    color: #fff;
+  background-color: #dc3545; /* Kırmızı */
+  color: #fff;
 }
 
 .btn-success {
-    background-color: #28a745; /* Yeşil */
-    color: #fff;
+  background-color: #28a745; /* Yeşil */
+  color: #fff;
 }
 
 .btn-update {
-    background-color: #ffc107; /* Sarı renk */
-    color: #fff;
+  background-color: #ffc107; /* Sarı renk */
+  color: #fff;
 }
 
 .btn-update:hover {
-    background-color: #e0a800; /* Hover'da daha koyu sarı */
-    transform: scale(1.05); /* Hover sırasında büyüme efekti */
+  background-color: #e0a800; /* Hover'da daha koyu sarı */
+  transform: scale(1.05); /* Hover sırasında büyüme efekti */
 }
 
 .btn-update:active {
-    background-color: #c69500; /* Tıklandığında daha koyu sarı */
-    transform: scale(0.95); /* Tıklandığında küçülme efekti */
+  background-color: #c69500; /* Tıklandığında daha koyu sarı */
+  transform: scale(0.95); /* Tıklandığında küçülme efekti */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+
+th button {
+  background: none;
+  border: none;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+}
+
+th button:hover {
+  text-decoration: underline;
+}
+
+th span {
+  margin-left: 5px;
+}
+
+th {
+  cursor: pointer;
+  padding: 10px;
+  text-align: left;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+th:hover {
+  background-color: #e0e0e0;
+}
+
+th span {
+  margin-left: 10px;
+}
+
+tbody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+
+/* Dropdown button */
+.btn-group .btn.dropdown-toggle {
+  background-color: #f8f9fa; /* Butonun arka plan rengi */
+  color: #495057; /* Yazı rengi */
+  border: 1px solid #ccc; /* Buton kenar rengi */
+  border-radius: 4px; /* Buton köşe yuvarlama */
+  padding: 8px 16px; /* Buton içindeki boşluk */
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  border-radius: 4px; /* Menü köşe yuvarlama */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Menüye gölge ekleme */
+  background-color: #ffffff; /* Menü arka plan rengi */
+  padding: 0; /* Menü içi boşluk */
+}
+
+/* Dropdown item */
+.dropdown-item {
+  padding: 8px 16px; /* Menü öğeleri arasındaki boşluk */
+  color: #495057; /* Yazı rengi */
+  text-decoration: none; /* Alt çizgiyi kaldır */
+}
+
+/* Hover effect for dropdown items */
+.dropdown-item:hover {
+  background-color: #007bff; /* Üzerine gelindiğinde arka plan rengi */
+  color: #ffffff; /* Yazı rengini beyaz yap */
+}
+
+/* Active state for selected item */
+.dropdown-item.active, .dropdown-item:active {
+  background-color: #0056b3;
+  color: #ffffff;
 }

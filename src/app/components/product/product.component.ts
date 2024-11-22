@@ -9,6 +9,8 @@ import { FilterPipePipe } from '../../pipes/filter-pipe.pipe';
 import { CartService } from '../../services/cart.service';
 import { createPopper } from '@popperjs/core';
 import { ToastrService } from 'ngx-toastr';
+import { SortService } from '../../services/sort.service';
+import { FilterService } from '../../services/filter.service';
 
 @Component({
   selector: 'app-product',
@@ -21,19 +23,26 @@ export class ProductComponent implements OnInit {
   products: Product[] = [];
   dataLoaded = false;
   filterText = '';
+  sortColumn: string | null = null;
+  sortOrder: 'asc' | 'desc' = 'asc';
 
   @ViewChild('buttonElement') buttonElement!: ElementRef;
   @ViewChild('tooltipElement') tooltipElement!: ElementRef;
   sortCriteria: any;
 
+  selectedCategory: number;
+
   constructor(
     private productService: ProductService,
     private activatedRoute: ActivatedRoute,
     private toastrService: ToastrService,
-    private cartService: CartService
+    private cartService: CartService,
+    private sortService: SortService,
+    private filterService: FilterService
   ) {}
 
   ngOnInit(): void {
+    // URL parametrelerine göre ürünleri al
     this.activatedRoute.params.subscribe((params) => {
       if (params['categoryId']) {
         this.getProductsByCategory(params['categoryId']);
@@ -41,6 +50,11 @@ export class ProductComponent implements OnInit {
         this.getProducts();
       }
     });
+
+    // // Filtreleri dinle
+    // this.filterService.filter$.subscribe((filters) => {
+    //   this.applyFilters(filters);
+    // });
   }
 
   ngAfterViewInit() {
@@ -69,7 +83,6 @@ export class ProductComponent implements OnInit {
         if (response.success) {
           this.products = response.data;
           this.dataLoaded = true;
-          //this.toastrService.success(response.message);
         }
       });
   }
@@ -83,19 +96,59 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  sortProducts(criteria: string) {
-    if (criteria === 'name') {
-      this.products.sort((a, b) => a.productName.localeCompare(b.productName));
-    } else if (criteria === 'price') {
-      this.products.sort((a, b) => a.unitPrice - b.unitPrice);
-    } else if (criteria === 'proposed') {
-      this.products.sort((a, b) => a.productId - b.productId);
-    } else if (criteria === 'category') {
-      this.products.sort((a, b) => a.categoryId - b.categoryId);
-    } else if (criteria === 'downname') {
-      this.products.sort((a, b) => b.productName.localeCompare(a.productName));
-    } else if (criteria === 'downprice') {
-      this.products.sort((a, b) => b.unitPrice - a.unitPrice);
+  sort(column: string) {
+    if (this.sortColumn === column) {
+      // Aynı kolona basılmışsa sıralama yönünü değiştir
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Farklı bir kolona basılmışsa, bu kolona göre sıralamaya başla
+      this.sortColumn = column;
+      this.sortOrder = 'asc';
     }
+
+    // Sıralama işlemini gerçekleştir
+    this.products = this.sortService.sortByKey(
+      this.products,
+      column as keyof (typeof this.products)[0],
+      this.sortOrder
+    );
   }
+
+
+
+  toggleStatus(product: any): void {
+    const productId = product.id; // Kullanıcı ID'sini al
+
+    // Durum güncellemesi API çağrısı
+    this.productService.updateProductStatus(productId).subscribe({
+      next: (response) => {
+        product.status = !product.status; // Durumu tersine çevir
+        const statusMessage = product.status ? 'Aktif edildi' : 'Silindi';
+        this.toastrService.success(`Kullanıcı başarıyla ${statusMessage}.`);
+        console.log('Kullanıcı durumu güncellendi:', response);
+      },
+      error: (err) => {
+        console.error('Durum güncellemesi başarısız:', err);
+        this.toastrService.error('Durum güncelleme işlemi başarısız.');
+      },
+    });
+  }
+
+
+  // applyFilters(filters: any) {
+  //   if (filters.category) {
+  //     this.selectedCategory = filters.category;
+  //     this.products = this.products.filter(
+  //       (product) => product.categoryId === this.selectedCategory
+  //     );
+  //   }
+  // }
+
+  // // Kullanıcı tarafından filtrelerin ayarlanması
+  // applyCategoryFilter(category: string) {
+  //   const filters = {
+  //     category: category,
+  //   };
+  //   this.filterService.setFilters(filters);
+  // }
 }

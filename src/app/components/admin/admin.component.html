@@ -1,62 +1,136 @@
+
+
 <div class="main-content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card card-plain">
-                    <div class="card-header card-header-danger">
-                        <h4 class="card-title mt-0"> Tüm kullanıcılar</h4>
-                        <!-- <p class="card-category"> </p> -->
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>City</th>
-                                        <th>District</th>
-                                        <th>Address</th>
-                                        <th>Status</th>
-                                        <th>Gender</th>
-                                        <th>Role</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- users dizisindeki her bir kullanıcıyı tablo satırı olarak ekle -->
-                                    <tr *ngFor="let user of users">
-                                        <td>{{ user.id }}</td>
-                                        <td>{{ user.firstName }}</td>
-                                        <td>{{ user.lastName }}</td>
-                                        <td>{{ user.email }}</td>
-                                        <td>{{ user.city }}</td>
-                                        <td>{{ user.district }}</td>
-                                        <td>{{ user.adress }}</td>
-                                        <td>{{ user.status }}</td>
-                                        <td>{{ user.cinsiyet }}</td>
-                                        <td>{{ user.roles }}</td>
-                                        <td>
-                                            <div class="button-group">
-                                                <button class="compact-btn" (click)="updateUser(user.id)">Güncelle</button>
-                                                <button 
-                                                    class="compact-btn" 
-                                                    [ngClass]="{ 'btn-danger': user.status, 'btn-success': !user.status }" 
-                                                    (click)="toggleStatus(user)">
-                                                    {{ user.status ? 'Sil' : 'Aktif Et' }}
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-plain">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title mt-0">Tüm kullanıcılar</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th (click)="sort('id')">
+                      ID
+                      <span *ngIf="sortColumn === 'id'">
+                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                      </span>
+                    </th>
+                    <th (click)="sort('firstName')">
+                      First Name
+                      <span *ngIf="sortColumn === 'firstName'">
+                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                      </span>
+                    </th>
+                    <th (click)="sort('lastName')">
+                      Last Name
+                      <span *ngIf="sortColumn === 'lastName'">
+                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                      </span>
+                    </th>
+                    <th (click)="sort('email')">
+                      Email
+                      <span *ngIf="sortColumn === 'email'">
+                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                      </span>
+                    </th>
+                    <th (click)="sort('city')">
+                      City
+                      <span *ngIf="sortColumn === 'city'">
+                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                      </span>
+                    </th>
+                    <th (click)="sort('district')">
+                      District
+                      <span *ngIf="sortColumn === 'district'">
+                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                      </span>
+                    </th>
+                    <th (click)="sort('address')">
+                      Address
+                      <span *ngIf="sortColumn === 'address'">
+                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                      </span>
+                    </th>
+                    <th (click)="sort('status')">
+                      Status
+                      <span *ngIf="sortColumn === 'status'">
+                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                      </span>
+                    </th>
+                    <th (click)="sort('gender')">
+                      Gender
+                      <span *ngIf="sortColumn === 'gender'">
+                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                      </span>
+                    </th>
+                    <th (click)="sort('roles')">
+                      Role
+                      <span *ngIf="sortColumn === 'roles'">
+                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                      </span>
+                    </th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of users">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.lastName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.city }}</td>
+                    <td>{{ user.district }}</td>
+                    <td>{{ user.address }}</td>
+                    <td>{{ user.status ? "Active" : "Inactive" }}</td>
+                    <td>{{ user.gender }}</td>
+                    <td>
+                      <div class="btn-group">
+                        <button
+                          class="btn btn-secondary btn-sm dropdown-toggle"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          {{ user.roles }}
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a class="dropdown-item">diğer roller buraya çekilecek hangi rol seçilirse kullanıcı o role geçecek. </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="button-group">
+                        <button
+                          class="compact-btn"
+                          (click)="updateUser(user.id)"
+                        >
+                          Güncelle
+                        </button>
+                        <button
+                          class="compact-btn"
+                          [ngClass]="{
+                            'btn-danger': user.status,
+                            'btn-success': !user.status
+                          }"
+                          (click)="toggleStatus(user)"
+                        >
+                          {{ user.status ? "Sil" : "Aktif Et" }}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+          </div>
         </div>
+      </div>
     </div>
   </div>
-  
+</div>

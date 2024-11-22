@@ -1,100 +1,142 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Sign Up Form by Colorlib</title>
-
-    <!-- Font Icon -->
-    <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
-
-    <!-- Main css -->
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-    <div class="main">
-        <div class="container">
-            <div class="signup-content">
-                <div class="signup-img">
-                    <img src="assets/images/signup-img.jpg" alt="">
-                </div>
-                <div class="signup-form">
-                    <form [formGroup]="registerForm" class="register-form" id="register-form" (ngSubmit)="onSubmit()">
-                        <h2>Kayıt Ol</h2>
-                        <div class="form-row">
-                          <div class="form-group">
-                            <label for="firstName">İsim :</label>
-                            <input type="text" name="firstName" id="firstName" formControlName="firstName" required />
-                          </div>
-                          <div class="form-group">
-                            <label for="lastName">Soyisim :</label>
-                            <input type="text" name="lastName" id="lastName" formControlName="lastName" required />
-                          </div>
-                        </div>
-                        
-                        <div class="form-group">
-                          <label for="email">Email :</label>
-                          <input type="email" name="email" id="email" formControlName="email" required />
-                        </div>
-                      
-                        <div class="form-group">
-                          <label for="password">Şifre :</label>
-                          <input type="password" name="password" id="password" formControlName="password" required />
-                        </div>
-                        
-                        <div class="form-row">
-                          <div class="form-group">
-                            <label for="il">İl :</label>
-                            <div class="form-select">
-                              <select id="il" formControlName="il" (change)="onIlSelect($event)" required>
-                                <option *ngFor="let il of iller" [value]="il.ilNo">{{ il.iladi }}</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <label for="ilce">İlçe :</label>
-                            <div class="form-select">
-                              <select id="ilce" formControlName="ilce" required>
-                                <option *ngFor="let ilce of ilceler" [value]="ilce.id">{{ ilce.ilce }}</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      
-                        <div class="form-group">
-                          <label for="address">Adres :</label>
-                          <input type="text" name="address" id="address" formControlName="address" required />
-                        </div>
-                        <div class="form-radio">
-                            <label for="gender" class="radio-label">Cinsiyet :</label>
-                            <div class="form-radio-item">
-                                <input type="radio" name="gender" id="male" value="Erkek" formControlName="gender">
-                                <label for="male">Erkek</label>
-                                <span class="check"></span>
-                            </div>
-                            <div class="form-radio-item">
-                                <input type="radio" name="gender" id="female" value="Kadın" formControlName="gender">
-                                <label for="female">Kadın</label>
-                                <span class="check"></span>
-                            </div>
-                        </div>              
-                        <div class="form-submit">
-                          <!-- <input type="submit" value="Sıfırla" class="submit" name="reset" id="reset" /> -->
-                          <button type="button" class="submit" name="reset" id="reset" (click)="onReset()">Sıfırla</button>
-                          <button type="submit" class="submit" id="submit" (click)="onSubmit()">Kaydet</button>
-                          <!-- <input type="submit" value="Kaydet" class="submit" id="submit" /> -->
-                        </div>
-                      </form> 
-                </div>
+<div class="main">
+  <div class="container">
+    <div class="signup-content">
+      <div class="signup-img">
+        <img src="assets/images/signup-img.jpg" alt="" />
+      </div>
+      <div class="signup-form">
+        <form
+          [formGroup]="registerForm"
+          class="register-form"
+          id="register-form"
+          (ngSubmit)="onSubmit()"
+        >
+          <h2>Kayıt Ol</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">İsim :</label>
+              <input
+                type="text"
+                name="firstName"
+                id="firstName"
+                formControlName="firstName"
+                required
+              />
             </div>
-        </div>
 
+            <div class="form-group">
+              <label for="lastName">Soyisim :</label>
+              <input
+                type="text"
+                name="lastName"
+                id="lastName"
+                formControlName="lastName"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email :</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              formControlName="email"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Şifre :</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              formControlName="password"
+              required
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">İl :</label>
+              <div class="form-select">
+                <select
+                  id="city"
+                  formControlName="city"
+                  type="text"
+                  (change)="onIlSelect($event)"
+                  required
+                >
+                  <option *ngFor="let il of iller" [value]="il.ilNo">
+                    {{ il.iladi }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="district">İlçe :</label>
+              <div class="form-select">
+                <select id="district" formControlName="district" required>
+                  <option *ngFor="let ilce of ilceler" [value]="ilce.id">
+                    {{ ilce.ilce }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="adress">Adres :</label>
+            <input
+              type="text"
+              name="adress"
+              id="adress"
+              formControlName="adress"
+              required
+            />
+          </div>
+          <div class="form-radio">
+            <label for="cinsiyet" class="radio-label">Cinsiyet :</label>
+            <div class="form-radio-item">
+              <input
+                type="radio"
+                name="cinsiyet"
+                id="male"
+                value="Erkek"
+                formControlName="cinsiyet"
+              />
+              <label for="male">Erkek</label>
+              <span class="check"></span>
+            </div>
+            <div class="form-radio-item">
+              <input
+                type="radio"
+                name="cinsiyet"
+                id="female"
+                value="Kadın"
+                formControlName="cinsiyet"
+              />
+              <label for="female">Kadın</label>
+              <span class="check"></span>
+            </div>
+          </div>
+          <div class="form-submit">
+            <button
+              type="button"
+              class="submit"
+              name="reset"
+              id="reset"
+              (click)="onReset()"
+            >
+              Sıfırla
+            </button>
+            <button type="submit" class="submit" id="submit">Kaydet</button>
+          </div>
+        </form>
+      </div>
     </div>
-
-    <!-- JS -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="js/main.js"></script>
-</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
-</html>
+  </div>
+</div>
