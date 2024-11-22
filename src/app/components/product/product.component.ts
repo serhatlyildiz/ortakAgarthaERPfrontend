@@ -6,20 +6,14 @@ import { ActivatedRoute } from '@angular/router';
 import { VatAddedPipe } from '../../pipes/vat-added.pipe';
 import { FormsModule } from '@angular/forms';
 import { FilterPipePipe } from '../../pipes/filter-pipe.pipe';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { CartService } from '../../services/cart.service';
 import { createPopper } from '@popperjs/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product',
   standalone: true,
-  imports: [
-    CommonModule,
-    VatAddedPipe,
-    FormsModule,
-    FilterPipePipe,
-    ToastrModule,
-  ],
+  imports: [CommonModule, VatAddedPipe, FormsModule, FilterPipePipe],
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css'],
 })

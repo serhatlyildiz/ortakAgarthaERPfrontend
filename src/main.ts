@@ -1,8 +1,12 @@
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
-import { HTTP_INTERCEPTORS, provideHttpClient, withFetch } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withFetch,
+} from '@angular/common/http';
 import { provideRouter, RouterModule, Routes } from '@angular/router';
-import { ToastrModule } from 'ngx-toastr';
+import { provideToastr, ToastrModule } from 'ngx-toastr';
 import { importProvidersFrom } from '@angular/core';
 import { ProductComponent } from './app/components/product/product.component';
 //import 'bootstrap';  // Bootstrap'ı import ettiniz
@@ -19,25 +23,37 @@ import { AdminComponent } from './app/components/admin/admin.component';
 const routes: Routes = [
   { path: '', component: ProductComponent },
   { path: 'products', component: ProductComponent },
-  { path: 'products/add', component: ProductAddComponent, canActivate:[LoginGuard] }, // 'products/add' rotası eklendi
+  {
+    path: 'products/add',
+    component: ProductAddComponent,
+    canActivate: [LoginGuard],
+  }, // 'products/add' rotası eklendi
   { path: 'products/category/:categoryId', component: ProductComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'admin', component: AdminComponent},
+  { path: 'admin', component: AdminComponent },
 ];
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideHttpClient(withFetch()), // HttpClient desteği
-    provideRouter(routes), // Router yapılandırması
+    provideHttpClient(withFetch()),
+    provideRouter(routes),
+    provideToastr({
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+    }),
     importProvidersFrom(
       FormsModule,
       BrowserModule,
       RouterModule,
       ReactiveFormsModule,
-      BrowserAnimationsModule,  // Toastr için gerekli animasyonlar
-      ToastrModule.forRoot({ positionClass: "toast-bottom-right" })  // Toastr yapılandırması
+      BrowserAnimationsModule
     ),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
-  ]
+    {
+      provide: [HTTP_INTERCEPTORS],
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
 }).catch((err) => console.error(err));

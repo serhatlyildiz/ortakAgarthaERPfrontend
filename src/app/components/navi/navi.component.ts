@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CategoryComponent } from '../category/category.component';
 import { Category } from '../../models/category';
@@ -32,5 +32,5 @@ export class NaviComponent implements OnInit {
 
   login() {
     this.router.navigate(['login']);
-  }
+  }
 }
