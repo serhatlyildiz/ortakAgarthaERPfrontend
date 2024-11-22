@@ -17,35 +17,55 @@
   {{ filterText }} aradınız
 </div>
 
-<select (change)="sortProducts($event.target.value)" [(ngModel)]="sortCriteria">
-  <option value="proposed" selected>Önerilen</option>
-  <option value="name">İsme A-Z</option>
-  <option value="downname">İsim Z-A</option>
-  <option value="price">Fiyat Ucuzdan Pahalıya</option>
-  <option value="downprice">Fiyat Pahalıdan Ucuza</option>
-  <option value="category">Kategoriye Göre</option>
-</select>
 
 <table *ngIf="dataLoaded" class="table table-striped">
   <thead>
     <tr>
-      <th>Id</th>
-      <th>Ürün Adı</th>
-      <th>Kategori</th>
-      <th>Fiyat</th>
+      <th (click)="sort('productId')">
+        Ürün Id
+        <span *ngIf="sortColumn === 'productId'">
+          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+        </span>
+      </th>
+
+      <th (click)="sort('productName')">
+        Ürün Adı
+        <span *ngIf="sortColumn === 'productName'">
+          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+        </span>
+      </th>
+      <th (click)="sort('categoryId')">
+        Kategori
+        <span *ngIf="sortColumn === 'categoryId'">
+          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+        </span>
+      </th>
+      <th (click)="sort('stockQuantity')">
+        Stok Adedi
+        <span *ngIf="sortColumn === 'stockQuantity'">
+          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+        </span>
+      </th>
+
+      <th (click)="sort('unitPrice')">
+        Fiyat
+        <span *ngIf="sortColumn === 'unitPrice'">
+          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+        </span>
+      </th>
       <th>Kdv'li Fiyat</th>
-      <th>Stok Adedi</th>
+
       <th></th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let product of products | filterPipe: filterText">
+    <tr *ngFor="let product of products | filterPipe : filterText">
       <td>{{ product.productId }}</td>
       <td>{{ product.productName | uppercase }}</td>
       <td>{{ product.categoryId }}</td>
-      <td>{{ product.unitPrice | currency: 'TRY' }}</td>
-      <td>{{ product.unitPrice | vatAdded: 18 | currency: 'TRY' }}</td>
       <td>{{ product.unitsInStock }}</td>
+      <td>{{ product.unitPrice | currency : "TRY" }}</td>
+      <td>{{ product.unitPrice | vatAdded : 20 | currency : "TRY" }}</td>
       <td>
         <button (click)="addToCart(product)" class="btn btn-success">
           Sepete Ekle

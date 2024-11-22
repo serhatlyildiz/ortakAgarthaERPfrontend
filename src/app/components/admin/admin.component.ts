@@ -2,8 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
+import { SortService } from '../../services/sort.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user';
+import { FilterService } from '../../services/filter.service';
 
 @Component({
   selector: 'app-admin',
@@ -14,25 +17,28 @@ import { CommonModule } from '@angular/common';
 })
 export class AdminComponent implements OnInit {
   adminForm: FormGroup;
-  users: any[] = []; // Kullanıcılar dizisi
+  users: User[] = [];
+  sortColumn: string | null = null;
+  sortOrder: 'asc' | 'desc' = 'asc';
 
   constructor(
     private formBuilder: FormBuilder,
     private toastrService: ToastrService,
     private router: Router,
-    private userService: UserService // UserService'i ekliyoruz
+    private userService: UserService,
+    private sortService: SortService,
+    private filterService: FilterService
   ) {}
 
   ngOnInit(): void {
     this.createLoginForm();
-    this.getUsers(); // Kullanıcıları al
+    this.getUsers();
   }
 
   createLoginForm() {
     this.adminForm = this.formBuilder.group({});
   }
 
-  // Kullanıcıları al
   getUsers() {
     this.userService.getUsersWithRoles().subscribe({
       next: (users) => {
@@ -54,25 +60,22 @@ export class AdminComponent implements OnInit {
 
   // Kullanıcı silme
   toggleStatus(user: any): void {
-    const newStatus = !user.status; // Durumu tersine çevir
-
-    // Backend'e gönderilecek kullanıcı nesnesini hazırla
-    const updatedUser = { ...user, status: newStatus };
+    const userID = user.id; // Kullanıcı ID'sini al
 
     // Durum güncellemesi API çağrısı
-    this.userService.updateUserStatus(updatedUser).subscribe({
+    this.userService.updateUserStatus(userID).subscribe({
       next: (response) => {
-        user.status = newStatus; // Başarılı olursa durumu güncelle
-        const statusMessage = newStatus ? 'Aktif edildi' : 'Silindi';
+        user.status = !user.status; // Durumu tersine çevir
+        const statusMessage = user.status ? 'Aktif edildi' : 'Silindi';
         this.toastrService.success(`Kullanıcı başarıyla ${statusMessage}.`);
         console.log('Kullanıcı durumu güncellendi:', response);
       },
       error: (err) => {
         console.error('Durum güncellemesi başarısız:', err);
-        this.toastrService.error("Durum güncelleme işlemi başarısız.");
-      }
+        this.toastrService.error('Durum güncelleme işlemi başarısız.');
+      },
     });
-}
+  }
 
   // Kullanıcı rollerini görüntüle
   viewRoles(userId: number) {
@@ -87,4 +90,32 @@ export class AdminComponent implements OnInit {
       },
     });
   }
+
+  sort(column: string) {
+    if (this.sortColumn === column) {
+      // Aynı kolona basılmışsa sıralama yönünü değiştir
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Farklı bir kolona basılmışsa, bu kolona göre sıralamaya başla
+      this.sortColumn = column;
+      this.sortOrder = 'asc';
+    }
+
+    // Sıralama işlemini gerçekleştir
+    this.users = this.sortService.sortByKey(
+      this.users,
+      column as keyof (typeof this.users)[0],
+      this.sortOrder
+    );
+  }
+
+  // applyFilters() {
+  //   const filters = {
+  //     role: this.selectedRole,
+  //     gender: this.selectedGender,
+  //     status: this.selectedStatus,
+  //     city: this.selectedCity,
+  //   };
+  //   this.filterService.setFilters(filters);
+  // }
 }

@@ -1,21 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { IlilceService } from '../../services/ililce.service';
 import { CommonModule } from '@angular/common';
-import { registerService } from '../../services/register.service';  // Düzeltilmiş import
+import { registerService } from '../../services/register.service'; // Düzeltilmiş import
 import { Router } from '@angular/router';
 import { User } from '../../models/user';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule ,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css'],
+  styleUrls: ['./css/style.css'],
 })
 export class RegisterComponent implements OnInit {
-
   registerForm: FormGroup;
   iller: any[] = []; // İllerin listesi
   ilceler: any[] = []; // İlçelerin listesi
@@ -25,7 +29,7 @@ export class RegisterComponent implements OnInit {
     private formBuilder: FormBuilder,
     private ililce: IlilceService,
     private toastrService: ToastrService,
-    private registerService: registerService,  // Düzeltilmiş service adı
+    private registerService: registerService, // Düzeltilmiş service adı
     private router: Router
   ) {}
 
@@ -41,11 +45,11 @@ export class RegisterComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      il: ['', Validators.required],  // İl seçimi
-      ilce: ['', Validators.required],  // İlçe seçimi
-      address: ['', Validators.required],
-      gender: ['', Validators.required],
-      status: true
+      city: ['', Validators.required], // İl seçimi
+      district: ['', Validators.required], // İlçe seçimi
+      adress: ['', Validators.required],
+      cinsiyet: ['', Validators.required],
+      status: true,
     });
   }
 
@@ -53,7 +57,7 @@ export class RegisterComponent implements OnInit {
     this.ililce.getIller().subscribe(
       (response) => {
         if (response.success) {
-          this.iller = response.data.map(il => ({
+          this.iller = response.data.map((il) => ({
             ...il,
             ilNo: String(il.ilNo), // `ilNo`yu string'e dönüştürüyoruz
           }));
@@ -87,46 +91,44 @@ export class RegisterComponent implements OnInit {
   }
 
   onReset() {
-    this.registerForm.reset();  // Formu sıfırlar
+    this.registerForm.reset(); // Formu sıfırlar
   }
 
   onSubmit() {
     event.preventDefault();
     console.log('Form gönderildi.', this.registerForm.value);
-    if (this.registerForm.valid) {
-        const formData = this.registerForm.value;
+    if (this.registerForm != null) {
+      const formData = this.registerForm.value;
 
-        // `iladi` ve `ilceadi` bilgilerini form verisinden alıyoruz
-        const userForRegisterDto: User = {
-            email: formData.email,
-            password: formData.password,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            city: formData.il,  // `iladi` bilgisi
-            district: formData.ilce,  // `ilceadi` bilgisi
-            adress: formData.address,
-            cinsiyet: formData.gender,
-            status: true,
-        };
+      // `iladi` ve `ilceadi` bilgilerini form verisinden alıyoruz
+      const userForRegisterDto: User = {
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        city: formData.city, // `iladi` bilgisi
+        district: formData.district, // `ilceadi` bilgisi
+        adress: formData.adress,
+        cinsiyet: formData.cinsiyet,
+        status: true,
+      };
 
-        console.log(userForRegisterDto);  // Kullanıcı verilerini kontrol etmek için
+      console.log(userForRegisterDto); // Kullanıcı verilerini kontrol etmek için
 
-        this.registerService.register(userForRegisterDto).subscribe(
-            (response) => {
-                this.toastrService.success('Kullanıcı başarıyla kaydedildi');
-                console.log('Kullanıcı kaydedildi:', response);
-                this.router.navigate(['/login']);
-            },
-            (error) => {
-                this.toastrService.error('Kullanıcı kaydedilemedi');
-                console.error('Kayıt hatası:', error);
-            }
-        );
+      this.registerService.register(userForRegisterDto).subscribe(
+        (response) => {
+          this.toastrService.success('Kullanıcı başarıyla kaydedildi');
+          console.log('Kullanıcı kaydedildi:', response);
+          this.router.navigate(['/login']);
+        },
+        (error) => {
+          this.toastrService.error('Kullanıcı kaydedilemedi');
+          console.error('Kayıt hatası:', error);
+        }
+      );
     } else {
-        this.toastrService.error('Form geçerli değil.');
-        console.log('Form geçerli değil.');
+      this.toastrService.error('Form geçerli değil.');
+      console.log('Form geçerli değil.');
     }
-}
-
-  
+  }
 }
