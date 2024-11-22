@@ -42,6 +42,6 @@ export class CategoryComponent implements OnInit {
       return 'has-children active';
     } else {
       return 'has-children';
-    }
-  }
+    }
+  }
 }
