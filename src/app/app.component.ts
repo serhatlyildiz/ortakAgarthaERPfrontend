@@ -3,7 +3,6 @@ import { NaviComponent } from './components/navi/navi.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-// Diğer importlar...
 
 @Component({
   selector: 'app-root',
