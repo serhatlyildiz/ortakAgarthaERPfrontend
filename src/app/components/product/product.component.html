@@ -40,13 +40,24 @@
           {{ sortOrder === "asc" ? "🔼" : "🔽" }}
         </span>
       </th>
-      <th (click)="sort('stockQuantity')">
-        Stok Adedi
-        <span *ngIf="sortColumn === 'stockQuantity'">
+      <th (click)="sort('productSize')">
+        Beden
+        <span *ngIf="sortColumn === 'productSize'">
           {{ sortOrder === "asc" ? "🔼" : "🔽" }}
         </span>
       </th>
-
+      <th (click)="sort('productColorId')">
+        Beden
+        <span *ngIf="sortColumn === 'productColorId'">
+          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+        </span>
+      </th>
+      <th (click)="sort('UnitsInStock')">
+        Stok Adedi
+        <span *ngIf="sortColumn === 'UnitsInStock'">
+          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+        </span>
+      </th>
       <th (click)="sort('unitPrice')">
         Fiyat
         <span *ngIf="sortColumn === 'unitPrice'">
