@@ -18,6 +18,7 @@ import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 import { LoginGuard } from './app/guards/login.guard';
 import { RegisterComponent } from './app/components/register/register.component';
 import { AdminComponent } from './app/components/admin/admin.component';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Rota yapılandırması
 const routes: Routes = [
@@ -48,7 +49,8 @@ bootstrapApplication(AppComponent, {
       BrowserModule,
       RouterModule,
       ReactiveFormsModule,
-      BrowserAnimationsModule
+      BrowserAnimationsModule,
+      NgbDropdownModule
     ),
     {
       provide: [HTTP_INTERCEPTORS],

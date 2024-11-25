@@ -50,6 +50,7 @@ export class RegisterComponent implements OnInit {
       adress: ['', Validators.required],
       cinsiyet: ['', Validators.required],
       status: true,
+      role: []
     });
   }
 
@@ -111,6 +112,7 @@ export class RegisterComponent implements OnInit {
         adress: formData.adress,
         cinsiyet: formData.cinsiyet,
         status: true,
+        role: []
       };
 
       console.log(userForRegisterDto); // Kullanıcı verilerini kontrol etmek için

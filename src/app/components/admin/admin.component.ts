@@ -7,11 +7,16 @@ import { SortService } from '../../services/sort.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
 import { FilterService } from '../../services/filter.service';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { IlilceService } from '../../services/ililce.service';
+import { ilModel } from '../../models/ilModel';
+import { ilModels } from '../../models/ilModels';
+import { ilceModels } from '../../models/ilceModels';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule, CommonModule],
+  imports: [ReactiveFormsModule, RouterModule, CommonModule, NgbDropdownModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })
@@ -27,7 +32,8 @@ export class AdminComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private sortService: SortService,
-    private filterService: FilterService
+    private filterService: FilterService,
+    private ililceService: IlilceService
   ) {}
 
   ngOnInit(): void {
@@ -43,13 +49,85 @@ export class AdminComponent implements OnInit {
     this.userService.getUsersWithRoles().subscribe({
       next: (users) => {
         this.users = users;
+  
+        // Her bir kullanıcı için city adını almak
+        this.users.forEach(user => {
+          this.getCityNames(user); // Her bir kullanıcı için city adı alınacak
+          this.getDistrictNames(user);
+        });
       },
       error: (err) => {
         console.error('Error fetching users:', err);
         this.toastrService.error('Failed to load users.');
-      },
+      }
     });
   }
+  
+  
+
+  getCityNames(user: User) {
+    // user.city'nin geçerli bir değer olup olmadığını kontrol et
+    if (!user.city || isNaN(Number(user.city))) {
+      this.toastrService.error('Invalid city ID.');
+      return; // Geçersiz city ID'si olduğunda fonksiyonu sonlandır
+    }
+  
+    this.ililceService.getByIdIl(Number(user.city)).subscribe({
+      next: (city: ilModels) => {
+        console.log('API response:', city.data); // Gelen yanıtı logla
+    
+        // `city.data` bir nesne olduğu için doğrudan erişebilirsiniz
+        if (city.data && city.data.iladi) {
+          const ilAdi = city.data.iladi; // iladi'yi alıyoruz
+          user.city = ilAdi;
+          console.log('City name:', ilAdi);
+        } else {
+          console.error('City data is invalid.');
+          this.toastrService.error('City data is not valid.');
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching city:', err);
+        this.toastrService.error('Failed to load city.');
+      }
+    });        
+  }
+
+  getDistrictNames(user: User) {
+    // user.ilce'nin geçerli bir değer olup olmadığını kontrol et
+    if (!user.district || isNaN(Number(user.district))) {
+      this.toastrService.error('Invalid district ID.');
+      return; // Geçersiz ilçe ID'si olduğunda fonksiyonu sonlandır
+    }
+  
+    this.ililceService.getByIdIlce(Number(user.district)).subscribe({
+      next: (district: ilceModels) => {
+        console.log('District response:', district.data); // Gelen yanıtı logla
+  
+        // `district.data` bir nesne olduğu için doğrudan erişebilirsiniz
+        if (district.data && district.data.ilce) {
+          const ilceAdi = district.data.ilce; // ilce'yi alıyoruz
+          user.district = ilceAdi; // Kullanıcının ilçe bilgisi güncelleniyor
+          console.log('District name:', ilceAdi);
+        } else {
+          console.error('District data is invalid.');
+          this.toastrService.error('District data is not valid.');
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching district:', err);
+        this.toastrService.error('Failed to load district.');
+      }
+    });
+  }
+  
+  
+  
+  
+  
+  
+  
+  
 
   // Kullanıcı güncelleme
   updateUser(userId: number) {

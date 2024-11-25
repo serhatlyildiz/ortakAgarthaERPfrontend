@@ -68,7 +68,7 @@
                       </span>
                     </th>
                     <th (click)="sort('roles')">
-                      Role
+                      Roles
                       <span *ngIf="sortColumn === 'roles'">
                         {{ sortOrder === "asc" ? "🔼" : "🔽" }}
                       </span>
@@ -84,27 +84,32 @@
                     <td>{{ user.email }}</td>
                     <td>{{ user.city }}</td>
                     <td>{{ user.district }}</td>
-                    <td>{{ user.address }}</td>
+                    <td>{{ user.adress }}</td>
                     <td>{{ user.status ? "Active" : "Inactive" }}</td>
-                    <td>{{ user.gender }}</td>
+                    <td>{{ user.cinsiyet }}</td>
                     <td>
-                      <div class="btn-group">
+                      <div ngbDropdown class="btn-group">
                         <button
-                          class="btn btn-secondary btn-sm dropdown-toggle"
+                          class="btn btn-secondary btn-sm"
                           type="button"
-                          data-bs-toggle="dropdown"
+                          ngbDropdownToggle
                           aria-expanded="false"
                         >
-                          {{ user.roles }}
+                          {{user.roles[0]}}
                         </button>
-                        <ul class="dropdown-menu">
-                          <li>
-                            <a class="dropdown-item">diğer roller buraya çekilecek hangi rol seçilirse kullanıcı o role geçecek. </a>
-                          </li>
-                        </ul>
+                        <div ngbDropdownMenu>
+                          <button 
+                            *ngFor="let role of user.roles" 
+                            ngbDropdownItem 
+                            (click)="changeRole(user, role)"
+                          >
+                            {{ role }}
+                          </button>
+                        </div>
                       </div>
                     </td>
-                    <td>
+                    
+                    <td >
                       <div class="button-group">
                         <button
                           class="compact-btn"
