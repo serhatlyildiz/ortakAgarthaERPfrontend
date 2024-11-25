@@ -9,5 +9,5 @@ export interface UserWithRole {
   adress: string;
   cinsiyet: string;
   status: true;
-  role: string;
+  role: number[];
 }

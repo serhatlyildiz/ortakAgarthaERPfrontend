@@ -9,7 +9,6 @@ import { provideRouter, RouterModule, Routes } from '@angular/router';
 import { provideToastr, ToastrModule } from 'ngx-toastr';
 import { importProvidersFrom } from '@angular/core';
 import { ProductComponent } from './app/components/product/product.component';
-//import 'bootstrap';  // Bootstrap'ı import ettiniz
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './app/components/login/login.component';
 import { ProductAddComponent } from './app/components/product-add/product-add.component';
@@ -19,6 +18,7 @@ import { LoginGuard } from './app/guards/login.guard';
 import { RegisterComponent } from './app/components/register/register.component';
 import { AdminComponent } from './app/components/admin/admin.component';
 import { ForgotPasswordComponent } from './app/components/forgot-password/forgot-password.component';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Rota yapılandırması
 const routes: Routes = [
@@ -50,7 +50,8 @@ bootstrapApplication(AppComponent, {
       BrowserModule,
       RouterModule,
       ReactiveFormsModule,
-      BrowserAnimationsModule
+      BrowserAnimationsModule,
+      NgbDropdownModule
     ),
     {
       provide: [HTTP_INTERCEPTORS],

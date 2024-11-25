@@ -8,4 +8,5 @@ export interface User {
   adress: string;
   cinsiyet: string;
   status: boolean;
+  role: number[];
 }
