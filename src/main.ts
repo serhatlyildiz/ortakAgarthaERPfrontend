@@ -9,7 +9,6 @@ import { provideRouter, RouterModule, Routes } from '@angular/router';
 import { provideToastr, ToastrModule } from 'ngx-toastr';
 import { importProvidersFrom } from '@angular/core';
 import { ProductComponent } from './app/components/product/product.component';
-//import 'bootstrap';  // Bootstrap'ı import ettiniz
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './app/components/login/login.component';
 import { ProductAddComponent } from './app/components/product-add/product-add.component';
@@ -18,6 +17,7 @@ import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 import { LoginGuard } from './app/guards/login.guard';
 import { RegisterComponent } from './app/components/register/register.component';
 import { AdminComponent } from './app/components/admin/admin.component';
+import { ForgotPasswordComponent } from './app/components/forgot-password/forgot-password.component';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Rota yapılandırması
@@ -28,7 +28,8 @@ const routes: Routes = [
     path: 'products/add',
     component: ProductAddComponent,
     canActivate: [LoginGuard],
-  }, // 'products/add' rotası eklendi
+  },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'products/category/:categoryId', component: ProductComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
