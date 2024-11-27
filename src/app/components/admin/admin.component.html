@@ -1,141 +1,314 @@
+<div class="d-flex mb-3">
+  <!-- FILTER butonu -->
+  <button
+    class="btn btn-primary"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#filterMenu"
+    aria-expanded="false"
+    aria-controls="filterMenu"
+  >
+    FILTER
+  </button>
+
+  <!-- RESET FILTERS butonu -->
+  <button 
+    class="btn btn-danger ms-2" 
+    (click)="resetFilters()" 
+    *ngIf="isFilterMenuOpen">
+    Reset Filters
+  </button>
+</div>
+
+<div class="collapse" id="filterMenu" (shown.bs.collapse)="onFilterMenuOpen()" (hidden.bs.collapse)="onFilterMenuClose()">
+  <div class="card card-body">
+    <form (ngSubmit)="applyFilters()">
+      <div class="row">
+        <!-- First Name (Text Input) -->
+        <div class="col-md-3">
+          <label for="filterFirstName" style="font-weight: bold; text-decoration: underline;">First Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="filterFirstName"
+            [(ngModel)]="filters.firstname"
+            name="firstName"
+          />
+        </div>
+
+        <!-- City (Combobox) -->
+        <div class="col-md-3">
+          <label for="filterCity" style="font-weight: bold; text-decoration: underline;" >City</label>
+          <select
+            class="form-select"
+            id="filterCity"
+            [(ngModel)]="filters.city"
+            (change)="getDistricts($event)"
+            required=""
+            name="city"
+          >
+            <option *ngFor="let city of cities" [value]="city.ilNo">{{ city.iladi }}</option>
+          </select>
+        </div>
+
+        <!-- District (Combobox) -->
+        <div class="col-md-3">
+          <label for="filterDistrict" style="font-weight: bold; text-decoration: underline;">District</label>
+          <select
+            class="form-select"
+            id="filterDistrict"
+            [(ngModel)]="filters.district"
+            name="district"
+          >
+            <option *ngFor="let district of districts" [value]="district.id">
+              {{ district.ilce }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Roles (Combobox) -->
+        <div class="col-md-3">
+          <label for="filterRoles" style="font-weight: bold; text-decoration: underline;">Roles</label>
+          <select
+            class="form-select"
+            id="filterRoles"
+            [(ngModel)]="filters.role"
+            name="roles"
+          >
+            <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+          </select>
+        </div>
+        
+        
+        
+
+        <!-- Gender (Checkbox) -->
+        <!-- Gender (Radio Buttons) -->
+<div class="col-md-3">
+  <label style="font-weight: bold; text-decoration: underline;">Gender</label>
+  <div class="d-flex align-items-center">
+    <div class="form-check me-3">
+      <input 
+        type="radio" 
+        class="form-check-input" 
+        id="genderAll" 
+        [(ngModel)]="filters.gender"
+        name="gender"
+        [value]="''"
+      />
+      <label class="form-check-label" for="genderAll">All</label>
+    </div>
+    
+    <div class="form-check me-3">
+      <input 
+        type="radio" 
+        class="form-check-input" 
+        id="genderMale" 
+        [(ngModel)]="filters.gender"
+        name="gender" 
+        [value]="'Erkek'"
+      />
+      <label class="form-check-label" for="genderMale">Male</label>
+    </div>
+    
+    <div class="form-check">
+      <input 
+        type="radio" 
+        class="form-check-input" 
+        id="genderFemale" 
+        [(ngModel)]="filters.gender"
+        name="gender"
+        [value]="'Kadın'"
+      />
+      <label class="form-check-label" for="genderFemale">Female</label>
+    </div>
+  </div>
+</div>
 
 
-<div class="main-content">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card card-plain">
-          <div class="card-header card-header-danger">
-            <h4 class="card-title mt-0">Tüm kullanıcılar</h4>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th (click)="sort('id')">
-                      ID
-                      <span *ngIf="sortColumn === 'id'">
-                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                      </span>
-                    </th>
-                    <th (click)="sort('firstName')">
-                      First Name
-                      <span *ngIf="sortColumn === 'firstName'">
-                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                      </span>
-                    </th>
-                    <th (click)="sort('lastName')">
-                      Last Name
-                      <span *ngIf="sortColumn === 'lastName'">
-                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                      </span>
-                    </th>
-                    <th (click)="sort('email')">
-                      Email
-                      <span *ngIf="sortColumn === 'email'">
-                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                      </span>
-                    </th>
-                    <th (click)="sort('city')">
-                      City
-                      <span *ngIf="sortColumn === 'city'">
-                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                      </span>
-                    </th>
-                    <th (click)="sort('district')">
-                      District
-                      <span *ngIf="sortColumn === 'district'">
-                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                      </span>
-                    </th>
-                    <th (click)="sort('address')">
-                      Address
-                      <span *ngIf="sortColumn === 'address'">
-                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                      </span>
-                    </th>
-                    <th (click)="sort('status')">
-                      Status
-                      <span *ngIf="sortColumn === 'status'">
-                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                      </span>
-                    </th>
-                    <th (click)="sort('gender')">
-                      Gender
-                      <span *ngIf="sortColumn === 'gender'">
-                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                      </span>
-                    </th>
-                    <th (click)="sort('roles')">
-                      Roles
-                      <span *ngIf="sortColumn === 'roles'">
-                        {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                      </span>
-                    </th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let user of users">
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.firstName }}</td>
-                    <td>{{ user.lastName }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.city }}</td>
-                    <td>{{ user.district }}</td>
-                    <td>{{ user.adress }}</td>
-                    <td>{{ user.status ? "Active" : "Inactive" }}</td>
-                    <td>{{ user.cinsiyet }}</td>
-                    <td>
-                      <div ngbDropdown class="btn-group">
-                        <button
-                          class="btn btn-secondary btn-sm"
-                          type="button"
-                          ngbDropdownToggle
-                          aria-expanded="false"
-                        >
-                          {{user.roles[0]}}
-                        </button>
-                        <div ngbDropdownMenu>
-                          <button 
-                            *ngFor="let role of user.roles" 
-                            ngbDropdownItem 
-                            (click)="changeRole(user, role)"
-                          >
-                            {{ role }}
-                          </button>
-                        </div>
-                      </div>
-                    </td>
-                    
-                    <td >
-                      <div class="button-group">
-                        <button
-                          class="compact-btn"
-                          (click)="updateUser(user.id)"
-                        >
-                          Güncelle
-                        </button>
-                        <button
-                          class="compact-btn"
-                          [ngClass]="{
-                            'btn-danger': user.status,
-                            'btn-success': !user.status
-                          }"
-                          (click)="toggleStatus(user)"
-                        >
-                          {{ user.status ? "Sil" : "Aktif Et" }}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+        <div class="col-md-3">
+          <label for="filterStatus" style="font-weight: bold; text-decoration: underline;">Status</label>
+          <div class="d-flex align-items-center">
+            <div class="form-check me-3">
+              <input 
+                type="radio" 
+                class="form-check-input" 
+                id="allStatus" 
+                name="status"
+                [(ngModel)]="filters.status" 
+                [value]="null"
+              />
+              <label class="form-check-label" for="allStatus">All</label>
             </div>
+            
+            <div class="form-check me-3">
+              <input 
+                type="radio" 
+                class="form-check-input" 
+                id="activeStatus" 
+                name="status"
+                [(ngModel)]="filters.status" 
+                [value]="true"
+              />
+              <label class="form-check-label" for="activeStatus">Active</label>
+            </div>
+            
+            <div class="form-check">
+              <input 
+                type="radio" 
+                class="form-check-input" 
+                id="inactiveStatus" 
+                name="status"
+                [(ngModel)]="filters.status" 
+                [value]="false"
+              />
+              <label class="form-check-label" for="inactiveStatus">Inactive</label>
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- Submit Button -->
+        <div class="col-md-3 d-flex align-items-end">
+          <button class="btn btn-success w-100" type="submit">Apply Filters</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sağda kullanıcılar tablosu -->
+    <div class="col-md-12">
+      <div class="card card-plain">
+        <div class="card-header card-header-danger">
+          <h4 class="card-title mt-0">Tüm kullanıcılar</h4> 
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th (click)="sort('id')">
+                    ID
+                    <span *ngIf="sortColumn === 'id'">
+                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                    </span>
+                  </th>
+                  <th (click)="sort('firstName')">
+                    First Name
+                    <span *ngIf="sortColumn === 'firstName'">
+                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                    </span>
+                  </th>
+                  <th (click)="sort('lastName')">
+                    Last Name
+                    <span *ngIf="sortColumn === 'lastName'">
+                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                    </span>
+                  </th>
+                  <th (click)="sort('email')">
+                    Email
+                    <span *ngIf="sortColumn === 'email'">
+                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                    </span>
+                  </th>
+                  <th (click)="sort('city')">
+                    City
+                    <span *ngIf="sortColumn === 'city'">
+                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                    </span>
+                  </th>
+                  <th (click)="sort('district')">
+                    District
+                    <span *ngIf="sortColumn === 'district'">
+                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                    </span>
+                  </th>
+                  <th (click)="sort('address')">
+                    Address
+                    <span *ngIf="sortColumn === 'address'">
+                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                    </span>
+                  </th>
+                  <th (click)="sort('status')">
+                    Status
+                    <span *ngIf="sortColumn === 'status'">
+                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                    </span>
+                  </th>
+                  <th (click)="sort('gender')">
+                    Gender
+                    <span *ngIf="sortColumn === 'gender'">
+                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                    </span>
+                  </th>
+                  <th (click)="sort('roles')">
+                    Roles
+                    <span *ngIf="sortColumn === 'roles'">
+                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+                    </span>
+                  </th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of users">
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.firstName }}</td>
+                  <td>{{ user.lastName }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.city }}</td>
+                  <td>{{ user.district }}</td>
+                  <td>{{ user.adress }}</td>
+                  <td>{{ user.status ? "Active" : "Inactive" }}</td>
+                  <td>{{ user.cinsiyet }}</td>
+                  <td>
+                    <div ngbDropdown class="btn-group">
+                      <button
+                        class="btn btn-secondary btn-sm"
+                        type="button"
+                        ngbDropdownToggle
+                        aria-expanded="false"
+                      >
+                        {{user.roles[0]}}
+                      </button>
+                      <div ngbDropdownMenu>
+                        <button 
+                          *ngFor="let role of user.roles" 
+                          ngbDropdownItem 
+                        >
+                          {{ role }}
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="button-group">
+                      <button
+                        class="compact-btn"
+                        (click)="updateUser(user.id)"
+                      >
+                        Güncelle
+                      </button>
+                      <button
+                        class="compact-btn"
+                        [ngClass]="{
+                          'btn-danger': user.status,
+                          'btn-success': !user.status
+                        }"
+                        (click)="toggleStatus(user)"
+                      >
+                        {{ user.status ? "Sil" : "Aktif Et" }}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+

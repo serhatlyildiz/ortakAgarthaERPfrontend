@@ -144,3 +144,21 @@ tbody td {
   background-color: #0056b3;
   color: #ffffff;
 }
+
+.d-flex {
+  display: flex;
+  justify-content: flex-start; /* Butonları sola hizalar */
+  align-items: center; /* Butonları dikeyde ortalar */
+}
+
+.d-flex button {
+  margin-right: 10px; /* Butonlar arasındaki boşluğu ayarlar */
+}
+
+.ms-2 {
+  margin-left: 10px; /* Reset butonunun Filter butonunun hemen sağında olması için eklenen boşluk */
+}
+
+.me-3 {
+  margin-right: 1rem; /* Aralarındaki boşluğu ayarlamak için */
+}
