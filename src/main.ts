@@ -19,6 +19,7 @@ import { RegisterComponent } from './app/components/register/register.component'
 import { AdminComponent } from './app/components/admin/admin.component';
 import { ForgotPasswordComponent } from './app/components/forgot-password/forgot-password.component';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { AdminUserUpdateComponent } from './app/components/admin-user-update/admin-user-update.component';
 
 // Rota yapılandırması
 const routes: Routes = [
@@ -34,6 +35,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'admin', component: AdminComponent },
+  { path: 'admin-user-update/:productId', component: AdminUserUpdateComponent },
+
 ];
 
 bootstrapApplication(AppComponent, {

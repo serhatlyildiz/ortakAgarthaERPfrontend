@@ -6,10 +6,8 @@ import { CommonModule } from '@angular/common';
 import { SortService } from '../../services/sort.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
-import { FilterService } from '../../services/filter.service';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { IlilceService } from '../../services/ililce.service';
-import { ilModel } from '../../models/ilModel';
 import { ilModels } from '../../models/ilModels';
 import { ilceModels } from '../../models/ilceModels';
 
@@ -32,7 +30,6 @@ export class AdminComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private sortService: SortService,
-    private filterService: FilterService,
     private ililceService: IlilceService
   ) {}
 
@@ -49,9 +46,9 @@ export class AdminComponent implements OnInit {
     this.userService.getUsersWithRoles().subscribe({
       next: (users) => {
         this.users = users;
-  
+
         // Her bir kullanıcı için city adını almak
-        this.users.forEach(user => {
+        this.users.forEach((user) => {
           this.getCityNames(user); // Her bir kullanıcı için city adı alınacak
           this.getDistrictNames(user);
         });
@@ -59,11 +56,9 @@ export class AdminComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching users:', err);
         this.toastrService.error('Failed to load users.');
-      }
+      },
     });
   }
-  
-  
 
   getCityNames(user: User) {
     // user.city'nin geçerli bir değer olup olmadığını kontrol et
@@ -71,11 +66,11 @@ export class AdminComponent implements OnInit {
       this.toastrService.error('Invalid city ID.');
       return; // Geçersiz city ID'si olduğunda fonksiyonu sonlandır
     }
-  
+
     this.ililceService.getByIdIl(Number(user.city)).subscribe({
       next: (city: ilModels) => {
         console.log('API response:', city.data); // Gelen yanıtı logla
-    
+
         // `city.data` bir nesne olduğu için doğrudan erişebilirsiniz
         if (city.data && city.data.iladi) {
           const ilAdi = city.data.iladi; // iladi'yi alıyoruz
@@ -89,8 +84,8 @@ export class AdminComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching city:', err);
         this.toastrService.error('Failed to load city.');
-      }
-    });        
+      },
+    });
   }
 
   getDistrictNames(user: User) {
@@ -99,11 +94,11 @@ export class AdminComponent implements OnInit {
       this.toastrService.error('Invalid district ID.');
       return; // Geçersiz ilçe ID'si olduğunda fonksiyonu sonlandır
     }
-  
+
     this.ililceService.getByIdIlce(Number(user.district)).subscribe({
       next: (district: ilceModels) => {
         console.log('District response:', district.data); // Gelen yanıtı logla
-  
+
         // `district.data` bir nesne olduğu için doğrudan erişebilirsiniz
         if (district.data && district.data.ilce) {
           const ilceAdi = district.data.ilce; // ilce'yi alıyoruz
@@ -117,23 +112,15 @@ export class AdminComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching district:', err);
         this.toastrService.error('Failed to load district.');
-      }
+      },
     });
   }
-  
-  
-  
-  
-  
-  
-  
-  
 
   // Kullanıcı güncelleme
   updateUser(userId: number) {
     console.log(`Update user with ID: ${userId}`);
-    // Gerekirse userService.updateUser(userId, data) çağrılabilir
-    this.router.navigate([`/admin/update/${userId}`]); // ID'yi kullanarak güncelleme sayfasına yönlendirme
+
+    this.router.navigate(['/admin-user-update', userId]);
   }
 
   // Kullanıcı silme
@@ -186,14 +173,4 @@ export class AdminComponent implements OnInit {
       this.sortOrder
     );
   }
-
-  // applyFilters() {
-  //   const filters = {
-  //     role: this.selectedRole,
-  //     gender: this.selectedGender,
-  //     status: this.selectedStatus,
-  //     city: this.selectedCity,
-  //   };
-  //   this.filterService.setFilters(filters);
-  // }
 }

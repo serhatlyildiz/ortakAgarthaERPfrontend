@@ -11,6 +11,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { AdminUserUpdateComponent } from './components/admin-user-update/admin-user-update.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: ProductComponent },
@@ -21,6 +22,7 @@ export const routes: Routes = [
     component: ProductAddComponent,
     canActivate: [LoginGuard],
   },
+  { path: 'admin-user-update/:productId', component: AdminUserUpdateComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -28,7 +30,11 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), ReactiveFormsModule, NgbDropdownModule],
+  imports: [
+    RouterModule.forRoot(routes),
+    ReactiveFormsModule,
+    NgbDropdownModule,
+  ],
   exports: [RouterModule],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
