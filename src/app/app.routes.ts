@@ -18,7 +18,7 @@ export const routes: Routes = [
   { path: 'products', component: ProductComponent },
   { path: 'products/category/:categoryId', component: ProductComponent },
   {
-    path: 'products/add',
+    path: 'products-add',
     component: ProductAddComponent,
     canActivate: [LoginGuard],
   },

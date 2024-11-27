@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
@@ -10,19 +10,36 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { IlilceService } from '../../services/ililce.service';
 import { ilModels } from '../../models/ilModels';
 import { ilceModels } from '../../models/ilceModels';
+import { OperationClaimsService } from '../../services/operation-claims.service';
+import { OperationClaim } from '../../models/operationClaims';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule, CommonModule, NgbDropdownModule],
+  imports: [ReactiveFormsModule, RouterModule, CommonModule, NgbDropdownModule, FormsModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })
 export class AdminComponent implements OnInit {
   adminForm: FormGroup;
   users: User[] = [];
+  cities: any[] = [];
+  districts: any[] = [];
   sortColumn: string | null = null;
   sortOrder: 'asc' | 'desc' = 'asc';
+  selecttedId: number;
+  roles: OperationClaim[] = [];
+  isFilterMenuOpen: boolean = false;
+
+  filters = {
+    firstname: '',
+    city: '',
+    district: '',
+    status: null as boolean | null,
+    gender: '',
+    role: '',
+  };
 
   constructor(
     private formBuilder: FormBuilder,
@@ -30,41 +47,160 @@ export class AdminComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private sortService: SortService,
-    private ililceService: IlilceService
+    private filterService: FilterService,
+    private ililceService: IlilceService,
+    private operationClaims: OperationClaimsService,
   ) {}
 
   ngOnInit(): void {
-    this.createLoginForm();
+    this.createAdminForm();
     this.getUsers();
+    this.getCities();
+    this.loadRoles();
   }
 
-  createLoginForm() {
-    this.adminForm = this.formBuilder.group({});
+  createAdminForm() {
+    this.adminForm = this.formBuilder.group({
+      firstname: [''],
+      city: [''],
+      district: [''],
+      status: ["null"],
+    });
+
+    // İl değiştiğinde ilçeleri yükleme
+    this.adminForm.get('city')?.valueChanges.subscribe((cityId) => {
+      this.getDistricts(cityId);
+    });
+  }
+
+  loadRoles() {
+    this.operationClaims.getRoles().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.roles = response.data; // Veriyi alıp, roles dizisine atıyoruz
+        } else {
+          this.toastrService.error('Roller listelenemedi');
+        }
+      },
+      error: () => {
+        this.toastrService.error('Roller yüklenirken hata oluştu');
+      },
+    });
   }
 
   getUsers() {
     this.userService.getUsersWithRoles().subscribe({
       next: (users) => {
         this.users = users;
-
         // Her bir kullanıcı için city adını almak
         this.users.forEach((user) => {
           this.getCityNames(user); // Her bir kullanıcı için city adı alınacak
+
           this.getDistrictNames(user);
         });
       },
       error: (err) => {
-        console.error('Error fetching users:', err);
         this.toastrService.error('Failed to load users.');
       },
     });
+  }   
+  
+
+  getCities() {
+    this.ililceService.getIller().subscribe(
+      (response) => {
+        if (response.success) {
+          this.cities = response.data.map((il) => ({
+            ...il,
+            ilNo: String(il.ilNo), // `ilNo`yu string'e dönüştürüyoruz
+          }));
+        } else {
+          this.toastrService.error('İller yüklenemedi');
+        }
+      },
+      (error) => {
+        this.toastrService.error('İller yüklenirken hata oluştu');
+      }
+    );
+  }
+
+  getDistricts(cityId: string) {
+    const target = event.target as HTMLSelectElement; // Type assertion
+    const ilId = target.value; // Seçilen il'in ID'si (string)
+
+    // String'den number'a dönüştürmek için '+' operatörü
+    this.selecttedId = +ilId;
+
+    this.ililceService.getIlceler(this.selecttedId).subscribe(
+      (response) => {
+        // 'response' doğrudan 'ilceModel' tipinde olacak
+        this.districts = response.data; // 'data' içeriğini 'ilceler' dizisine atıyoruz
+      },
+      (error) => {
+        this.toastrService.error('İlçeler yüklenirken hata oluştu');
+      }
+    );
+  }
+
+  
+  applyFilters() {
+    const filters = { ...this.filters }; // Filtreleri al
+    console.log(filters); // Filtreleri konsola yazdır
+    this.userService.getFilteredUsers(filters).subscribe({
+      next: (filteredUsers) => {
+        this.users = filteredUsers; // Filtrelenmiş kullanıcıları al
+  
+        // Kullanıcıların şehir ve ilçe isimlerini almak
+        this.users.forEach((user) => {
+          this.getCityNames(user);
+          this.getDistrictNames(user);
+        });
+  
+        this.toastrService.success('Filters applied successfully.');
+      },
+      error: () => {
+        this.toastrService.error('Failed to apply filters.');
+      },
+    });
+  }
+  
+  resetFilters() {
+    this.filters = {firstname: '',
+      city: '',
+      district: '',
+      status: null as boolean | null,
+      gender: '',
+      role: '',} // Filtreleri sıfırlıyoruz (ya da başlangıç değerlerine ayarlıyoruz)
+    
+    // Kullanıcıları tekrar alıyoruz (tüm kullanıcılar olacak)
+    this.userService.getUsersWithRoles().subscribe({
+      next: (users) => {
+        this.users = users; // Filtrelenmemiş tüm kullanıcıları al
+        this.toastrService.success('Filters have been reset.');
+        this.users.forEach((user) => {
+          this.getCityNames(user);
+          this.getDistrictNames(user);
+        });
+      },
+      error: () => {
+        this.toastrService.error('Failed to reset filters.');
+      },
+    });
+  }
+    
+  
+  onFilterMenuOpen() {
+    this.isFilterMenuOpen = true;
+  }
+
+  // FILTER menüsü kapandığında
+  onFilterMenuClose() {
+    this.isFilterMenuOpen = false;
   }
 
   getCityNames(user: User) {
-    // user.city'nin geçerli bir değer olup olmadığını kontrol et
     if (!user.city || isNaN(Number(user.city))) {
-      this.toastrService.error('Invalid city ID.');
-      return; // Geçersiz city ID'si olduğunda fonksiyonu sonlandır
+      return;
     }
 
     this.ililceService.getByIdIl(Number(user.city)).subscribe({
@@ -85,14 +221,13 @@ export class AdminComponent implements OnInit {
         console.error('Error fetching city:', err);
         this.toastrService.error('Failed to load city.');
       },
+
     });
   }
 
   getDistrictNames(user: User) {
-    // user.ilce'nin geçerli bir değer olup olmadığını kontrol et
     if (!user.district || isNaN(Number(user.district))) {
-      this.toastrService.error('Invalid district ID.');
-      return; // Geçersiz ilçe ID'si olduğunda fonksiyonu sonlandır
+      return;
     }
 
     this.ililceService.getByIdIlce(Number(user.district)).subscribe({
@@ -123,54 +258,32 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/admin-user-update', userId]);
   }
 
-  // Kullanıcı silme
+
   toggleStatus(user: any): void {
-    const userID = user.id; // Kullanıcı ID'sini al
+    const userID = user.id;
 
-    // Durum güncellemesi API çağrısı
     this.userService.updateUserStatus(userID).subscribe({
-      next: (response) => {
-        user.status = !user.status; // Durumu tersine çevir
-        const statusMessage = user.status ? 'Aktif edildi' : 'Silindi';
-        this.toastrService.success(`Kullanıcı başarıyla ${statusMessage}.`);
-        console.log('Kullanıcı durumu güncellendi:', response);
+      next: () => {
+        user.status = !user.status;
+        this.toastrService.success(`User status updated successfully.`);
       },
-      error: (err) => {
-        console.error('Durum güncellemesi başarısız:', err);
-        this.toastrService.error('Durum güncelleme işlemi başarısız.');
-      },
-    });
-  }
-
-  // Kullanıcı rollerini görüntüle
-  viewRoles(userId: number) {
-    this.userService.getRolesByUserId(userId).subscribe({
-      next: (roles) => {
-        const rolesString = roles.join(', ');
-        alert(`Roles: ${rolesString}`);
-      },
-      error: (err) => {
-        console.error('Error fetching roles:', err);
-        this.toastrService.error('Failed to load roles.');
-      },
+      error: () => this.toastrService.error('Failed to update status.'),
     });
   }
 
   sort(column: string) {
     if (this.sortColumn === column) {
-      // Aynı kolona basılmışsa sıralama yönünü değiştir
       this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
     } else {
-      // Farklı bir kolona basılmışsa, bu kolona göre sıralamaya başla
       this.sortColumn = column;
       this.sortOrder = 'asc';
     }
-
     // Sıralama işlemini gerçekleştir
     this.users = this.sortService.sortByKey(
       this.users,
       column as keyof (typeof this.users)[0],
       this.sortOrder
     );
+
   }
 }

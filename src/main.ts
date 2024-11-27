@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: '', component: ProductComponent },
   { path: 'products', component: ProductComponent },
   {
-    path: 'products/add',
+    path: 'products-add',
     component: ProductAddComponent,
     canActivate: [LoginGuard],
   },
@@ -34,9 +34,8 @@ const routes: Routes = [
   { path: 'products/category/:categoryId', component: ProductComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'admin', component: AdminComponent },
   { path: 'admin-user-update/:productId', component: AdminUserUpdateComponent },
-
+  { path: 'admin', component: AdminComponent, canActivate: [LoginGuard] },
 ];
 
 bootstrapApplication(AppComponent, {
