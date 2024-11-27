@@ -6,10 +6,8 @@ import { CommonModule } from '@angular/common';
 import { SortService } from '../../services/sort.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
-import { FilterService } from '../../services/filter.service';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { IlilceService } from '../../services/ililce.service';
-import { ilModel } from '../../models/ilModel';
 import { ilModels } from '../../models/ilModels';
 import { ilceModels } from '../../models/ilceModels';
 import { OperationClaimsService } from '../../services/operation-claims.service';
@@ -94,8 +92,10 @@ export class AdminComponent implements OnInit {
     this.userService.getUsersWithRoles().subscribe({
       next: (users) => {
         this.users = users;
+        // Her bir kullanıcı için city adını almak
         this.users.forEach((user) => {
-          this.getCityNames(user);
+          this.getCityNames(user); // Her bir kullanıcı için city adı alınacak
+
           this.getDistrictNames(user);
         });
       },
@@ -197,7 +197,6 @@ export class AdminComponent implements OnInit {
   onFilterMenuClose() {
     this.isFilterMenuOpen = false;
   }
-  
 
   getCityNames(user: User) {
     if (!user.city || isNaN(Number(user.city))) {
@@ -206,11 +205,23 @@ export class AdminComponent implements OnInit {
 
     this.ililceService.getByIdIl(Number(user.city)).subscribe({
       next: (city: ilModels) => {
-        if (city.data?.iladi) {
-          user.city = city.data.iladi;
+        console.log('API response:', city.data); // Gelen yanıtı logla
+
+        // `city.data` bir nesne olduğu için doğrudan erişebilirsiniz
+        if (city.data && city.data.iladi) {
+          const ilAdi = city.data.iladi; // iladi'yi alıyoruz
+          user.city = ilAdi;
+          console.log('City name:', ilAdi);
+        } else {
+          console.error('City data is invalid.');
+          this.toastrService.error('City data is not valid.');
         }
       },
-      error: () => this.toastrService.error('Failed to load city.'),
+      error: (err) => {
+        console.error('Error fetching city:', err);
+        this.toastrService.error('Failed to load city.');
+      },
+
     });
   }
 
@@ -221,13 +232,32 @@ export class AdminComponent implements OnInit {
 
     this.ililceService.getByIdIlce(Number(user.district)).subscribe({
       next: (district: ilceModels) => {
-        if (district.data?.ilce) {
-          user.district = district.data.ilce;
+        console.log('District response:', district.data); // Gelen yanıtı logla
+
+        // `district.data` bir nesne olduğu için doğrudan erişebilirsiniz
+        if (district.data && district.data.ilce) {
+          const ilceAdi = district.data.ilce; // ilce'yi alıyoruz
+          user.district = ilceAdi; // Kullanıcının ilçe bilgisi güncelleniyor
+          console.log('District name:', ilceAdi);
+        } else {
+          console.error('District data is invalid.');
+          this.toastrService.error('District data is not valid.');
         }
       },
-      error: () => this.toastrService.error('Failed to load district.'),
+      error: (err) => {
+        console.error('Error fetching district:', err);
+        this.toastrService.error('Failed to load district.');
+      },
     });
   }
+
+  // Kullanıcı güncelleme
+  updateUser(userId: number) {
+    console.log(`Update user with ID: ${userId}`);
+
+    this.router.navigate(['/admin-user-update', userId]);
+  }
+
 
   toggleStatus(user: any): void {
     const userID = user.id;
@@ -248,15 +278,12 @@ export class AdminComponent implements OnInit {
       this.sortColumn = column;
       this.sortOrder = 'asc';
     }
+    // Sıralama işlemini gerçekleştir
+    this.users = this.sortService.sortByKey(
+      this.users,
+      column as keyof (typeof this.users)[0],
+      this.sortOrder
+    );
 
-    // Verileri sıralamak için kullanıcı listenizi sıralayın
-    this.users.sort((a: any, b: any) => {
-      const valueA = a[column];
-      const valueB = b[column];
-
-      if (valueA < valueB) return this.sortOrder === 'asc' ? -1 : 1;
-      if (valueA > valueB) return this.sortOrder === 'asc' ? 1 : -1;
-      return 0;
-    });
   }
 }

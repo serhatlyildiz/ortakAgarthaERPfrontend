@@ -1,0 +1,172 @@
+<div class="container">
+  <h2>Kullanıcıyı Güncelle</h2>
+  <div *ngIf="dataLoaded">
+    <form #userForm="ngForm" (ngSubmit)="updateUser()">
+      <!-- E-posta -->
+      <div class="form-group">
+        <label for="email">E-mail:</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="user.email"
+          name="email"
+          required
+        />
+      </div>
+
+      <!-- Ad ve Soyad -->
+      <div class="form-row">
+        <div class="form-group half">
+          <label for="firstName">Ad:</label>
+          <input
+            type="text"
+            id="firstName"
+            [(ngModel)]="user.firstName"
+            name="firstName"
+            required
+          />
+        </div>
+        <div class="form-group half">
+          <label for="lastName">Soyad:</label>
+          <input
+            type="text"
+            id="lastName"
+            [(ngModel)]="user.lastName"
+            name="lastName"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Şehir ve İlçe -->
+      <div class="form-row">
+        <div class="form-group half">
+          <label for="city">Şehir:</label>
+          <select
+            id="city"
+            [(ngModel)]="user.city"
+            name="city"
+            (change)="onIlSelect($event)"
+            required
+          >
+            <option *ngFor="let il of iller" [value]="il.ilNo">
+              {{ il.iladi }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group half">
+          <label for="district">İlçe:</label>
+          <select
+            id="district"
+            [(ngModel)]="user.district"
+            name="district"
+            required
+          >
+            <option *ngFor="let ilce of ilceler" [value]="ilce.id">
+              {{ ilce.ilce }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Adres -->
+      <div class="form-group">
+        <label for="address">Adres:</label>
+        <textarea
+          id="address"
+          [(ngModel)]="user.adress"
+          name="adress"
+        ></textarea>
+      </div>
+
+      <!-- Cinsiyet -->
+      <div class="form-group">
+        <label>Cinsiyet:</label>
+        <div class="radio-group">
+          <input
+            type="radio"
+            id="Erkek"
+            name="cinsiyet"
+            [(ngModel)]="user.cinsiyet"
+            value="Erkek"
+          />
+          <label for="Erkek">Erkek</label>
+          <input
+            type="radio"
+            id="Kadın"
+            name="cinsiyet"
+            [(ngModel)]="user.cinsiyet"
+            value="Kadın"
+          />
+          <label for="Kadın">Kadın</label>
+        </div>
+      </div>
+
+      <!-- Durum -->
+      <div class="form-group">
+        <label>Durum:</label>
+        <div class="radio-group">
+          <input
+            type="radio"
+            id="active"
+            name="status"
+            [(ngModel)]="user.status"
+            [value]="true"
+          />
+          <label for="active">Aktif</label>
+          <input
+            type="radio"
+            id="inactive"
+            name="status"
+            [(ngModel)]="user.status"
+            [value]="false"
+          />
+          <label for="inactive">Pasif</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="rolesDropdown">Roller:</label>
+        <div class="dropdown">
+          <button
+            class="dropdown-toggle"
+            type="button"
+            (click)="toggleDropdown()"
+            id="rolesDropdown"
+          >
+            Roller Seçin
+          </button>
+          <div
+            class="dropdown-menu"
+            [class.show]="dropdownOpen"
+            *ngIf="dataLoaded"
+          >
+            <div
+              *ngFor="let role of roles; let i = index"
+              class="dropdown-item"
+            >
+              <label [for]="'role-' + i">{{ role.name }}</label>
+              <input
+                type="checkbox"
+                [id]="'role-' + i"
+                [(ngModel)]="roles[i].selected"
+                [name]="'role-' + i"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Butonlar -->
+      <div class="buttons">
+        <button type="submit" class="update">Güncelle</button>
+        <button type="button" class="reset" (click)="resetForm(userForm)">
+          Reset
+        </button>
+        <button type="button" class="cancel" (click)="cancelUpdate()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

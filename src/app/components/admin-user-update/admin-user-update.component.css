@@ -1,0 +1,146 @@
+.container {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+textarea {
+  height: 60px;
+  resize: none;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button.update {
+  background-color: #28a745;
+  color: #fff;
+}
+
+button.reset {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+button.cancel {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.form-group.half {
+  width: 48%;
+}
+
+.radio-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.dropdown {
+  position: relative;
+  width: 200px; /* Daha küçük boyut */
+  margin: 0; /* Sola yaslanma */
+}
+
+.dropdown-toggle {
+  width: 100%;
+  padding: 6px; /* Daha küçük padding */
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left; /* Sola hizalı metin */
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  padding: 5px; /* İçerideki öğeler için boşluk */
+  text-align: left; /* Tüm öğeler sola hizalanır */
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 5px 0; /* Daha sıkı görünüm */
+  text-align: left; /* Her item sola hizalı */
+}
+
+.dropdown-item input {
+  margin-right: 10px; /* Yazıyla checkbox arası boşluk */
+}
+
+.dropdown-item label {
+  margin: 0;
+  color: #555;
+  font-size: 14px;
+}
