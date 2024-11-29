@@ -1,23 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { CommonModule } from '@angular/common';
-import { SortService } from '../../services/sort.service';
-import { UserService } from '../../services/user.service';
-import { User } from '../../models/user';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { IlilceService } from '../../services/ililce.service';
-import { ilModels } from '../../models/ilModels';
-import { ilceModels } from '../../models/ilceModels';
-import { OperationClaimsService } from '../../services/operation-claims.service';
-import { OperationClaim } from '../../models/operationClaims';
-import { forkJoin } from 'rxjs';
+import { Component, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { User } from "../../models/user";
+import { NgbDropdownModule } from "@ng-bootstrap/ng-bootstrap";
+import { Router, RouterModule } from "@angular/router";
+import { CommonModule } from "@angular/common";
+import { OperationClaim } from "../../models/operationClaims";
+import { ToastrService } from "ngx-toastr";
+import { UserService } from "../../services/user.service";
+import { SortService } from "../../services/sort.service";
+import { IlilceService } from "../../services/ililce.service";
+import { OperationClaimsService } from "../../services/operation-claims.service";
+import { ilModels } from "../../models/ilModels";
+import { ilceModels } from "../../models/ilceModels";
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule, CommonModule, NgbDropdownModule, FormsModule],
+  imports: [
+    ReactiveFormsModule,
+    RouterModule,
+    CommonModule,
+    NgbDropdownModule,
+    FormsModule,
+  ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })
@@ -47,9 +52,8 @@ export class AdminComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private sortService: SortService,
-    private filterService: FilterService,
     private ililceService: IlilceService,
-    private operationClaims: OperationClaimsService,
+    private operationClaims: OperationClaimsService
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +68,7 @@ export class AdminComponent implements OnInit {
       firstname: [''],
       city: [''],
       district: [''],
-      status: ["null"],
+      status: ['null'],
     });
 
     // İl değiştiğinde ilçeleri yükleme
@@ -103,8 +107,7 @@ export class AdminComponent implements OnInit {
         this.toastrService.error('Failed to load users.');
       },
     });
-  }   
-  
+  }
 
   getCities() {
     this.ililceService.getIller().subscribe(
@@ -142,20 +145,19 @@ export class AdminComponent implements OnInit {
     );
   }
 
-  
   applyFilters() {
     const filters = { ...this.filters }; // Filtreleri al
     console.log(filters); // Filtreleri konsola yazdır
     this.userService.getFilteredUsers(filters).subscribe({
       next: (filteredUsers) => {
         this.users = filteredUsers; // Filtrelenmiş kullanıcıları al
-  
+
         // Kullanıcıların şehir ve ilçe isimlerini almak
         this.users.forEach((user) => {
           this.getCityNames(user);
           this.getDistrictNames(user);
         });
-  
+
         this.toastrService.success('Filters applied successfully.');
       },
       error: () => {
@@ -163,15 +165,17 @@ export class AdminComponent implements OnInit {
       },
     });
   }
-  
+
   resetFilters() {
-    this.filters = {firstname: '',
+    this.filters = {
+      firstname: '',
       city: '',
       district: '',
       status: null as boolean | null,
       gender: '',
-      role: '',} // Filtreleri sıfırlıyoruz (ya da başlangıç değerlerine ayarlıyoruz)
-    
+      role: '',
+    }; // Filtreleri sıfırlıyoruz (ya da başlangıç değerlerine ayarlıyoruz)
+
     // Kullanıcıları tekrar alıyoruz (tüm kullanıcılar olacak)
     this.userService.getUsersWithRoles().subscribe({
       next: (users) => {
@@ -187,8 +191,7 @@ export class AdminComponent implements OnInit {
       },
     });
   }
-    
-  
+
   onFilterMenuOpen() {
     this.isFilterMenuOpen = true;
   }
@@ -221,7 +224,6 @@ export class AdminComponent implements OnInit {
         console.error('Error fetching city:', err);
         this.toastrService.error('Failed to load city.');
       },
-
     });
   }
 
@@ -258,7 +260,6 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/admin-user-update', userId]);
   }
 
-
   toggleStatus(user: any): void {
     const userID = user.id;
 
@@ -284,6 +285,5 @@ export class AdminComponent implements OnInit {
       column as keyof (typeof this.users)[0],
       this.sortOrder
     );
-
   }
 }

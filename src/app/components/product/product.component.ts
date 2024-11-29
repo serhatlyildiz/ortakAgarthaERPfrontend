@@ -1,16 +1,15 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Product } from '../../models/product';
-import { ProductService } from '../../services/product.service';
-import { ActivatedRoute } from '@angular/router';
-import { VatAddedPipe } from '../../pipes/vat-added.pipe';
-import { FormsModule } from '@angular/forms';
-import { FilterPipePipe } from '../../pipes/filter-pipe.pipe';
-import { CartService } from '../../services/cart.service';
-import { createPopper } from '@popperjs/core';
-import { ToastrService } from 'ngx-toastr';
-import { SortService } from '../../services/sort.service';
-import { FilterService } from '../../services/filter.service';
+import { CommonModule } from "@angular/common";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { VatAddedPipe } from "../../pipes/vat-added.pipe";
+import { FormsModule } from "@angular/forms";
+import { FilterPipePipe } from "../../pipes/filter-pipe.pipe";
+import { Product } from "../../models/product";
+import { ProductService } from "../../services/product.service";
+import { ActivatedRoute } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
+import { CartService } from "../../services/cart.service";
+import { SortService } from "../../services/sort.service";
+import { createPopper } from "@popperjs/core";
 
 @Component({
   selector: 'app-product',
@@ -38,7 +37,6 @@ export class ProductComponent implements OnInit {
     private toastrService: ToastrService,
     private cartService: CartService,
     private sortService: SortService,
-    private filterService: FilterService
   ) {}
 
   ngOnInit(): void {
