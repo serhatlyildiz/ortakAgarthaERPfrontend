@@ -1,10 +1,9 @@
+import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NaviComponent } from './components/navi/navi.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-
 
 @Component({
   selector: 'app-root',
@@ -16,7 +15,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
     FormsModule,
     CommonModule,
     ReactiveFormsModule,
-    NgbDropdownModule
+    NgbDropdownModule,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
