@@ -35,6 +35,15 @@ export class AuthService {
       );
   }
 
+  getUsername(): string {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 'Kullanıcı';
+    }
+    return '';
+  }
+
   isAuthenticated(): boolean {
     const token = localStorage.getItem('token');
     return token !== null && !this.isTokenExpired(token);
@@ -55,8 +64,6 @@ export class AuthService {
         decodedToken[
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
         ] || [];
-      console.log('Decoded Token:', decodedToken);
-      console.log('Kullanıcı Rolleri:', userRoles);
       return roles.some((role) => userRoles.includes(role));
     }
     return false;

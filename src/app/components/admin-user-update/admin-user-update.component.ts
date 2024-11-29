@@ -47,6 +47,7 @@ export class AdminUserUpdateComponent implements OnInit {
         (data) => {
           this.user = data.data;
           this.originalUser = { ...data.data };
+          this.loadInitialIlce();
         },
         (error) => {
           console.error('Error fetching user data:', error);
@@ -54,6 +55,21 @@ export class AdminUserUpdateComponent implements OnInit {
       );
     }
     this.getRoles();
+  }
+
+  loadInitialIlce(): void {
+    // Eğer kullanıcı verisi ve il ID varsa, ilçeleri yükle
+    if (this.user && this.user.city) {
+      this.ililce.getIlceler(Number(this.user.city)).subscribe(
+        (response) => {
+          this.ilceler = response.data; // İlçeleri listele
+          this.user.district = this.user.district; // İlçeyi seçili yap
+        },
+        (error) => {
+          this.toastrService.error('İlçeler yüklenirken hata oluştu');
+        }
+      );
+    }
   }
 
   getRoles(): void {
@@ -100,6 +116,7 @@ export class AdminUserUpdateComponent implements OnInit {
   resetForm(): void {
     console.log(this.roles);
     this.user = { ...this.originalUser }; // Orijinal veriye dön
+    this.loadInitialIlce();
     console.log('Form resetlendi:', this.user);
   }
 

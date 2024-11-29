@@ -1,17 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { User } from "../../models/user";
-import { NgbDropdownModule } from "@ng-bootstrap/ng-bootstrap";
-import { Router, RouterModule } from "@angular/router";
-import { CommonModule } from "@angular/common";
-import { OperationClaim } from "../../models/operationClaims";
-import { ToastrService } from "ngx-toastr";
-import { UserService } from "../../services/user.service";
-import { SortService } from "../../services/sort.service";
-import { IlilceService } from "../../services/ililce.service";
-import { OperationClaimsService } from "../../services/operation-claims.service";
-import { ilModels } from "../../models/ilModels";
-import { ilceModels } from "../../models/ilceModels";
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { SortService } from '../../services/sort.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { IlilceService } from '../../services/ililce.service';
+import { ilModels } from '../../models/ilModels';
+import { ilceModels } from '../../models/ilceModels';
+import { OperationClaimsService } from '../../services/operation-claims.service';
+import { OperationClaim } from '../../models/operationClaims';
+import { forkJoin } from 'rxjs';
+import { FilterService } from '../../services/filter.service';
+
 
 @Component({
   selector: 'app-admin',
@@ -36,12 +40,16 @@ export class AdminComponent implements OnInit {
   selecttedId: number;
   roles: OperationClaim[] = [];
   isFilterMenuOpen: boolean = false;
+  roleMap: { [key: number]: string } = {};
+  roless: string[] = [];
+  selectedRole: string;
 
   filters = {
     firstname: '',
+    lastname: '',
     city: '',
     district: '',
-    status: null as boolean | null,
+    status: true,
     gender: '',
     role: '',
   };
@@ -58,9 +66,18 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.createAdminForm();
-    this.getUsers();
+    //this.getUsers();
     this.getCities();
     this.loadRoles();
+    // İlk başta aktif kullanıcıları almak için status: true olarak ayarlıyoruz
+    this.filters.status = true;
+    // Filtre uygulama fonksiyonunu çağırıyoruz
+    this.applyFilters();
+    if (Object.keys(this.roleMap).length > 0) {
+      this.roless = Object.values(this.roleMap);  // roleMap'teki değerleri bir diziye aktar
+      this.selectedRole = this.roless[0]; // İlk öğeyi seçili yap
+    }
+  
   }
 
   createAdminForm() {
@@ -82,6 +99,12 @@ export class AdminComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.roles = response.data; // Veriyi alıp, roles dizisine atıyoruz
+
+          // Rolleri ID'lere göre eşliyoruz
+          this.roleMap = this.roles.reduce((acc, role) => {
+            acc[role.id] = role.name;  // Her rolün ID'sini adıyla eşliyoruz
+            return acc;
+          }, {} as { [key: number]: string });  // Burada türü belirtiyoruz
         } else {
           this.toastrService.error('Roller listelenemedi');
         }
@@ -91,6 +114,16 @@ export class AdminComponent implements OnInit {
       },
     });
   }
+
+  getRoleName(roleId: number): string {
+    if (this.roleMap[roleId]) {
+      return this.roleMap[roleId];  // Eğer roleId bulunursa, adı döndür
+    } else {
+      const firstRole = Object.values(this.roleMap)[0]; // İlk öğeyi alıyoruz
+      return firstRole || 'Unknown Role';  // Eğer ilk öğe yoksa 'Unknown Role' döndürüyoruz
+    }
+  }
+  
 
   getUsers() {
     this.userService.getUsersWithRoles().subscribe({
@@ -147,7 +180,6 @@ export class AdminComponent implements OnInit {
 
   applyFilters() {
     const filters = { ...this.filters }; // Filtreleri al
-    console.log(filters); // Filtreleri konsola yazdır
     this.userService.getFilteredUsers(filters).subscribe({
       next: (filteredUsers) => {
         this.users = filteredUsers; // Filtrelenmiş kullanıcıları al
@@ -167,8 +199,8 @@ export class AdminComponent implements OnInit {
   }
 
   resetFilters() {
-    this.filters = {
-      firstname: '',
+    this.filters = {firstname: '',
+      lastname: '',
       city: '',
       district: '',
       status: null as boolean | null,
@@ -208,13 +240,11 @@ export class AdminComponent implements OnInit {
 
     this.ililceService.getByIdIl(Number(user.city)).subscribe({
       next: (city: ilModels) => {
-        console.log('API response:', city.data); // Gelen yanıtı logla
 
         // `city.data` bir nesne olduğu için doğrudan erişebilirsiniz
         if (city.data && city.data.iladi) {
           const ilAdi = city.data.iladi; // iladi'yi alıyoruz
           user.city = ilAdi;
-          console.log('City name:', ilAdi);
         } else {
           console.error('City data is invalid.');
           this.toastrService.error('City data is not valid.');
@@ -227,6 +257,13 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  onRoleClick(event: MouseEvent, role: any): void {
+    // Tıklama olayını durdur
+    event.stopPropagation(); 
+    // Burada `selectedRole`'ü değiştirmiyoruz, sadece tıklamayı engelliyoruz.
+  }
+  
+
   getDistrictNames(user: User) {
     if (!user.district || isNaN(Number(user.district))) {
       return;
@@ -234,13 +271,11 @@ export class AdminComponent implements OnInit {
 
     this.ililceService.getByIdIlce(Number(user.district)).subscribe({
       next: (district: ilceModels) => {
-        console.log('District response:', district.data); // Gelen yanıtı logla
 
         // `district.data` bir nesne olduğu için doğrudan erişebilirsiniz
         if (district.data && district.data.ilce) {
           const ilceAdi = district.data.ilce; // ilce'yi alıyoruz
           user.district = ilceAdi; // Kullanıcının ilçe bilgisi güncelleniyor
-          console.log('District name:', ilceAdi);
         } else {
           console.error('District data is invalid.');
           this.toastrService.error('District data is not valid.');
@@ -255,7 +290,6 @@ export class AdminComponent implements OnInit {
 
   // Kullanıcı güncelleme
   updateUser(userId: number) {
-    console.log(`Update user with ID: ${userId}`);
 
     this.router.navigate(['/admin-user-update', userId]);
   }
