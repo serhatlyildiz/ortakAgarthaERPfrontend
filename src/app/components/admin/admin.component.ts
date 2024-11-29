@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -15,10 +16,17 @@ import { OperationClaim } from '../../models/operationClaims';
 import { forkJoin } from 'rxjs';
 import { FilterService } from '../../services/filter.service';
 
+
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule, CommonModule, NgbDropdownModule, FormsModule],
+  imports: [
+    ReactiveFormsModule,
+    RouterModule,
+    CommonModule,
+    NgbDropdownModule,
+    FormsModule,
+  ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })
@@ -52,9 +60,8 @@ export class AdminComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private sortService: SortService,
-    private filterService: FilterService,
     private ililceService: IlilceService,
-    private operationClaims: OperationClaimsService,
+    private operationClaims: OperationClaimsService
   ) {}
 
   ngOnInit(): void {
@@ -78,7 +85,7 @@ export class AdminComponent implements OnInit {
       firstname: [''],
       city: [''],
       district: [''],
-      status: ["null"],
+      status: ['null'],
     });
 
     // İl değiştiğinde ilçeleri yükleme
@@ -133,8 +140,7 @@ export class AdminComponent implements OnInit {
         this.toastrService.error('Failed to load users.');
       },
     });
-  }   
-  
+  }
 
   getCities() {
     this.ililceService.getIller().subscribe(
@@ -172,19 +178,18 @@ export class AdminComponent implements OnInit {
     );
   }
 
-  
   applyFilters() {
     const filters = { ...this.filters }; // Filtreleri al
     this.userService.getFilteredUsers(filters).subscribe({
       next: (filteredUsers) => {
         this.users = filteredUsers; // Filtrelenmiş kullanıcıları al
-  
+
         // Kullanıcıların şehir ve ilçe isimlerini almak
         this.users.forEach((user) => {
           this.getCityNames(user);
           this.getDistrictNames(user);
         });
-  
+
         this.toastrService.success('Filters applied successfully.');
       },
       error: () => {
@@ -192,7 +197,7 @@ export class AdminComponent implements OnInit {
       },
     });
   }
-  
+
   resetFilters() {
     this.filters = {firstname: '',
       lastname: '',
@@ -200,8 +205,9 @@ export class AdminComponent implements OnInit {
       district: '',
       status: null as boolean | null,
       gender: '',
-      role: '',} // Filtreleri sıfırlıyoruz (ya da başlangıç değerlerine ayarlıyoruz)
-    
+      role: '',
+    }; // Filtreleri sıfırlıyoruz (ya da başlangıç değerlerine ayarlıyoruz)
+
     // Kullanıcıları tekrar alıyoruz (tüm kullanıcılar olacak)
     this.userService.getUsersWithRoles().subscribe({
       next: (users) => {
@@ -217,8 +223,7 @@ export class AdminComponent implements OnInit {
       },
     });
   }
-    
-  
+
   onFilterMenuOpen() {
     this.isFilterMenuOpen = true;
   }
@@ -249,7 +254,6 @@ export class AdminComponent implements OnInit {
         console.error('Error fetching city:', err);
         this.toastrService.error('Failed to load city.');
       },
-
     });
   }
 
@@ -290,7 +294,6 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/admin-user-update', userId]);
   }
 
-
   toggleStatus(user: any): void {
     const userID = user.id;
 
@@ -316,6 +319,5 @@ export class AdminComponent implements OnInit {
       column as keyof (typeof this.users)[0],
       this.sortOrder
     );
-
   }
 }

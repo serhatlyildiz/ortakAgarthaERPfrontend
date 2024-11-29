@@ -1,3 +1,4 @@
+
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/product';
@@ -12,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SortService } from '../../services/sort.service';
 import { FilterService } from '../../services/filter.service';
 import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-product',
@@ -43,6 +45,7 @@ export class ProductComponent implements OnInit {
     private filterService: FilterService,
     private route: ActivatedRoute,
     private router:Router,
+
   ) {}
 
   ngOnInit(): void {
