@@ -162,3 +162,8 @@ tbody td {
 .me-3 {
   margin-right: 1rem; /* Aralarındaki boşluğu ayarlamak için */
 }
+
+.disabled {
+  pointer-events: none;
+  color: gray; /* Görünümü değiştirmek için */
+}

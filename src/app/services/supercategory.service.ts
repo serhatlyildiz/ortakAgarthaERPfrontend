@@ -1,9 +1,19 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { SuperCategoryModel } from '../models/supercategory';
+import { ListResponseModel } from '../models/listResponseModel';
+import { CategoryModel } from '../models/category';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SupercategoryService {
+export class SuperCategoryService {
 
-  constructor() { }
+  apiUrl = 'http://localhost:5038/api/SuperCategory';
+  constructor(private http:HttpClient) { }
+
+  getAll(): Observable<ListResponseModel<SuperCategoryModel>>{
+    return this.http.get<ListResponseModel<SuperCategoryModel>>(this.apiUrl + '/getall');
+  }
 }

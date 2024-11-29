@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Category } from '../../models/category';
+import { CategoryModel } from '../../models/category';
 import { CategoryService } from '../../services/category.service';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -12,8 +12,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./category.component.css'],
 })
 export class CategoryComponent implements OnInit {
-  categories: Category[] = [];
-  currentCategory: Category;
+  categories: CategoryModel[] = [];
+  currentCategory: CategoryModel;
   constructor(private categoryService: CategoryService) {}
 
   ngOnInit(): void {
@@ -25,17 +25,24 @@ export class CategoryComponent implements OnInit {
       this.categories = response.data;
     });
   }
-  setCurrentCategory(category: Category) {
+  setCurrentCategory(category: CategoryModel) {
     this.currentCategory = category;
   }
 
-  getCurrentCategoryClass(category: Category) {
+  getCurrentCategoryClass(category: CategoryModel) {
     if (category == this.currentCategory) {
       return 'has-children active';
     } else {
       return 'has-children';
     }
   }
+
+  loadCategoriesBySuperCategoryId(superCategoryId: number) {
+    this.categoryService.getBySuperCategoryId(superCategoryId).subscribe((response) => {
+      this.categories = response.data;
+    });
+  }
+  
 
   getAllCategoryClass() {
     if (!this.currentCategory) {

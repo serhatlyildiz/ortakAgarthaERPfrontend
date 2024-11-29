@@ -35,7 +35,17 @@
             name="firstName"
           />
         </div>
-
+        <!-- First Name (Text Input) -->
+        <div class="col-md-3">
+          <label for="filterLastName" style="font-weight: bold; text-decoration: underline;">Last Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="filterLastName"
+            [(ngModel)]="filters.lastname"
+            name="firstName"
+          />
+        </div>
         <!-- City (Combobox) -->
         <div class="col-md-3">
           <label for="filterCity" style="font-weight: bold; text-decoration: underline;" >City</label>
@@ -189,12 +199,6 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th (click)="sort('id')">
-                    ID
-                    <span *ngIf="sortColumn === 'id'">
-                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                    </span>
-                  </th>
                   <th (click)="sort('firstName')">
                     First Name
                     <span *ngIf="sortColumn === 'firstName'">
@@ -225,7 +229,7 @@
                       {{ sortOrder === "asc" ? "🔼" : "🔽" }}
                     </span>
                   </th>
-                  <th (click)="sort('address')">
+                  <th (click)="sort('adress')">
                     Address
                     <span *ngIf="sortColumn === 'address'">
                       {{ sortOrder === "asc" ? "🔼" : "🔽" }}
@@ -237,7 +241,7 @@
                       {{ sortOrder === "asc" ? "🔼" : "🔽" }}
                     </span>
                   </th>
-                  <th (click)="sort('gender')">
+                  <th (click)="sort('cinsiyet')">
                     Gender
                     <span *ngIf="sortColumn === 'gender'">
                       {{ sortOrder === "asc" ? "🔼" : "🔽" }}
@@ -254,7 +258,6 @@
               </thead>
               <tbody>
                 <tr *ngFor="let user of users">
-                  <td>{{ user.id }}</td>
                   <td>{{ user.firstName }}</td>
                   <td>{{ user.lastName }}</td>
                   <td>{{ user.email }}</td>
@@ -271,14 +274,16 @@
                         ngbDropdownToggle
                         aria-expanded="false"
                       >
-                        {{user.roles[0]}}
+                        {{ selectedRole ? getRoleName(selectedRole) : getRoleName(user.roles[0]) }} 
+                        ({{ user.roles.length }}) <!-- Bu sadece button içinde sayıyı gösterecek -->
                       </button>
                       <div ngbDropdownMenu>
                         <button 
                           *ngFor="let role of user.roles" 
-                          ngbDropdownItem 
+                          ngbDropdownItem
+                          (click)="onRoleClick($event, role)"  
                         >
-                          {{ role }}
+                          {{ getRoleName(role) }} <!-- Liste öğelerinde sadece rol ismi görünecek -->
                         </button>
                       </div>
                     </div>
@@ -288,8 +293,9 @@
                       <button
                         class="compact-btn"
                         (click)="updateUser(user.id)"
-                      >
-                        Güncelle
+                        [disabled]="user.status === false" 
+                        >
+                          Güncelle
                       </button>
                       <button
                         class="compact-btn"

@@ -19,69 +19,22 @@
 
 
 <table *ngIf="dataLoaded" class="table table-striped">
-  <thead>
-    <tr>
-      <th (click)="sort('productId')">
-        Ürün Id
-        <span *ngIf="sortColumn === 'productId'">
-          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-        </span>
-      </th>
-
-      <th (click)="sort('productName')">
-        Ürün Adı
-        <span *ngIf="sortColumn === 'productName'">
-          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-        </span>
-      </th>
-      <th (click)="sort('categoryId')">
-        Kategori
-        <span *ngIf="sortColumn === 'categoryId'">
-          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-        </span>
-      </th>
-      <th (click)="sort('productSize')">
-        Beden
-        <span *ngIf="sortColumn === 'productSize'">
-          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-        </span>
-      </th>
-      <th (click)="sort('productColorId')">
-        Beden
-        <span *ngIf="sortColumn === 'productColorId'">
-          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-        </span>
-      </th>
-      <th (click)="sort('UnitsInStock')">
-        Stok Adedi
-        <span *ngIf="sortColumn === 'UnitsInStock'">
-          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-        </span>
-      </th>
-      <th (click)="sort('unitPrice')">
-        Fiyat
-        <span *ngIf="sortColumn === 'unitPrice'">
-          {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-        </span>
-      </th>
-      <th>Kdv'li Fiyat</th>
-
-      <th></th>
-    </tr>
-  </thead>
   <tbody>
-    <tr *ngFor="let product of products | filterPipe : filterText">
-      <td>{{ product.productId }}</td>
-      <td>{{ product.productName | uppercase }}</td>
-      <td>{{ product.categoryId }}</td>
-      <td>{{ product.unitsInStock }}</td>
-      <td>{{ product.unitPrice | currency : "TRY" }}</td>
-      <td>{{ product.unitPrice | vatAdded : 20 | currency : "TRY" }}</td>
-      <td>
-        <button (click)="addToCart(product)" class="btn btn-success">
-          Sepete Ekle
-        </button>
-      </td>
-    </tr>
+    <div class="row">
+      <div *ngFor="let product of products | filterPipe : filterText" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" (click)="goToProductDetail(product.productId)">
+        <div class="card" style="width: 18rem;">
+          <img [src]="product.images[0]" class="card-img-top" alt="{{ product.productName }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ product.productName | uppercase }}</h5>
+            <div class="d-flex justify-content-between align-items-center">
+            <p class="card-text">{{ product.unitPrice | currency : '₺ ' }}</p>
+            <button (click)="addToCart(product)" class="btn btn-success">
+              Sepete Ekle
+            </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    
   </tbody>
 </table>

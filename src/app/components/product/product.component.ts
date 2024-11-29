@@ -11,6 +11,7 @@ import { createPopper } from '@popperjs/core';
 import { ToastrService } from 'ngx-toastr';
 import { SortService } from '../../services/sort.service';
 import { FilterService } from '../../services/filter.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product',
@@ -25,6 +26,7 @@ export class ProductComponent implements OnInit {
   filterText = '';
   sortColumn: string | null = null;
   sortOrder: 'asc' | 'desc' = 'asc';
+  productIdForDetailPage: number;
 
   @ViewChild('buttonElement') buttonElement!: ElementRef;
   @ViewChild('tooltipElement') tooltipElement!: ElementRef;
@@ -38,10 +40,13 @@ export class ProductComponent implements OnInit {
     private toastrService: ToastrService,
     private cartService: CartService,
     private sortService: SortService,
-    private filterService: FilterService
+    private filterService: FilterService,
+    private route: ActivatedRoute,
+    private router:Router,
   ) {}
 
   ngOnInit(): void {
+    this.productIdForDetailPage = +this.route.snapshot.paramMap.get('id')!;
     // URL parametrelerine göre ürünleri al
     this.activatedRoute.params.subscribe((params) => {
       if (params['categoryId']) {
@@ -55,6 +60,21 @@ export class ProductComponent implements OnInit {
     // this.filterService.filter$.subscribe((filters) => {
     //   this.applyFilters(filters);
     // });
+  }
+
+  goToProductDetail(productId: number): void {
+    // ID'yi kaydet
+    //localStorage.setItem('productId', productId.toString());
+  
+    // 10 dakika sonra silmek için timer ayarla
+    /*
+    setTimeout(() => {
+      localStorage.removeItem('productId');
+      console.log('Product ID silindi');
+    }, 10 * 60 * 1000); // 10 dakika = 600,000 ms
+    */
+    // Detay sayfasına yönlendirme
+    this.router.navigate(['/product-detail', productId]);
   }
 
   ngAfterViewInit() {

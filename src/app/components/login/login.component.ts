@@ -39,7 +39,6 @@ export class LoginComponent implements OnInit {
   //data-validate = "Valid email is required: ex@abc.xyz"
   login() {
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
       let loginModel = Object.assign({}, this.loginForm.value);
       this.authService.login(loginModel).subscribe(
         (response) => {

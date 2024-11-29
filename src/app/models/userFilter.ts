@@ -1,5 +1,6 @@
 export interface UserFilter {
     firstname?: string;
+    lastname?: string;
     city?: string;
     district?: string;
     status?: string;

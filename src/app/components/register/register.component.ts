@@ -97,7 +97,6 @@ export class RegisterComponent implements OnInit {
 
   onSubmit() {
     event.preventDefault();
-    console.log('Form gönderildi.', this.registerForm.value);
     if (this.registerForm != null) {
       const formData = this.registerForm.value;
 
@@ -115,12 +114,9 @@ export class RegisterComponent implements OnInit {
         role: []
       };
 
-      console.log(userForRegisterDto); // Kullanıcı verilerini kontrol etmek için
-
       this.registerService.register(userForRegisterDto).subscribe(
         (response) => {
           this.toastrService.success('Kullanıcı başarıyla kaydedildi');
-          console.log('Kullanıcı kaydedildi:', response);
           this.router.navigate(['/login']);
         },
         (error) => {
