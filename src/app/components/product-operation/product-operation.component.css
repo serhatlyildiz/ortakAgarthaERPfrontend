@@ -1,0 +1,139 @@
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  table-layout: fixed; /* Sütun genişliğini sabitler */
+}
+
+.product-table th, .product-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  word-wrap: break-word; /* Uzun metinlerin taşmasını önler */
+}
+
+.product-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.table-image {
+  max-width: 100px;
+  height: auto;
+  margin: 2px;
+  border-radius: 5px;
+  display: block; /* Resimleri düzgün hizalamak için */
+}
+
+.button-group {
+  display: block; /* Butonları alt alta sıralamak için */
+  gap: 10px; /* Butonlar arasındaki boşluk */
+}
+
+.compact-btn {
+  width: 100%; /* Butonları tam genişlikte yapmak için */
+  padding: 8px 15px; /* Buton içine uygun padding ekleyin */
+  font-size: 14px; /* Yazı boyutunu ayarlayın */
+  border-radius: 5px; /* Kenarları yuvarlatmak için */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Buton hover efektleri için geçiş */
+}
+
+.compact-btn:hover {
+  transform: scale(1.05); /* Hover durumunda butonu büyütme */
+}
+
+.btn-success {
+  background-color: #28a745; /* Başarılı durumda yeşil arka plan */
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545; /* Hatalı durumda kırmızı arka plan */
+  color: white;
+}
+
+.compact-btn:disabled {
+  background-color: #d6d6d6; /* Buton devre dışı bırakıldığında gri arka plan */
+  cursor: not-allowed;
+}
+
+/* Güncelle butonu için özel mavi renk */
+.btn-update {
+  background-color: #007bff; /* Mavi arka plan */
+  color: white;
+}
+
+.btn-update:hover {
+  background-color: #0056b3; /* Hover durumunda daha koyu mavi */
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+
+th button {
+  background: none;
+  border: none;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+}
+
+th button:hover {
+  text-decoration: underline;
+}
+
+th span {
+  margin-left: 5px;
+}
+
+th {
+  cursor: pointer;
+  padding: 10px;
+  text-align: left;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover efekti: Başlık üzerine gelindiğinde arka planı değiştirme */
+th:hover {
+  background-color: #e0e0e0; /* Kararma efekti */
+}
+
+th span {
+  margin-left: 10px;
+}
+
+.disabled {
+  pointer-events: none;
+  color: gray; /* Görünümü değiştirmek için */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Ürün adı ve açıklama hücreleri üzerine gelindiğinde kararma efekti */
+.product-table td:hover {
+  background-color: #f0f0f0; /* Hücre üzerine gelindiğinde arka planı gri yapar */
+  transition: background-color 0.3s ease; /* Geçiş efekti */
+}
+
+/* Başlıklar üzerine gelindiğinde renk kararma */
+th:hover {
+  background-color: #e0e0e0; /* Kararma */
+  transition: background-color 0.3s ease; /* Geçiş efekti */
+}

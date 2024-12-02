@@ -75,4 +75,9 @@
   .card:hover {
     transform: translateY(-10px);
   }
+
+  .btn-success {
+    transition: opacity 0.3s ease-in-out;
+  }
+  
   

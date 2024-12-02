@@ -4,16 +4,17 @@ import { Observable } from 'rxjs';
 import { ListResponseModel } from '../models/listResponseModel';
 import { Product } from '../models/product';
 import { ResponseModel } from '../models/responseModel';
+import { ProductDetailDto } from '../models/ProductDetailDto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  apiUrl = 'http://localhost:5038/api/';
+  apiUrl = 'http://localhost:5038/api/products';
   constructor(private httpClient: HttpClient) {}
 
   getProducts(): Observable<ListResponseModel<Product>> {
-    let newPath = this.apiUrl + 'products/getall';
+    let newPath = this.apiUrl + '/getall';
     return this.httpClient.get<ListResponseModel<Product>>(newPath);
   }
 
@@ -21,7 +22,7 @@ export class ProductService {
     categoryId: number
   ): Observable<ListResponseModel<Product>> {
     let newPath =
-      this.apiUrl + 'products/getBycategory?categoryId=' + categoryId;
+      this.apiUrl + '/getBycategory?categoryId=' + categoryId;
     return this.httpClient.get<ListResponseModel<Product>>(newPath);
   }
 
@@ -36,7 +37,11 @@ export class ProductService {
   }
 
   updateProductStatus(productId: number): Observable<any> {
-    let newPath = this.apiUrl + 'products/delete?productID=' + productId;
+    let newPath = this.apiUrl + '/delete?productID=' + productId;
     return this.httpClient.get<any>(newPath);
+  }
+
+  getProductDetails(): Observable<ProductDetailDto[]> {
+    return this.httpClient.get<ProductDetailDto[]>(this.apiUrl + '/getproductdetails');
   }
 }
