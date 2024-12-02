@@ -29,6 +29,7 @@ export class ProductComponent implements OnInit {
   sortColumn: string | null = null;
   sortOrder: 'asc' | 'desc' = 'asc';
   productIdForDetailPage: number;
+  hoveredProductId: number | null = null;
 
   @ViewChild('buttonElement') buttonElement!: ElementRef;
   @ViewChild('tooltipElement') tooltipElement!: ElementRef;

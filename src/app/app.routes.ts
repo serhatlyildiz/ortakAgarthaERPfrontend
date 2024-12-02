@@ -13,6 +13,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdminUserUpdateComponent } from './components/admin-user-update/admin-user-update.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { ProductOperationComponent } from './components/product-operation/product-operation.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: ProductComponent },
@@ -29,6 +30,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'product-detail/:id', component: ProductDetailComponent},
+  { path: 'product-operations', component: ProductOperationComponent},
 ];
 
 @NgModule({

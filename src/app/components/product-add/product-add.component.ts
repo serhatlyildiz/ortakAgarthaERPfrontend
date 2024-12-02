@@ -58,4 +58,6 @@ export class ProductAddComponent implements OnInit {
       this.toastrService.error('Formunuz Eksik', 'Dikkat');
     }
   }
+
+  
 }

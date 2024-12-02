@@ -3,7 +3,6 @@ export interface Product{
     categoryId:number;
     productName:string;
     productDescription:string;
-    images: string[];
     unitPrice:number;
     IsActive: boolean;
 }

@@ -1,0 +1,103 @@
+<div *ngIf="!isLoading && !errorMessage" style="overflow-x: auto;">
+  <table class="product-table table-hover">
+    <thead class="table-hover">
+      <tr>
+        <th (click)="sort('productName')">
+          Ürün Adı
+          <span *ngIf="sortColumn === 'productName'">
+            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+          </span>
+        </th>
+        <th (click)="sort('productDescription')">
+          Açıklama
+          <span *ngIf="sortColumn === 'productDescription'">
+            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+          </span>
+        </th>
+        <th (click)="sort('unitPrice')">
+          Fiyat
+          <span *ngIf="sortColumn === 'unitPrice'">
+            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+          </span>
+        </th>
+        <th (click)="sort('unitsInStock')">
+          Stok Miktarı
+          <span *ngIf="sortColumn === 'unitsInStock'">
+            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+          </span>
+        </th>
+        <th (click)="sort('productSize')">
+          Boyut
+          <span *ngIf="sortColumn === 'productSize'">
+            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+          </span>
+        </th>
+        <th (click)="sort('colorName')">
+          Renk
+          <span *ngIf="sortColumn === 'colorName'">
+            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+          </span>
+        </th>
+        <th (click)="sort('categoryName')">
+          Kategori
+          <span *ngIf="sortColumn === 'categoryName'">
+            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+          </span>
+        </th>
+        <th (click)="sort('superCategoryName')">
+          Süper Kategori
+          <span *ngIf="sortColumn === 'superCategoryName'">
+            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+          </span>
+        </th>
+        <th>Resimler</th>
+        <th (click)="sort('status')">
+          Status
+          <span *ngIf="sortColumn === 'status'">
+            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+          </span>
+        </th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of productDetails">
+        <td>{{ product.productName }}</td>
+        <td>{{ product.productDescription }}</td>
+        <td>{{ product.unitPrice | currency: '₺ ' }}</td>
+        <td>{{ product.unitsInStock }}</td>
+        <td>{{ product.productSize }}</td>
+        <td>{{ product.colorName }}</td>
+        <td>{{ product.categoryName }}</td>
+        <td>{{ product.superCategoryName }}</td>
+        <td>
+          <div *ngIf="product.images.length > 0">
+            <img *ngFor="let image of product.images" [src]="image" alt="{{ product.productName }}" class="table-image" />
+          </div>
+        </td>
+        <td>{{ product.status }}</td>
+        <td>
+          <div class="button-group">
+            <button
+              class="compact-btn btn-update"
+              (click)="updateProduct(product.id)"
+              [disabled]="product.status === false"
+            >
+              Güncelle
+            </button>
+            <button
+              class="compact-btn"
+              [ngClass]="{
+                'btn-danger': product.status,
+                'btn-success': !product.status
+              }"
+              (click)="toggleStatus(product)"
+            >
+              {{ product.status ? 'Sil' : 'Aktif Et' }}
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
