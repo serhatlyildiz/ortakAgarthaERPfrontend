@@ -5,4 +5,5 @@ export interface Product{
     productDescription:string;
     unitPrice:number;
     IsActive: boolean;
+    Quantity:number;
 }

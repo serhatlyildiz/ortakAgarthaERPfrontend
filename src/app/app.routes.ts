@@ -14,6 +14,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdminUserUpdateComponent } from './components/admin-user-update/admin-user-update.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { ProductOperationComponent } from './components/product-operation/product-operation.component';
+import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: ProductComponent },
@@ -31,6 +32,7 @@ export const routes: Routes = [
   { path: 'admin', component: AdminComponent },
   { path: 'product-detail/:id', component: ProductDetailComponent},
   { path: 'product-operations', component: ProductOperationComponent},
+  { path: 'password-reset', component: PasswordResetComponent },
 ];
 
 @NgModule({

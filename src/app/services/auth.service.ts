@@ -39,7 +39,11 @@ export class AuthService {
     const token = localStorage.getItem('token');
     if (token) {
       const decodedToken: any = jwtDecode(token);
-      return decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 'Kullanıcı';
+      return (
+        decodedToken[
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
+        ] || 'Kullanıcı'
+      );
     }
     return '';
   }
@@ -97,5 +101,15 @@ export class AuthService {
       this.apiUrl + 'request-password-reset',
       { email }
     );
+  }
+
+  passwordReset(
+    resetToken: string,
+    newPassword: string
+  ): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(this.apiUrl + 'reset-password', {
+      resetToken,
+      newPassword,
+    });
   }
 }

@@ -1,29 +1,27 @@
-
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/product';
 import { ProductService } from '../../services/product.service';
 import { ActivatedRoute } from '@angular/router';
-import { VatAddedPipe } from '../../pipes/vat-added.pipe';
 import { FormsModule } from '@angular/forms';
 import { FilterPipePipe } from '../../pipes/filter-pipe.pipe';
 import { CartService } from '../../services/cart.service';
 import { createPopper } from '@popperjs/core';
 import { ToastrService } from 'ngx-toastr';
 import { SortService } from '../../services/sort.service';
-import { FilterService } from '../../services/filter.service';
 import { Router } from '@angular/router';
-
+import { AuthService } from '../../services/auth.service';
+import { ProductDetailDto } from '../../models/ProductDetailDto';
 
 @Component({
   selector: 'app-product',
   standalone: true,
-  imports: [CommonModule, VatAddedPipe, FormsModule, FilterPipePipe],
+  imports: [CommonModule, FormsModule, FilterPipePipe],
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css'],
 })
 export class ProductComponent implements OnInit {
-  products: Product[] = [];
+  products: ProductDetailDto[] = [];
   dataLoaded = false;
   filterText = '';
   sortColumn: string | null = null;
@@ -43,10 +41,9 @@ export class ProductComponent implements OnInit {
     private toastrService: ToastrService,
     private cartService: CartService,
     private sortService: SortService,
-    private filterService: FilterService,
     private route: ActivatedRoute,
-    private router:Router,
-
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -69,7 +66,7 @@ export class ProductComponent implements OnInit {
   goToProductDetail(productId: number): void {
     // ID'yi kaydet
     //localStorage.setItem('productId', productId.toString());
-  
+
     // 10 dakika sonra silmek için timer ayarla
     /*
     setTimeout(() => {
@@ -112,12 +109,31 @@ export class ProductComponent implements OnInit {
       });
   }
 
-  addToCart(product: Product) {
-    if (product.productId === 1) {
-      this.toastrService.error('Bu ürün sepete eklenemez', 'HATA');
+  addToCart(product: Product): void {
+    if (this.authService.isAuthenticated()) {
+      // Kullanıcı giriş yapmışsa
+      const userId = this.authService.getUsername(); // Kullanıcı kimliğini almak için bir metod
+      this.cartService.addToDatabaseCart(userId, product.productId).subscribe({
+        next: () => {
+          this.toastrService.success(
+            `${product.productName} sepete eklendi.`,
+            'Başarılı'
+          );
+        },
+        error: (err) => {
+          this.toastrService.error(
+            'Ürün sepete eklenirken bir hata oluştu.',
+            'Hata'
+          );
+        },
+      });
     } else {
-      this.toastrService.success('Sepete eklendi', product.productName);
-      this.cartService.addToCart(product);
+      // Kullanıcı giriş yapmamışsa
+      this.cartService.addToLocalStorageCart(product);
+      this.toastrService.success(
+        `${product.productName} sepete eklendi.`,
+        'Başarılı'
+      );
     }
   }
 
@@ -139,8 +155,6 @@ export class ProductComponent implements OnInit {
     );
   }
 
-
-
   toggleStatus(product: any): void {
     const productId = product.id; // Kullanıcı ID'sini al
 
@@ -158,7 +172,6 @@ export class ProductComponent implements OnInit {
       },
     });
   }
-
 
   // applyFilters(filters: any) {
   //   if (filters.category) {

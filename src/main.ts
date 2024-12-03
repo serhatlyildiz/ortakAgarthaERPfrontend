@@ -22,6 +22,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdminUserUpdateComponent } from './app/components/admin-user-update/admin-user-update.component';
 import { ProductDetailComponent } from './app/components/product-detail/product-detail.component';
 import { ProductOperationComponent } from './app/components/product-operation/product-operation.component';
+import { PasswordResetComponent } from './app/components/password-reset/password-reset.component';
 
 // Rota yapılandırması
 const routes: Routes = [
@@ -40,6 +41,7 @@ const routes: Routes = [
   { path: 'admin', component: AdminComponent, canActivate: [LoginGuard] },
   { path: 'product-detail/:id', component: ProductDetailComponent},
   { path: 'product-operations', component: ProductOperationComponent},
+  { path: 'password-reset', component: PasswordResetComponent },
 ];
 
 bootstrapApplication(AppComponent, {

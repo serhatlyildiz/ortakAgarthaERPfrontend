@@ -13,6 +13,8 @@ import { Router } from '@angular/router';
 })
 export class ForgotPasswordComponent {
   email: string = '';
+  isButtonDisabled: boolean = false;
+
   constructor(
     private authService: AuthService,
     private toastrService: ToastrService,
@@ -20,15 +22,18 @@ export class ForgotPasswordComponent {
   ) {}
 
   forgotPassword() {
+    this.isButtonDisabled = true;
     this.authService.forgotPassword(this.email).subscribe({
       next: (response) => {
-        this.toastrService.success('Mail gönderildi.');
+        if (response.success === true)
+          this.toastrService.success(response.message);
         setTimeout(() => {
           this.router.navigate(['/login']);
         }, 3000);
       },
       error: (err) => {
-        this.toastrService.error('E-mail gönderimi başarısız.');
+        this.toastrService.error(err.message);
+        this.isButtonDisabled = false;
       },
     });
   }
