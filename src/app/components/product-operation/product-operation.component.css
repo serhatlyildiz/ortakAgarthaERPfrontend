@@ -1,71 +1,6 @@
-.product-table {
+table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
-  table-layout: fixed; /* Sütun genişliğini sabitler */
-}
-
-.product-table th, .product-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  word-wrap: break-word; /* Uzun metinlerin taşmasını önler */
-}
-
-.product-table th {
-  background-color: #f4f4f4;
-  font-weight: bold;
-}
-
-.table-image {
-  max-width: 100px;
-  height: auto;
-  margin: 2px;
-  border-radius: 5px;
-  display: block; /* Resimleri düzgün hizalamak için */
-}
-
-.button-group {
-  display: block; /* Butonları alt alta sıralamak için */
-  gap: 10px; /* Butonlar arasındaki boşluk */
-}
-
-.compact-btn {
-  width: 100%; /* Butonları tam genişlikte yapmak için */
-  padding: 8px 15px; /* Buton içine uygun padding ekleyin */
-  font-size: 14px; /* Yazı boyutunu ayarlayın */
-  border-radius: 5px; /* Kenarları yuvarlatmak için */
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Buton hover efektleri için geçiş */
-}
-
-.compact-btn:hover {
-  transform: scale(1.05); /* Hover durumunda butonu büyütme */
-}
-
-.btn-success {
-  background-color: #28a745; /* Başarılı durumda yeşil arka plan */
-  color: white;
-}
-
-.btn-danger {
-  background-color: #dc3545; /* Hatalı durumda kırmızı arka plan */
-  color: white;
-}
-
-.compact-btn:disabled {
-  background-color: #d6d6d6; /* Buton devre dışı bırakıldığında gri arka plan */
-  cursor: not-allowed;
-}
-
-/* Güncelle butonu için özel mavi renk */
-.btn-update {
-  background-color: #007bff; /* Mavi arka plan */
-  color: white;
-}
-
-.btn-update:hover {
-  background-color: #0056b3; /* Hover durumunda daha koyu mavi */
 }
 
 th,
@@ -107,33 +42,137 @@ th {
   transition: background-color 0.2s ease;
 }
 
-/* Hover efekti: Başlık üzerine gelindiğinde arka planı değiştirme */
 th:hover {
-  background-color: #e0e0e0; /* Kararma efekti */
+  background-color: #e0e0e0;
 }
 
 th span {
   margin-left: 10px;
 }
 
-.disabled {
-  pointer-events: none;
-  color: gray; /* Görünümü değiştirmek için */
+.table-image {
+  max-width: 100px;
+  height: auto;
+  margin: 2px;
+  border-radius: 5px;
+  display: block; /* Resimleri düzgün hizalamak için */
 }
 
-table {
+.button-group {
+  display: flex; /* Butonları dikey sıralamak için flex kullanıyoruz */
+  flex-direction: column; /* Dikey sıralama */
+  gap: 10px; /* Butonlar arasındaki boşluk */
+}
+
+.compact-btn {
+  padding: 8px 15px; /* Buton içine uygun padding ekleyin */
+  font-size: 14px; /* Yazı boyutunu ayarlayın */
+  border-radius: 5px; /* Kenarları yuvarlatmak için */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Buton hover efektleri için geçiş */
+  width: auto; /* Buton genişliği içeriğe göre ayarlansın */
+  max-width: 250px; /* Buton genişliğinin 250px ile sınırlanması */
+  min-width: 120px; /* Buton genişliği en az 120px olacak şekilde ayarla */
+}
+
+.compact-btn:hover {
+  transform: scale(1.05); /* Hover durumunda butonu büyütme */
+}
+
+.btn-success {
+  background-color: #28a745; /* Başarılı durumda yeşil arka plan */
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #218838; /* Hover durumunda daha koyu yeşil */
+}
+
+.btn-danger {
+  background-color: #dc3545; /* Hatalı durumda kırmızı arka plan */
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333; /* Hover durumunda daha koyu kırmızı */
+}
+
+.compact-btn:disabled {
+  background-color: #d6d6d6; /* Buton devre dışı bırakıldığında gri arka plan */
+  cursor: not-allowed;
+}
+
+.btn-update {
+  background-color: #007bff; /* Mavi arka plan */
+  color: white;
+}
+
+.btn-update:hover {
+  background-color: #0056b3; /* Hover durumunda daha koyu mavi */
+}
+
+/* İkonlar için düzenlemeler */
+.compact-btn i {
+  margin-right: 8px; /* İkon ve metin arasına boşluk ekler */
+}
+
+.image-container {
+  position: relative;
+  width: 100px; /* Fotoğrafın genişliğini belirleyebilirsiniz */
+  height: 100px; /* Fotoğrafın yüksekliğini belirleyebilirsiniz */
+}
+
+.table-image {
   width: 100%;
-  border-collapse: collapse;
+  height: 100%;
+  object-fit: cover; /* Resmin düzgün şekilde yerleştirilmesini sağlar */
 }
 
-/* Ürün adı ve açıklama hücreleri üzerine gelindiğinde kararma efekti */
-.product-table td:hover {
-  background-color: #f0f0f0; /* Hücre üzerine gelindiğinde arka planı gri yapar */
-  transition: background-color 0.3s ease; /* Geçiş efekti */
+.product-row {
+  position: relative; /* Konteynerin içinde mutlak pozisyon ile butonu yerleştirmek için */
 }
 
-/* Başlıklar üzerine gelindiğinde renk kararma */
-th:hover {
-  background-color: #e0e0e0; /* Kararma */
-  transition: background-color 0.3s ease; /* Geçiş efekti */
+.product-row:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Satır üzerine gelindiğinde gri renk */
 }
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.next-button {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 16px;
+  padding: 0px;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  opacity: 0; /* Başlangıçta buton görünmez */
+  visibility: hidden; /* Başlangıçta buton görünmez */
+}
+
+.product-row:hover .next-button {
+  opacity: 1; /* Hover durumunda buton görünür */
+  visibility: visible;
+}
+
+.next-button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+  transform: translateY(-50%) scale(0.9);
+}
+
+
+
+
+
+

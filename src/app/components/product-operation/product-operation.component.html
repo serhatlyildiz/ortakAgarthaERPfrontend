@@ -1,5 +1,202 @@
+<div class="d-flex mb-3">
+  <!-- FILTER butonu -->
+  <button
+    class="btn btn-primary"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#filterMenu"
+    aria-expanded="false"
+    aria-controls="filterMenu"
+  >
+    FILTER
+  </button>
+
+  <!-- RESET FILTERS butonu -->
+  <button 
+    class="btn btn-danger ms-2" 
+    (click)="resetFilters()" 
+    *ngIf="isFilterMenuOpen">
+    Reset Filters
+  </button>
+</div>
+
+<div class="collapse" id="filterMenu" (shown.bs.collapse)="onFilterMenuOpen()" (hidden.bs.collapse)="onFilterMenuClose()">
+  <div class="card card-body">
+    <form (ngSubmit)="applyFilters()">
+      <div class="row">
+        <!-- Product Name (Text Input) -->
+        <div class="col-md-3">
+          <label for="filterProductName" style="font-weight: bold; text-decoration: underline;">Product Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="filterProductName"
+            [(ngModel)]="filters.productName"
+            name="productName"
+          />
+        </div>
+
+        <!-- Price Range (Number Inputs) -->
+        <div class="col-md-3">
+          <label for="filterPriceMin" style="font-weight: bold; text-decoration: underline;">Price Range</label>
+          <div class="d-flex">
+            <input
+              type="number"
+              class="form-control"
+              id="filterPriceMin"
+              [(ngModel)]="filters.priceMin"
+              name="priceMin"
+              placeholder="Min"
+            />
+            <input
+              type="number"
+              class="form-control ms-2"
+              id="filterPriceMax"
+              [(ngModel)]="filters.priceMax"
+              name="priceMax"
+              placeholder="Max"
+            />
+          </div>
+        </div>
+
+        <!-- Stock Range (Number Inputs) -->
+        <div class="col-md-3">
+          <label for="filterStockMin" style="font-weight: bold; text-decoration: underline;">Stock Range</label>
+          <div class="d-flex">
+            <input
+              type="number"
+              class="form-control"
+              id="filterStockMin"
+              [(ngModel)]="filters.stockMin"
+              name="stockMin"
+              placeholder="Min"
+            />
+            <input
+              type="number"
+              class="form-control ms-2"
+              id="filterStockMax"
+              [(ngModel)]="filters.stockMax"
+              name="stockMax"
+              placeholder="Max"
+            />
+          </div>
+        </div>
+
+        <!-- Size (Combobox) -->
+<div class="col-md-3">
+  <label for="filterSize" style="font-weight: bold; text-decoration: underline;">Size</label>
+  <select
+    class="form-select"
+    id="filterSize"
+    [(ngModel)]="filters.size"
+    name="size"
+  >
+    <option [value]="null">Select Size</option> <!-- Varsayılan boş seçenek -->
+    <option *ngFor="let size of sizes" [value]="size.id">{{ size.name }}</option>
+  </select>
+</div>
+
+        <!-- Color (Combobox) -->
+<div class="col-md-3">
+  <label for="filterColor" style="font-weight: bold; text-decoration: underline;">Color</label>
+  <select
+    class="form-select"
+    id="filterColor"
+    [(ngModel)]="filters.color"
+    name="color"
+  >
+    <option [value]="null">Select Color</option>
+    <option *ngFor="let color of colors" [value]="color.colorId">{{ color.colorName }}</option>
+  </select>
+</div>
+
+ <!-- Super Category (Combobox) -->
+<div class="col-md-3">
+  <label for="filterSuperCategory" style="font-weight: bold; text-decoration: underline;">Super Category</label>
+  <select
+    class="form-select"
+    id="filterSuperCategory"
+    [(ngModel)]="filters.superCategory"
+    (change)="onSuperCategoryChange(filters.superCategory)"
+    name="superCategory"
+  >
+    <option [value]="null">Select Super Category</option>
+    <option *ngFor="let superCategory of superCategories" [value]="superCategory.superCategoryId">
+      {{ superCategory.superCategoryName }}
+    </option>
+  </select>
+</div>
+
+<!-- Category (Combobox) -->
+<div class="col-md-3">
+  <label for="filterCategory" style="font-weight: bold; text-decoration: underline;">Category</label>
+  <select
+    class="form-select"
+    id="filterCategory"
+    [(ngModel)]="filters.category"
+    name="category"
+   
+  >
+    <option [value]="null">Select Category</option>
+    <option *ngFor="let category of categories" [value]="category.categoryId">
+      {{ category.categoryName }}
+    </option>
+  </select>
+</div>
+
+
+        <!-- Status (Radio Buttons) -->
+        <div class="col-md-3">
+          <label style="font-weight: bold; text-decoration: underline;">Status</label>
+          <div class="d-flex align-items-center">
+            <div class="form-check me-3">
+              <input 
+                type="radio" 
+                class="form-check-input" 
+                id="statusAll" 
+                name="status"
+                [(ngModel)]="filters.status" 
+                [value]="null"
+              />
+              <label class="form-check-label" for="statusAll">All</label>
+            </div>
+            
+            <div class="form-check me-3">
+              <input 
+                type="radio" 
+                class="form-check-input" 
+                id="statusActive" 
+                name="status"
+                [(ngModel)]="filters.status" 
+                [value]="true"
+              />
+              <label class="form-check-label" for="statusActive">Active</label>
+            </div>
+            
+            <div class="form-check">
+              <input 
+                type="radio" 
+                class="form-check-input" 
+                id="statusInactive" 
+                name="status"
+                [(ngModel)]="filters.status" 
+                [value]="false"
+              />
+              <label class="form-check-label" for="statusInactive">Inactive</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="col-md-3 d-flex align-items-end">
+          <button class="btn btn-success w-100" type="submit">Apply Filters</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 <div *ngIf="!isLoading && !errorMessage" style="overflow-x: auto;">
-  <table class="product-table table-hover">
+  <table class="table table-hover">
     <thead class="table-hover">
       <tr>
         <th (click)="sort('productName')">
@@ -61,7 +258,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let product of productDetails">
+      <tr *ngFor="let product of productDetails" class="product-row" (mouseenter)="showButton = true" (mouseleave)="showButton = false">
         <td>{{ product.productName }}</td>
         <td>{{ product.productDescription }}</td>
         <td>{{ product.unitPrice | currency: '₺ ' }}</td>
@@ -71,9 +268,10 @@
         <td>{{ product.categoryName }}</td>
         <td>{{ product.superCategoryName }}</td>
         <td>
-          <div *ngIf="product.images.length > 0">
-            <img *ngFor="let image of product.images" [src]="image" alt="{{ product.productName }}" class="table-image" />
-          </div>
+          <div class="image-container">
+            <img [src]="product.images[currentImageIndex[product.productId]]" alt="{{ product.productName }}" class="table-image" />
+            <button *ngIf="showButton" class="next-button" (click)="nextImage(product.productId)">&#8594;</button>
+          </div>       
         </td>
         <td>{{ product.status }}</td>
         <td>
