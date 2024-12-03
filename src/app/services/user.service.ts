@@ -5,11 +5,9 @@ import { UserWithRole } from '../models/userwithrole';
 import { UserForAdmin } from '../models/userForAdmin';
 import { ResponseModel } from '../models/responseModel';
 import { User } from '../models/user';
-import { UserFilter } from '../models/userFilter';
-
 
 @Injectable({
-  providedIn: 'root', // Service, tüm uygulamada kullanılabilir olacak
+  providedIn: 'root',
 })
 export class UserService {
   private apiUrl = 'http://localhost:5038/api/Users';
@@ -28,11 +26,15 @@ export class UserService {
     );
   }
 
-  updateUserStatus(userId: number): Observable<any> {
-    let newPath = this.apiUrl + '/delete?userID=' + userId;
-    return this.http.get<any>(newPath);
+  deleteUser(userID: number): Observable<ResponseModel> {
+    let newPath = this.apiUrl + '/delete?userID=' + userID;
+    return this.http.get<ResponseModel>(newPath);
   }
 
+  activateUser(userID: number): Observable<ResponseModel> {
+    let newPath = this.apiUrl + '/restore?userID=' + userID;
+    return this.http.get<ResponseModel>(newPath);
+  }
 
   getUserById(id: number): Observable<any> {
     return this.http.get(this.apiUrl + '/getbyid?id=' + id);

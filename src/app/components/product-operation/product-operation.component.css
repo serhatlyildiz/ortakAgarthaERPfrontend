@@ -134,7 +134,12 @@ th span {
 }
 
 .product-row:hover {
-  background-color: rgba(0, 0, 0, 0.1); /* Satır üzerine gelindiğinde gri renk */
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.1
+  ); /* Satır üzerine gelindiğinde gri renk */
 }
 
 .image-container {
@@ -170,9 +175,3 @@ th span {
   background-color: rgba(0, 0, 0, 0.7);
   transform: translateY(-50%) scale(0.9);
 }
-
-
-
-
-
-
