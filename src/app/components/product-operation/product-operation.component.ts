@@ -1,4 +1,3 @@
-import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { ProductDetailDto } from '../../models/ProductDetailDto';
@@ -10,6 +9,9 @@ import { SuperCategoryService } from '../../services/supercategory.service';
 import { CategoryService } from '../../services/category.service';
 import { Colors } from '../../models/colors';
 import { ColorService } from '../../services/colors.service';
+import { Component, OnInit } from '@angular/core';
+import { ProductFilterModel } from '../../models/productfiltermodel';
+import { ListResponseModel } from '../../models/listResponseModel';
 
 @Component({
   selector: 'app-product-operations',
@@ -20,7 +22,7 @@ import { ColorService } from '../../services/colors.service';
 })
 export class ProductOperationComponent implements OnInit {
   productDetails: ProductDetailDto[] = [];
-  filteredProducts: ProductDetailDto[] = [];
+  filteredProducts: ProductFilterModel[] = [];
   isLoading: boolean = true;
   errorMessage: string = '';
   isFilterMenuOpen: boolean = false;
@@ -32,7 +34,7 @@ export class ProductOperationComponent implements OnInit {
   categories: CategoryModel[] = [];
   colors: Colors[] = [];
   filters: any = {
-    productName: '',
+    productName: null,
     priceMin: null,
     priceMax: null,
     stockMin: null,
@@ -78,7 +80,10 @@ export class ProductOperationComponent implements OnInit {
     });
     this.loadSuperCategories();
     this.loadColors();
+    this.loadSuperCategories();
+    this.loadColors();
   }
+
   loadColors() {
     this.colorService.getAll().subscribe(response => {
       this.colors = response.data;
@@ -129,20 +134,73 @@ export class ProductOperationComponent implements OnInit {
     });
   }
 
-  applyFilters(): void {
-    this.filteredProducts = this.productDetails.filter((product) => {
-      return (
-        (!this.filters.productName ||
-          product.productName
-            .toLowerCase()
-            .includes(this.filters.productName.toLowerCase())) &&
-        (!this.filters.priceMin || product.unitPrice >= this.filters.priceMin) &&
-        (!this.filters.priceMax || product.unitPrice <= this.filters.priceMax) &&
-        (!this.filters.stockMin || product.unitsInStock >= this.filters.stockMin) &&
-        (!this.filters.stockMax || product.unitsInStock <= this.filters.stockMax) &&
-        (!this.filters.category || product.categoryName === this.filters.category)
-      );
-    });
+  applyFilter(): void {
+    console.log('Gönderilen filtre:', this.filters); // Gönderilen filtreyi konsola yazdır
+  
+    this.productService.filterProducts(this.filters).subscribe(
+      (response: any) => {
+        console.log('API Yanıtı:', response); // API yanıtını detaylı şekilde inceleyin
+        if (response && Array.isArray(response) && response.length > 0) {
+          // Yanıtın veri dizisi içerdiğinden emin olun
+          let filtered = response;
+  
+          // Price Min/Max filtresi
+          if (this.filters.priceMin != null) {
+            filtered = filtered.filter(product => product.unitPrice >= this.filters.priceMin);
+          }
+          if (this.filters.priceMax != null) {
+            filtered = filtered.filter(product => product.unitPrice <= this.filters.priceMax);
+          }
+  
+          // Stock Min/Max filtresi
+          if (this.filters.stockMin != null) {
+            filtered = filtered.filter(product => product.unitsInStock >= this.filters.stockMin);
+          }
+          if (this.filters.stockMax != null) {
+            filtered = filtered.filter(product => product.unitsInStock <= this.filters.stockMax);
+          }
+  
+          // Product Name filtresi
+          if (this.filters.productName) {
+            filtered = filtered.filter(product => product.productName.toLowerCase().includes(this.filters.productName.toLowerCase()));
+          }
+  
+          // Size filtresi
+          if (this.filters.size) {
+            filtered = filtered.filter(product => product.size === this.filters.size);
+          }
+  
+          // Color filtresi
+          if (this.filters.color) {
+            filtered = filtered.filter(product => product.color === this.filters.color);
+          }
+  
+          // Category filtresi
+          if (this.filters.category) {
+            filtered = filtered.filter(product => product.categoryId === this.filters.category);
+          }
+  
+          // SuperCategory filtresi
+          if (this.filters.superCategory) {
+            filtered = filtered.filter(product => product.superCategoryId === this.filters.superCategory);
+          }
+  
+          // Status filtresi (true/false kontrolü)
+          if (this.filters.status !== null) {
+            filtered = filtered.filter(product => product.status === this.filters.status);
+          }
+  
+          // Filtrelenmiş ürünleri güncelle
+          this.productDetails = filtered;
+          console.log('Filtrelenmiş ürünler:', this.productDetails);  // Filtrelenmiş ürünleri kontrol edin
+        } else {
+          console.error('Yanıt beklenen yapıdaki veriyi içermiyor.');
+        }
+      },
+      (error) => {
+        console.error('Hata:', error);
+      }
+    );
   }
 
   resetFilters(): void {

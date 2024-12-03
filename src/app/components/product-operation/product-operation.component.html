@@ -22,7 +22,7 @@
 
 <div class="collapse" id="filterMenu" (shown.bs.collapse)="onFilterMenuOpen()" (hidden.bs.collapse)="onFilterMenuClose()">
   <div class="card card-body">
-    <form (ngSubmit)="applyFilters()">
+    <form (ngSubmit)="applyFilter()">
       <div class="row">
         <!-- Product Name (Text Input) -->
         <div class="col-md-3">
@@ -106,7 +106,7 @@
     name="color"
   >
     <option [value]="null">Select Color</option>
-    <option *ngFor="let color of colors" [value]="color.colorId">{{ color.colorName }}</option>
+    <option *ngFor="let color of colors" [value]="color.colorName">{{ color.colorName }}</option>
   </select>
 </div>
 
@@ -138,7 +138,7 @@
    
   >
     <option [value]="null">Select Category</option>
-    <option *ngFor="let category of categories" [value]="category.categoryId">
+    <option *ngFor="let category of categories" [value]="category.categoryName">
       {{ category.categoryName }}
     </option>
   </select>

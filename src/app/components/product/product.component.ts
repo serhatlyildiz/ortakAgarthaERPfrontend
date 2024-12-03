@@ -21,7 +21,7 @@ import { ProductDetailDto } from '../../models/ProductDetailDto';
   styleUrls: ['./product.component.css'],
 })
 export class ProductComponent implements OnInit {
-  products: ProductDetailDto[] = [];
+  products: Product[] = [];
   dataLoaded = false;
   filterText = '';
   sortColumn: string | null = null;
