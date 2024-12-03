@@ -12,21 +12,31 @@
   </button>
 
   <!-- RESET FILTERS butonu -->
-  <button 
-    class="btn btn-danger ms-2" 
-    (click)="resetFilters()" 
-    *ngIf="isFilterMenuOpen">
+  <button
+    class="btn btn-danger ms-2"
+    (click)="resetFilters()"
+    *ngIf="isFilterMenuOpen"
+  >
     Reset Filters
   </button>
 </div>
 
-<div class="collapse" id="filterMenu" (shown.bs.collapse)="onFilterMenuOpen()" (hidden.bs.collapse)="onFilterMenuClose()">
+<div
+  class="collapse"
+  id="filterMenu"
+  (shown.bs.collapse)="onFilterMenuOpen()"
+  (hidden.bs.collapse)="onFilterMenuClose()"
+>
   <div class="card card-body">
     <form (ngSubmit)="applyFilter()">
       <div class="row">
         <!-- Product Name (Text Input) -->
         <div class="col-md-3">
-          <label for="filterProductName" style="font-weight: bold; text-decoration: underline;">Product Name</label>
+          <label
+            for="filterProductName"
+            style="font-weight: bold; text-decoration: underline"
+            >Product Name</label
+          >
           <input
             type="text"
             class="form-control"
@@ -38,7 +48,11 @@
 
         <!-- Price Range (Number Inputs) -->
         <div class="col-md-3">
-          <label for="filterPriceMin" style="font-weight: bold; text-decoration: underline;">Price Range</label>
+          <label
+            for="filterPriceMin"
+            style="font-weight: bold; text-decoration: underline"
+            >Price Range</label
+          >
           <div class="d-flex">
             <input
               type="number"
@@ -61,7 +75,11 @@
 
         <!-- Stock Range (Number Inputs) -->
         <div class="col-md-3">
-          <label for="filterStockMin" style="font-weight: bold; text-decoration: underline;">Stock Range</label>
+          <label
+            for="filterStockMin"
+            style="font-weight: bold; text-decoration: underline"
+            >Stock Range</label
+          >
           <div class="d-flex">
             <input
               type="number"
@@ -83,18 +101,25 @@
         </div>
 
         <!-- Size (Combobox) -->
-<div class="col-md-3">
-  <label for="filterSize" style="font-weight: bold; text-decoration: underline;">Size</label>
-  <select
-    class="form-select"
-    id="filterSize"
-    [(ngModel)]="filters.size"
-    name="size"
-  >
-    <option [value]="null">Select Size</option> <!-- Varsayılan boş seçenek -->
-    <option *ngFor="let size of sizes" [value]="size.id">{{ size.name }}</option>
-  </select>
-</div>
+        <div class="col-md-3">
+          <label
+            for="filterSize"
+            style="font-weight: bold; text-decoration: underline"
+            >Size</label
+          >
+          <select
+            class="form-select"
+            id="filterSize"
+            [(ngModel)]="filters.size"
+            name="size"
+          >
+            <option [value]="null">Select Size</option>
+            <!-- Varsayılan boş seçenek -->
+            <option *ngFor="let size of sizes" [value]="size.id">
+              {{ size.name }}
+            </option>
+          </select>
+        </div>
 
         <!-- Color (Combobox) -->
 <div class="col-md-3">
@@ -144,124 +169,157 @@
   </select>
 </div>
 
+        <!-- Category (Combobox) -->
+        <div class="col-md-3">
+          <label
+            for="filterCategory"
+            style="font-weight: bold; text-decoration: underline"
+            >Category</label
+          >
+          <select
+            class="form-select"
+            id="filterCategory"
+            [(ngModel)]="filters.category"
+            name="category"
+          >
+            <option [value]="null">Select Category</option>
+            <option
+              *ngFor="let category of categories"
+              [value]="category.categoryId"
+            >
+              {{ category.categoryName }}
+            </option>
+          </select>
+        </div>
 
         <!-- Status (Radio Buttons) -->
         <div class="col-md-3">
-          <label style="font-weight: bold; text-decoration: underline;">Status</label>
+          <label style="font-weight: bold; text-decoration: underline"
+            >Status</label
+          >
           <div class="d-flex align-items-center">
             <div class="form-check me-3">
-              <input 
-                type="radio" 
-                class="form-check-input" 
-                id="statusAll" 
+              <input
+                type="radio"
+                class="form-check-input"
+                id="statusAll"
                 name="status"
-                [(ngModel)]="filters.status" 
+                [(ngModel)]="filters.status"
                 [value]="null"
               />
               <label class="form-check-label" for="statusAll">All</label>
             </div>
-            
+
             <div class="form-check me-3">
-              <input 
-                type="radio" 
-                class="form-check-input" 
-                id="statusActive" 
+              <input
+                type="radio"
+                class="form-check-input"
+                id="statusActive"
                 name="status"
-                [(ngModel)]="filters.status" 
+                [(ngModel)]="filters.status"
                 [value]="true"
               />
               <label class="form-check-label" for="statusActive">Active</label>
             </div>
-            
+
             <div class="form-check">
-              <input 
-                type="radio" 
-                class="form-check-input" 
-                id="statusInactive" 
+              <input
+                type="radio"
+                class="form-check-input"
+                id="statusInactive"
                 name="status"
-                [(ngModel)]="filters.status" 
+                [(ngModel)]="filters.status"
                 [value]="false"
               />
-              <label class="form-check-label" for="statusInactive">Inactive</label>
+              <label class="form-check-label" for="statusInactive"
+                >Inactive</label
+              >
             </div>
           </div>
         </div>
 
         <!-- Submit Button -->
         <div class="col-md-3 d-flex align-items-end">
-          <button class="btn btn-success w-100" type="submit">Apply Filters</button>
+          <button class="btn btn-success w-100" type="submit">
+            Apply Filters
+          </button>
         </div>
       </div>
     </form>
   </div>
 </div>
-<div *ngIf="!isLoading && !errorMessage" style="overflow-x: auto;">
+<div *ngIf="!isLoading && !errorMessage" style="overflow-x: auto">
   <table class="table table-hover">
     <thead class="table-hover">
       <tr>
         <th (click)="sort('productName')">
           Ürün Adı
           <span *ngIf="sortColumn === 'productName'">
-            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
         <th (click)="sort('productDescription')">
           Açıklama
           <span *ngIf="sortColumn === 'productDescription'">
-            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
         <th (click)="sort('unitPrice')">
           Fiyat
           <span *ngIf="sortColumn === 'unitPrice'">
-            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
         <th (click)="sort('unitsInStock')">
           Stok Miktarı
           <span *ngIf="sortColumn === 'unitsInStock'">
-            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
         <th (click)="sort('productSize')">
           Boyut
           <span *ngIf="sortColumn === 'productSize'">
-            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
         <th (click)="sort('colorName')">
           Renk
           <span *ngIf="sortColumn === 'colorName'">
-            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
         <th (click)="sort('categoryName')">
           Kategori
           <span *ngIf="sortColumn === 'categoryName'">
-            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
         <th (click)="sort('superCategoryName')">
           Süper Kategori
           <span *ngIf="sortColumn === 'superCategoryName'">
-            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
         <th>Resimler</th>
         <th (click)="sort('status')">
           Status
           <span *ngIf="sortColumn === 'status'">
-            {{ sortOrder === 'asc' ? '🔼' : '🔽' }}
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let product of productDetails" class="product-row" (mouseenter)="showButton = true" (mouseleave)="showButton = false">
+      <tr
+        *ngFor="let product of productDetails"
+        class="product-row"
+        (mouseenter)="showButton = true"
+        (mouseleave)="showButton = false"
+      >
         <td>{{ product.productName }}</td>
         <td>{{ product.productDescription }}</td>
-        <td>{{ product.unitPrice | currency: '₺ ' }}</td>
+        <td>{{ product.unitPrice | currency : "₺ " }}</td>
         <td>{{ product.unitsInStock }}</td>
         <td>{{ product.productSize }}</td>
         <td>{{ product.colorName }}</td>
@@ -269,9 +327,19 @@
         <td>{{ product.superCategoryName }}</td>
         <td>
           <div class="image-container">
-            <img [src]="product.images[currentImageIndex[product.productId]]" alt="{{ product.productName }}" class="table-image" />
-            <button *ngIf="showButton" class="next-button" (click)="nextImage(product.productId)">&#8594;</button>
-          </div>       
+            <img
+              [src]="product.images[currentImageIndex[product.productId]]"
+              alt="{{ product.productName }}"
+              class="table-image"
+            />
+            <button
+              *ngIf="showButton"
+              class="next-button"
+              (click)="nextImage(product.productId)"
+            >
+              &#8594;
+            </button>
+          </div>
         </td>
         <td>{{ product.status }}</td>
         <td>
@@ -291,7 +359,7 @@
               }"
               (click)="toggleStatus(product)"
             >
-              {{ product.status ? 'Sil' : 'Aktif Et' }}
+              {{ product.status ? "Sil" : "Aktif Et" }}
             </button>
           </div>
         </td>

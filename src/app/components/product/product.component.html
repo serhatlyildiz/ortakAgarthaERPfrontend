@@ -17,38 +17,53 @@
   {{ filterText }} aradınız
 </div>
 
-
 <table *ngIf="dataLoaded" class="table table-striped">
   <tbody>
     <div class="row">
-      <div *ngFor="let product of products | filterPipe : filterText" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" (click)="goToProductDetail(product.productId)">
-        <div
-        class="card"
-        style="width: 18rem; position: relative;"
-        (mouseover)="hoveredProductId = product.productId"
-        (mouseout)="hoveredProductId = null"
+      <div
+        *ngFor="let product of products | filterPipe : filterText"
+        class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4"
+        (click)="goToProductDetail(product.productId)"
       >
-        <img
-          [src]="product.images[0]"
-          class="card-img-top"
-          alt="{{ product.productName }}"
-        />
-        <div class="card-body">
-          <h5 class="card-title">{{ product.productName | uppercase }}</h5>
-          <div class="d-flex justify-content-between align-items-center">
-            <p class="card-text">{{ product.unitPrice | currency : '₺ ' }}</p>
+        <div
+          class="card"
+          style="width: 18rem; height: 28rem; position: relative"
+          (click)="goToProductDetail(product.productId)"
+        >
+          <!-- Resimler -->
+          <div class="image-container">
+            <img
+              [src]="product.images[currentImageIndex]"
+              class="card-img-top"
+              alt="{{ product.productName }}"
+            />
             <button
-              *ngIf="hoveredProductId === product.productId"
-              (click)="addToCart(product)"
-              class="btn btn-success"
-              style="position: absolute; bottom: 10px; right: 10px;"
+              class="slide-btn left"
+              (click)="previousImage($event)"
+              [disabled]="currentImageIndex === 0"
             >
-              Sepete Ekle
+              &#8249;
+            </button>
+            <button
+              class="slide-btn right"
+              (click)="nextImage($event, product.images.length)"
+              [disabled]="currentImageIndex === product.images.length - 1"
+            >
+              &#8250;
             </button>
           </div>
+
+          <!-- Kart içeriği -->
+          <div class="card-body">
+            <h5 class="card-title">{{ product.productName | uppercase }}</h5>
+            <p class="card-text">{{ product.unitPrice | currency : "₺ " }}</p>
+          </div>
+
+          <button (click)="addToCart($event, product)" class="add-to-cart-btn">
+            +
+          </button>
         </div>
       </div>
-            </div>
-          </div>    
+    </div>
   </tbody>
 </table>

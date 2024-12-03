@@ -1,6 +1,10 @@
-
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
@@ -15,7 +19,6 @@ import { OperationClaimsService } from '../../services/operation-claims.service'
 import { OperationClaim } from '../../models/operationClaims';
 import { forkJoin } from 'rxjs';
 import { FilterService } from '../../services/filter.service';
-
 
 @Component({
   selector: 'app-admin',
@@ -74,10 +77,9 @@ export class AdminComponent implements OnInit {
     // Filtre uygulama fonksiyonunu çağırıyoruz
     this.applyFilters();
     if (Object.keys(this.roleMap).length > 0) {
-      this.roless = Object.values(this.roleMap);  // roleMap'teki değerleri bir diziye aktar
+      this.roless = Object.values(this.roleMap); // roleMap'teki değerleri bir diziye aktar
       this.selectedRole = this.roless[0]; // İlk öğeyi seçili yap
     }
-  
   }
 
   createAdminForm() {
@@ -102,9 +104,9 @@ export class AdminComponent implements OnInit {
 
           // Rolleri ID'lere göre eşliyoruz
           this.roleMap = this.roles.reduce((acc, role) => {
-            acc[role.id] = role.name;  // Her rolün ID'sini adıyla eşliyoruz
+            acc[role.id] = role.name; // Her rolün ID'sini adıyla eşliyoruz
             return acc;
-          }, {} as { [key: number]: string });  // Burada türü belirtiyoruz
+          }, {} as { [key: number]: string }); // Burada türü belirtiyoruz
         } else {
           this.toastrService.error('Roller listelenemedi');
         }
@@ -117,13 +119,12 @@ export class AdminComponent implements OnInit {
 
   getRoleName(roleId: number): string {
     if (this.roleMap[roleId]) {
-      return this.roleMap[roleId];  // Eğer roleId bulunursa, adı döndür
+      return this.roleMap[roleId]; // Eğer roleId bulunursa, adı döndür
     } else {
       const firstRole = Object.values(this.roleMap)[0]; // İlk öğeyi alıyoruz
-      return firstRole || 'Unknown Role';  // Eğer ilk öğe yoksa 'Unknown Role' döndürüyoruz
+      return firstRole || 'Unknown Role'; // Eğer ilk öğe yoksa 'Unknown Role' döndürüyoruz
     }
   }
-  
 
   getUsers() {
     this.userService.getUsersWithRoles().subscribe({
@@ -199,7 +200,8 @@ export class AdminComponent implements OnInit {
   }
 
   resetFilters() {
-    this.filters = {firstname: '',
+    this.filters = {
+      firstname: '',
       lastname: '',
       city: '',
       district: '',
@@ -240,7 +242,6 @@ export class AdminComponent implements OnInit {
 
     this.ililceService.getByIdIl(Number(user.city)).subscribe({
       next: (city: ilModels) => {
-
         // `city.data` bir nesne olduğu için doğrudan erişebilirsiniz
         if (city.data && city.data.iladi) {
           const ilAdi = city.data.iladi; // iladi'yi alıyoruz
@@ -259,10 +260,9 @@ export class AdminComponent implements OnInit {
 
   onRoleClick(event: MouseEvent, role: any): void {
     // Tıklama olayını durdur
-    event.stopPropagation(); 
+    event.stopPropagation();
     // Burada `selectedRole`'ü değiştirmiyoruz, sadece tıklamayı engelliyoruz.
   }
-  
 
   getDistrictNames(user: User) {
     if (!user.district || isNaN(Number(user.district))) {
@@ -271,7 +271,6 @@ export class AdminComponent implements OnInit {
 
     this.ililceService.getByIdIlce(Number(user.district)).subscribe({
       next: (district: ilceModels) => {
-
         // `district.data` bir nesne olduğu için doğrudan erişebilirsiniz
         if (district.data && district.data.ilce) {
           const ilceAdi = district.data.ilce; // ilce'yi alıyoruz
@@ -290,20 +289,29 @@ export class AdminComponent implements OnInit {
 
   // Kullanıcı güncelleme
   updateUser(userId: number) {
-
     this.router.navigate(['/admin-user-update', userId]);
   }
 
   toggleStatus(user: any): void {
     const userID = user.id;
 
-    this.userService.updateUserStatus(userID).subscribe({
-      next: () => {
-        user.status = !user.status;
-        this.toastrService.success(`User status updated successfully.`);
-      },
-      error: () => this.toastrService.error('Failed to update status.'),
-    });
+    if (user.status === true) {
+      this.userService.deleteUser(user.id).subscribe({
+        next: () => {
+          user.status = !user.status;
+          this.toastrService.success('User status updated successfully.');
+        },
+        error: () => this.toastrService.error('Failed to update status.'),
+      });
+    } else {
+      this.userService.activateUser(user.id).subscribe({
+        next: () => {
+          user.status = !user.status;
+          this.toastrService.success('User status updated successfully.');
+        },
+        error: () => this.toastrService.error('Failed to update status.'),
+      });
+    }
   }
 
   sort(column: string) {

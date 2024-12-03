@@ -29,7 +29,7 @@ export class ProductOperationComponent implements OnInit {
   currentImageIndex: { [key: number]: number } = {}; // Her ürünün resim dizini
   sortDirection: boolean = true; // true: ascending, false: descending
   sortKey: string = 'productName'; // Varsayılan sıralama kolon adı
-  sortOrder: string = 'asc';  // Varsayılan sıralama yönü (ascending)
+  sortOrder: string = 'asc'; // Varsayılan sıralama yönü (ascending)
   superCategories: SuperCategoryModel[] = [];
   categories: CategoryModel[] = [];
   colors: Colors[] = [];
@@ -43,7 +43,7 @@ export class ProductOperationComponent implements OnInit {
     color: null,
     category: null,
     superCategory: null,
-    status: null
+    status: null,
   };
   sizes = [
     { id: 'XS', name: 'XS' },
@@ -52,31 +52,33 @@ export class ProductOperationComponent implements OnInit {
     { id: 'L', name: 'L' },
     { id: 'XL', name: 'XL' },
     { id: 'XXL', name: 'XXL' },
-    { id: '3XL', name: '3XL' }
+    { id: '3XL', name: '3XL' },
   ];
 
-  constructor(private productService: ProductService, private toastrService: ToastrService,
+  constructor(
+    private productService: ProductService,
+    private toastrService: ToastrService,
     private superCategoryService: SuperCategoryService,
     private categoryService: CategoryService,
-    private colorService: ColorService,
-  ) { }
+    private colorService: ColorService
+  ) {}
 
   ngOnInit(): void {
     this.productService.getProductDetails().subscribe({
-      next: (data) => {
-        console.log('Gelen Veri:', data);
-        this.productDetails = data;
+      next: (response) => {
+        console.log('Gelen Veri:', response.data);
+        this.productDetails = response.data;
         this.isLoading = false;
 
         // Resim dizini başlatma
-        this.productDetails.forEach(product => {
+        this.productDetails.forEach((product) => {
           this.currentImageIndex[product.productId] = 0; // İlk resim gösterilsin
         });
       },
       error: (error) => {
         this.errorMessage = 'Ürün detayları alınırken bir hata oluştu.';
         this.isLoading = false;
-      }
+      },
     });
     this.loadSuperCategories();
     this.loadColors();
@@ -85,13 +87,13 @@ export class ProductOperationComponent implements OnInit {
   }
 
   loadColors() {
-    this.colorService.getAll().subscribe(response => {
+    this.colorService.getAll().subscribe((response) => {
       this.colors = response.data;
     });
   }
 
   loadSuperCategories() {
-    this.superCategoryService.getAll().subscribe(response => {
+    this.superCategoryService.getAll().subscribe((response) => {
       this.superCategories = response.data;
     });
   }
@@ -99,17 +101,18 @@ export class ProductOperationComponent implements OnInit {
   onSuperCategoryChange(superCategoryId: number) {
     if (superCategoryId) {
       // SuperCategory'ye ait Category'leri al
-      this.categoryService.getBySuperCategoryId(superCategoryId).subscribe(response => {
-        this.categories = response.data;  // Kategorileri güncelle
-        this.filters.category = null;  // Önceki seçili kategoriyi sıfırla
-      });
+      this.categoryService
+        .getBySuperCategoryId(superCategoryId)
+        .subscribe((response) => {
+          this.categories = response.data; // Kategorileri güncelle
+          this.filters.category = null; // Önceki seçili kategoriyi sıfırla
+        });
     } else {
       // Eğer SuperCategory seçilmediyse, kategori listesini temizle
       this.categories = [];
-      this.filters.category = null;  // Kategoriyi sıfırla
+      this.filters.category = null; // Kategoriyi sıfırla
     }
   }
-
 
   onFilterMenuOpen() {
     this.isFilterMenuOpen = true;
@@ -122,13 +125,13 @@ export class ProductOperationComponent implements OnInit {
 
   fetchProducts(): void {
     this.productService.getProductDetails().subscribe({
-      next: (data) => {
-        this.productDetails = data;
+      next: (response) => {
+        this.productDetails = response.data;
         this.filteredProducts = [...this.productDetails];
         this.isLoading = false;
       },
-      error: () => {
-        this.errorMessage = 'Ürün detayları alınamadı.';
+      error: (err) => {
+        this.errorMessage = err.error?.message;
         this.isLoading = false;
       },
     });
@@ -214,37 +217,49 @@ export class ProductOperationComponent implements OnInit {
       color: null,
       category: null,
       superCategory: null,
-      status: null
+      status: null,
     };
   }
 
   // Resim değiştirme fonksiyonu
   nextImage(productId: number): void {
-    const product = this.productDetails.find(p => p.productId === productId);
+    const product = this.productDetails.find((p) => p.productId === productId);
     if (product && product.images.length > 0) {
-      this.currentImageIndex[productId] = (this.currentImageIndex[productId] + 1) % product.images.length;
-    }
-  }
-  
-  // Resim değiştirme işlemi
-  previousImage(productId: number): void {
-    const product = this.productDetails.find(p => p.productId === productId);
-    if (product && product.images.length > 0) {
-      this.currentImageIndex[productId] = (this.currentImageIndex[productId] - 1 + product.images.length) % product.images.length;
+      this.currentImageIndex[productId] =
+        (this.currentImageIndex[productId] + 1) % product.images.length;
     }
   }
 
-  // Ürün durumu güncelleme fonksiyonu
+  // Resim değiştirme işlemi
+  previousImage(productId: number): void {
+    const product = this.productDetails.find((p) => p.productId === productId);
+    if (product && product.images.length > 0) {
+      this.currentImageIndex[productId] =
+        (this.currentImageIndex[productId] - 1 + product.images.length) %
+        product.images.length;
+    }
+  }
+
   toggleStatus(productDetails: any): void {
     const productId = productDetails.productId;
 
-    this.productService.updateProductStatus(productId).subscribe({
-      next: () => {
-        productDetails.status = !productDetails.status;
-        this.toastrService.success('User status updated successfully.');
-      },
-      error: () => this.toastrService.error('Failed to update status.'),
-    });
+    if (productDetails.status === true) {
+      this.productService.deleteProduct(productId).subscribe({
+        next: () => {
+          productDetails.status = !productDetails.status;
+          this.toastrService.success('User status updated successfully.');
+        },
+        error: () => this.toastrService.error('Failed to update status.'),
+      });
+    } else {
+      this.productService.activateProduct(productId).subscribe({
+        next: () => {
+          productDetails.status = !productDetails.status;
+          this.toastrService.success('User status updated successfully.');
+        },
+        error: () => this.toastrService.error('Failed to update status.'),
+      });
+    }
   }
 
   // Sıralama fonksiyonu
@@ -274,11 +289,17 @@ export class ProductOperationComponent implements OnInit {
       }
 
       if (typeof valueA === 'boolean' && typeof valueB === 'boolean') {
-        return (valueA === valueB ? 0 : valueA ? 1 : -1) * (this.sortOrder === 'asc' ? 1 : -1);
+        return (
+          (valueA === valueB ? 0 : valueA ? 1 : -1) *
+          (this.sortOrder === 'asc' ? 1 : -1)
+        );
       }
 
       // String olmayan türler için karşılaştırma yapılır (string[], object vb.)
-      return (valueA < valueB ? -1 : valueA > valueB ? 1 : 0) * (this.sortOrder === 'asc' ? 1 : -1);
+      return (
+        (valueA < valueB ? -1 : valueA > valueB ? 1 : 0) *
+        (this.sortOrder === 'asc' ? 1 : -1)
+      );
     });
   }
 }
