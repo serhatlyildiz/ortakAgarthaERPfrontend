@@ -5,6 +5,7 @@ import { ListResponseModel } from '../models/listResponseModel';
 import { Product } from '../models/product';
 import { ResponseModel } from '../models/responseModel';
 import { ProductDetailDto } from '../models/ProductDetailDto';
+import { ProductFilterModel } from '../models/productfiltermodel';
 
 @Injectable({
   providedIn: 'root',
@@ -50,4 +51,10 @@ export class ProductService {
       this.apiUrl + '/getproductdetails'
     );
   }
+
+  filterProducts(filter: ProductFilterModel): Observable<ListResponseModel<ProductDetailDto>> {
+    let newPath = this.apiUrl + '/filter';
+    return this.httpClient.post<ListResponseModel<ProductDetailDto>>(newPath, filter);
+  }
+  
 }

@@ -16,7 +16,9 @@ export class CategoryService {
     return this.httpClient.get<ListResponseModel<CategoryModel>>(this.apiUrl + "/getall"); 
   }
 
-  getBySuperCategoryId(superCategoryId: number) {
-    return this.httpClient.get<{ data: CategoryModel[] }>(this.apiUrl + '/getbysupercategoryid');
-  }
+  getBySuperCategoryId(superCategoryId: number): Observable<ListResponseModel<CategoryModel>> {
+    return this.httpClient.get<ListResponseModel<CategoryModel>>(
+      `${this.apiUrl}/getbysupercategoryid?superCategoryId=${superCategoryId}`
+    );
+  }  
 }

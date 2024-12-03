@@ -28,7 +28,7 @@
   (hidden.bs.collapse)="onFilterMenuClose()"
 >
   <div class="card card-body">
-    <form (ngSubmit)="applyFilters()">
+    <form (ngSubmit)="applyFilter()">
       <div class="row">
         <!-- Product Name (Text Input) -->
         <div class="col-md-3">
@@ -122,48 +122,52 @@
         </div>
 
         <!-- Color (Combobox) -->
-        <div class="col-md-3">
-          <label
-            for="filterColor"
-            style="font-weight: bold; text-decoration: underline"
-            >Color</label
-          >
-          <select
-            class="form-select"
-            id="filterColor"
-            [(ngModel)]="filters.color"
-            name="color"
-          >
-            <option [value]="null">Select Color</option>
-            <option *ngFor="let color of colors" [value]="color.colorId">
-              {{ color.colorName }}
-            </option>
-          </select>
-        </div>
+<div class="col-md-3">
+  <label for="filterColor" style="font-weight: bold; text-decoration: underline;">Color</label>
+  <select
+    class="form-select"
+    id="filterColor"
+    [(ngModel)]="filters.color"
+    name="color"
+  >
+    <option [value]="null">Select Color</option>
+    <option *ngFor="let color of colors" [value]="color.colorName">{{ color.colorName }}</option>
+  </select>
+</div>
 
-        <!-- Super Category (Combobox) -->
-        <div class="col-md-3">
-          <label
-            for="filterSuperCategory"
-            style="font-weight: bold; text-decoration: underline"
-            >Super Category</label
-          >
-          <select
-            class="form-select"
-            id="filterSuperCategory"
-            [(ngModel)]="filters.superCategory"
-            (change)="onSuperCategoryChange(filters.superCategory)"
-            name="superCategory"
-          >
-            <option [value]="null">Select Super Category</option>
-            <option
-              *ngFor="let superCategory of superCategories"
-              [value]="superCategory.superCategoryId"
-            >
-              {{ superCategory.superCategoryName }}
-            </option>
-          </select>
-        </div>
+ <!-- Super Category (Combobox) -->
+<div class="col-md-3">
+  <label for="filterSuperCategory" style="font-weight: bold; text-decoration: underline;">Super Category</label>
+  <select
+    class="form-select"
+    id="filterSuperCategory"
+    [(ngModel)]="filters.superCategory"
+    (change)="onSuperCategoryChange(filters.superCategory)"
+    name="superCategory"
+  >
+    <option [value]="null">Select Super Category</option>
+    <option *ngFor="let superCategory of superCategories" [value]="superCategory.superCategoryId">
+      {{ superCategory.superCategoryName }}
+    </option>
+  </select>
+</div>
+
+<!-- Category (Combobox) -->
+<div class="col-md-3">
+  <label for="filterCategory" style="font-weight: bold; text-decoration: underline;">Category</label>
+  <select
+    class="form-select"
+    id="filterCategory"
+    [(ngModel)]="filters.category"
+    name="category"
+   
+  >
+    <option [value]="null">Select Category</option>
+    <option *ngFor="let category of categories" [value]="category.categoryName">
+      {{ category.categoryName }}
+    </option>
+  </select>
+</div>
 
         <!-- Category (Combobox) -->
         <div class="col-md-3">
