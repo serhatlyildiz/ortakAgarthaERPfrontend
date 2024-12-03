@@ -20,10 +20,9 @@ export class ProductService {
 
   getProductsByCategory(
     categoryId: number
-  ): Observable<ListResponseModel<Product>> {
-    let newPath =
-      this.apiUrl + '/getBycategory?categoryId=' + categoryId;
-    return this.httpClient.get<ListResponseModel<Product>>(newPath);
+  ): Observable<ListResponseModel<ProductDetailDto>> {
+    let newPath = this.apiUrl + '/getBycategory?categoryId=' + categoryId;
+    return this.httpClient.get<ListResponseModel<ProductDetailDto>>(newPath);
   }
 
   add(product: Product): Observable<ResponseModel> {
@@ -36,12 +35,19 @@ export class ProductService {
     );
   }
 
-  updateProductStatus(productId: number): Observable<any> {
+  deleteProduct(productId: number): Observable<ResponseModel> {
     let newPath = this.apiUrl + '/delete?productID=' + productId;
-    return this.httpClient.get<any>(newPath);
+    return this.httpClient.get<ResponseModel>(newPath);
   }
 
-  getProductDetails(): Observable<ProductDetailDto[]> {
-    return this.httpClient.get<ProductDetailDto[]>(this.apiUrl + '/getproductdetails');
+  activateProduct(productId:number): Observable<ResponseModel>{
+    let newPath = this.apiUrl + "/restore?productID=" + productId;
+    return this.httpClient.get<ResponseModel>(newPath)
+  }
+
+  getProductDetails(): Observable<ListResponseModel<ProductDetailDto>> {
+    return this.httpClient.get<ListResponseModel<ProductDetailDto>>(
+      this.apiUrl + '/getproductdetails'
+    );
   }
 }

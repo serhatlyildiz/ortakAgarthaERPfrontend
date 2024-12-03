@@ -28,6 +28,7 @@ export class ProductComponent implements OnInit {
   sortOrder: 'asc' | 'desc' = 'asc';
   productIdForDetailPage: number;
   hoveredProductId: number | null = null;
+  currentImageIndex: number = 0;
 
   @ViewChild('buttonElement') buttonElement!: ElementRef;
   @ViewChild('tooltipElement') tooltipElement!: ElementRef;
@@ -91,8 +92,8 @@ export class ProductComponent implements OnInit {
   }
 
   getProducts() {
-    this.productService.getProducts().subscribe((response) => {
-      console.log('ürünler:', response.data)
+    this.productService.getProductDetails().subscribe((response) => {
+      console.log('ürünler:', response.data);
       this.products = response.data;
       this.dataLoaded = true;
     });
@@ -155,24 +156,20 @@ export class ProductComponent implements OnInit {
     );
   }
 
-  toggleStatus(product: any): void {
-    const productId = product.id; // Kullanıcı ID'sini al
-
-    // Durum güncellemesi API çağrısı
-    this.productService.updateProductStatus(productId).subscribe({
-      next: (response) => {
-        product.status = !product.status; // Durumu tersine çevir
-        const statusMessage = product.status ? 'Aktif edildi' : 'Silindi';
-        this.toastrService.success(`Kullanıcı başarıyla ${statusMessage}.`);
-        console.log('Kullanıcı durumu güncellendi:', response);
-      },
-      error: (err) => {
-        console.error('Durum güncellemesi başarısız:', err);
-        this.toastrService.error('Durum güncelleme işlemi başarısız.');
-      },
-    });
+  previousImage(event: Event) {
+    event.stopPropagation(); // Olayın yukarı iletilmesini durdur
+    if (this.currentImageIndex > 0) {
+      this.currentImageIndex--;
+    }
   }
 
+  // Bir sonraki resme geçiş
+  nextImage(event: Event, imageCount: number) {
+    event.stopPropagation(); // Olayın yukarı iletilmesini durdur
+    if (this.currentImageIndex < imageCount - 1) {
+      this.currentImageIndex++;
+    }
+  }
   // applyFilters(filters: any) {
   //   if (filters.category) {
   //     this.selectedCategory = filters.category;

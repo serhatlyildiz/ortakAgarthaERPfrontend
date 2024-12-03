@@ -1,83 +1,173 @@
 .tooltip {
-    background-color: black;
-    color: white;
-    padding: 5px;
-    border-radius: 4px;
-    display: none; /* Başlangıçta gizli */
-  }
-  
-  button:hover + .tooltip {
-    display: block;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th,
-  td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  th {
-    background-color: #f4f4f4;
-    cursor: pointer;
-  }
-  
-  th button {
-    background: none;
-    border: none;
-    color: #333;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 0;
-  }
-  
-  th button:hover {
-    text-decoration: underline;
-  }
-  
-  th span {
-    margin-left: 5px;
-  }
-  
-  th {
-    cursor: pointer;
-    padding: 10px;
-    text-align: left;
-    background-color: #f4f4f4;
-    border: 1px solid #ddd;
-    position: relative;
-    transition: background-color 0.2s ease;
-  }
-  
-  th:hover {
-    background-color: #e0e0e0;
-  }
-  
-  th span {
-    margin-left: 10px;
-  }
-  
-  tbody td {
-    padding: 10px;
-    border: 1px solid #ddd;
-  }
-  
-  .card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-  }
-  
-  .card:hover {
-    transform: translateY(-10px);
-  }
+  background-color: black;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  display: none; /* Başlangıçta gizli */
+}
 
-  .btn-success {
-    transition: opacity 0.3s ease-in-out;
-  }
-  
-  
+button:hover + .tooltip {
+  display: block;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+
+th button {
+  background: none;
+  border: none;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+}
+
+th button:hover {
+  text-decoration: underline;
+}
+
+th span {
+  margin-left: 5px;
+}
+
+th {
+  cursor: pointer;
+  padding: 10px;
+  text-align: left;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+th:hover {
+  background-color: #e0e0e0;
+}
+
+th span {
+  margin-left: 10px;
+}
+
+tbody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+/* Ana kart stilleri */
+.card {
+  position: relative;
+  width: 18rem; /* Kart genişliği */
+  height: 28rem; /* Kart yüksekliği */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Kart üzerine gelindiğinde */
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 4px 10px rgba(255, 0, 0, 0.5); /* Kırmızı gölge */
+}
+
+/* Resimlerin sabitlenmesi */
+.card img {
+  width: 100%; /* Resmi yatay olarak karta sığdır */
+  height: 60%; /* Resmi dikey olarak karta sığdır */
+  object-fit: cover; /* Resmin içinde düzgün bir şekilde sığmasını sağlar */
+  border-bottom: 1px solid #ddd; /* Görsel ayrımı için */
+}
+
+/* Kartın içeriği */
+.card-body {
+  padding: 10px;
+  text-align: center;
+}
+
+/* Artı butonu stili */
+.card .add-to-cart-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: transparent;
+  color: red;
+  border: 2px solid red;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Buton üzerine gelindiğinde */
+.card .add-to-cart-btn:hover {
+  background-color: red;
+  color: white;
+  transform: scale(1.1);
+}
+
+
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 60%; /* Resim alanı */
+  overflow: hidden;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Sağ ve sol butonlar */
+.slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.slide-btn.left {
+  left: 10px;
+}
+
+.slide-btn.right {
+  right: 10px;
+}
+
+.slide-btn:hover {
+  background-color: rgba(255, 0, 0, 0.7);
+}
+
+.slide-btn:disabled {
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: not-allowed;
+}
