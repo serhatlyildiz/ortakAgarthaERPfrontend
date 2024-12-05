@@ -3,16 +3,18 @@ import { LoginModule } from '../models/loginModel';
 import { HttpClient } from '@angular/common/http';
 import { TokenModel } from '../models/tokenModel';
 import { SingleResponseModel } from '../models/singleResponseModel';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { Router } from '@angular/router';
 import { ResponseModel } from '../models/responseModel';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { TokenInfo } from '../models/tokenInfo';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   apiUrl = 'http://localhost:5038/api/auth/';
+  user: TokenInfo;
 
   constructor(private httpClient: HttpClient, private router: Router) {}
 
@@ -71,6 +73,29 @@ export class AuthService {
       return roles.some((role) => userRoles.includes(role));
     }
     return false;
+  }
+
+  getTokenInfo(): TokenInfo {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      this.user.userId =
+        decodedToken[
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+        ];
+      this.user.email = decodedToken['email'];
+      this.user.name =
+        decodedToken[
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
+        ];
+      this.user.roles =
+        decodedToken[
+          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+        ] || [];
+      return this.user;
+    } else {
+      return null;
+    }
   }
 
   // Token süresi dolduğunda çıkış yapma işlemi
