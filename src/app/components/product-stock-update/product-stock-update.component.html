@@ -1,4 +1,13 @@
-<form class="row g-3">
+<base href="/">
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+
+<div *ngIf="!isLoading">
+  <form class="row g-3">
     <!-- Ürün Adı -->
     <div class="col-md-3">
       <label for="productName" class="form-label">Ürün Adı</label>
@@ -12,10 +21,10 @@
         required
       />
     </div>
-  
+
     <!-- Super Kategori -->
     <div class="col-md-3">
-      <label for="superCategoryName" class="form-label">Üst Kategori</label>
+      <label for="superCategoryName" class="form-label">Cinsiyet Kategori</label>
       <select
         id="superCategoryName"
         class="form-select"
@@ -24,30 +33,30 @@
         name="superCategoryName"
         required
       >
-        <option selected disabled>Üst Kategori seçiniz...</option>
+        <option disabled>Üst Kategori seçiniz...</option>
         <option *ngFor="let superCategory of superCategories" [value]="superCategory.superCategoryId">
           {{ superCategory.superCategoryName }}
         </option>
       </select>
     </div>
-  
+
     <!-- Kategori -->
     <div class="col-md-3">
       <label for="categoryName" class="form-label">Kategori</label>
       <select
         id="categoryName"
         class="form-select"
-        [(ngModel)]="productDetail.categoryName"
+        [(ngModel)]="productDetail.categoryId"
         name="categoryName"
         required
       >
-        <option selected disabled>Kategori seçiniz...</option>
-        <option *ngFor="let category of categories" [value]="category.categoryName">
+        <option disabled>Kategori seçiniz...</option>
+        <option *ngFor="let category of categories" [value]="category.categoryId">
           {{ category.categoryName }}
         </option>
       </select>
     </div>
-  
+
     <!-- Fiyat -->
     <div class="col-md-3">
       <label for="unitPrice" class="form-label">Fiyat ₺</label>
@@ -61,7 +70,7 @@
         required
       />
     </div>
-  
+
     <!-- Ürün Açıklaması -->
     <div class="col-12">
       <label for="productDescription" class="form-label">Ürün Açıklaması</label>
@@ -74,9 +83,9 @@
         placeholder="Ürün açıklaması giriniz"
       ></textarea>
     </div>
-  
+
     <!-- Stok -->
-    <div class="col-md-3">
+    <div class="col-md-4">
       <label for="unitsInStock" class="form-label">Stok</label>
       <input
         type="number"
@@ -88,26 +97,26 @@
         required
       />
     </div>
-  
+
     <!-- Renk -->
-    <div class="col-md-3">
+    <div class="col-md-4">
       <label for="colorName" class="form-label">Renk</label>
       <select
         id="colorName"
         class="form-select"
-        [(ngModel)]="productDetail.colorName"
+        [(ngModel)]="productDetail.colorId"
         name="colorName"
         required
       >
-        <option selected disabled>Renk seçiniz...</option>
+        <option disabled>Renk seçiniz...</option>
         <option *ngFor="let color of colors" [value]="color.colorId">
           {{ color.colorName }}
         </option>
       </select>
     </div>
-  
+
     <!-- Ürün Boyutu -->
-    <div class="col-md-3">
+    <div class="col-md-4">
       <label for="filterSize" class="form-label">Size</label>
       <select
         class="form-select"
@@ -119,55 +128,48 @@
         <option *ngFor="let size of sizes" [value]="size.id">{{ size.name }}</option>
       </select>
     </div>
-  
-    <!-- Durum -->
-    <div class="col-3">
-      <label class="form-label">Durum</label>
-      <div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="statusActive"
-            name="status"
-            [(ngModel)]="productDetail.status"
-            [value]="true"
-          />
-          <label class="form-check-label" for="statusActive">Aktif</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="statusInactive"
-            name="status"
-            [(ngModel)]="productDetail.status"
-            [value]="false"
-          />
-          <label class="form-check-label" for="statusInactive">Pasif</label>
-        </div>
-      </div>
-    </div>
-  
-    <!-- Fotoğraflar -->
+
     <div class="col-12">
-      <label class="form-label">Fotoğraflar</label>
-      <ul>
-        <li *ngFor="let image of productDetail.images">{{ image }}</li>
+      <label class="form-label">Fotoğraflar</label>&nbsp;
+      <!-- Fotoğraf Ekle Butonu -->
+      <button class="add-photo-btn" (click)="addPhoto()">+</button>
+    
+      <!-- Ana Fotoğraf başlığı ve logo -->
+      <div class="main-photo-header">
+        <img src="assets/icons/star.png" alt="Star Icon" class="star-icon">
+      </div>
+    
+      <ul class="image-list">
+        <li *ngFor="let image of productDetail.images" class="image-item">
+          <div class="image-container">
+            <img [src]="image" alt="Product Image" class="product-image">
+          </div>
+          <!-- Fotoğrafı Sil Butonu -->
+          <button class="delete-photo-btn" (click)="deletePhoto(image)">Fotoğrafı Sil</button>
+        </li>
       </ul>
     </div>
-  
+
+    <input type="file" (change)="onFileSelected($event)" style="display: none" #fileInput />
+    
+    
+    
+    
+    
+    
+
+
     <!-- Butonlar -->
     <div class="row">
       <div class="col-4 text-start">
         <button type="submit" class="btn btn-primary">Kaydet</button>
       </div>
       <div class="col-4 text-center">
-        <button type="button" class="btn btn-secondary">Temizle</button>
+        <button type="button" class="btn btn-secondary" (click)="resetForm()">Temizle</button>
       </div>
       <div class="col-4 text-end">
-        <button type="button" class="btn btn-danger">Geri</button>
+        <button type="button" class="btn btn-danger" (click)="cancelUpdate()">Geri</button>
       </div>
     </div>
   </form>
-  
+</div>

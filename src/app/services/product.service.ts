@@ -51,6 +51,12 @@ export class ProductService {
       this.apiUrl + '/getproductdetails'
     );
   }
+
+  getByProductDetails(productStockId: number): Observable<any> {
+    return this.httpClient.get(
+      this.apiUrl + '/getproductstockdetails?productStockId='+productStockId
+    );
+  }
   
   filterProducts(filters: any): Observable<ListResponseModel<ProductDetailDto>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
