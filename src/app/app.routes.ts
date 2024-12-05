@@ -15,6 +15,7 @@ import { AdminUserUpdateComponent } from './components/admin-user-update/admin-u
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { ProductOperationComponent } from './components/product-operation/product-operation.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
+import { ProductStockUpdateComponent } from './components/product-stock-update/product-stock-update.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: ProductComponent },
@@ -33,6 +34,7 @@ export const routes: Routes = [
   { path: 'product-detail/:id', component: ProductDetailComponent},
   { path: 'product-operations', component: ProductOperationComponent},
   { path: 'password-reset', component: PasswordResetComponent },
+  { path: 'product-stock-update/:productStockId', component: ProductStockUpdateComponent},
 ];
 
 @NgModule({
