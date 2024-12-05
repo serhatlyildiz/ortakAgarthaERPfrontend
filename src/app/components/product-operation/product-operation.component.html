@@ -179,6 +179,18 @@
             {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
+        <th (click)="sort('superCategoryName')">
+          Cinsiyet Kategori
+          <span *ngIf="sortColumn === 'superCategoryName'">
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+          </span>
+        </th>
+        <th (click)="sort('categoryName')">
+          Kategori
+          <span *ngIf="sortColumn === 'categoryName'">
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+          </span>
+        </th>
         <th (click)="sort('unitPrice')">
           Fiyat
           <span *ngIf="sortColumn === 'unitPrice'">
@@ -203,18 +215,6 @@
             {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
-        <th (click)="sort('categoryName')">
-          Kategori
-          <span *ngIf="sortColumn === 'categoryName'">
-            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-          </span>
-        </th>
-        <th (click)="sort('superCategoryName')">
-          Süper Kategori
-          <span *ngIf="sortColumn === 'superCategoryName'">
-            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-          </span>
-        </th>
         <th>Resimler</th>
         <th>Actions</th>
       </tr>
@@ -228,12 +228,12 @@
       >
         <td>{{ product.productName }}</td>
         <td>{{ product.productDescription }}</td>
+        <td>{{ product.superCategoryName }}</td>
+        <td>{{ product.categoryName }}</td>
         <td>{{ product.unitPrice | currency : "₺ " }}</td>
         <td>{{ product.unitsInStock }}</td>
         <td>{{ product.productSize }}</td>
-        <td>{{ product.colorName }}</td>
-        <td>{{ product.categoryName }}</td>
-        <td>{{ product.superCategoryName }}</td>
+        <td>{{ product.colorName }}</td>  
         <td>
           <div class="image-container">
             <img
@@ -254,9 +254,7 @@
           <div class="button-group">
             <button
               class="compact-btn btn-update"
-              (click)="updateProduct(product.productStockId)"
-              [disabled]="product.status === false"
-            >
+              (click)="updateProduct(product.productStockId)">
               Güncelle
             </button>
             <button

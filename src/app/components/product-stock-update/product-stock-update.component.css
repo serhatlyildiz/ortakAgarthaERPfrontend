@@ -1,0 +1,97 @@
+.loading-container {
+    position: fixed; /* Ekranın sabit bir noktasına yerleşmesi için */
+    top: 0;
+    left: 0;
+    width: 100%; /* Ekranın tamamını kapla */
+    height: 100%; /* Ekranın tamamını kapla */
+    display: flex;
+    justify-content: center; /* Yatayda ortala */
+    align-items: center; /* Dikeyde ortala */
+    background-color: rgba(255, 255, 255, 0.5); /* Sayfa arka planını geçici olarak beyazlaştır */
+    z-index: 9999; /* Spinner'ın üstte olmasını sağla */
+  }
+  
+  .image-list {
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    justify-content: flex-start;
+  }
+  
+  .image-list {
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    justify-content: flex-start;
+  }
+  
+  .image-item {
+    margin: 10px;
+    text-align: center; /* Fotoğraf ve butonları ortalamak için */
+  }
+  
+  .product-image {
+    width: 200px; /* Fotoğrafların genişliği */
+    height: 200px; /* Fotoğrafların yüksekliği */
+    object-fit: cover; /* Oranlı büyütme ve kesme yapar */
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .image-container {
+    margin-bottom: 10px; /* Fotoğraf ile buton arasında boşluk bırakır */
+  }
+
+  /* Fotoğraf Ekle Butonu */
+.add-photo-btn {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 25px;
+    text-align: center;
+    line-height: 35px;
+    margin-bottom: 15px;
+    cursor: pointer;
+  }
+  
+  .add-photo-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Fotoğrafı Sil Butonu */
+  .delete-photo-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .delete-photo-btn:hover {
+    background-color: #c82333;
+  }
+
+  .main-photo-header {
+    margin-top: 10px; /* Fotoğraflar kısmı ile arasına boşluk ekler */
+    display: flex;
+    align-items: center; /* Başlık ve yıldızı hizalar */
+    margin-left: 10px; /* Başlık kısmını biraz sağa kaydırır */
+  }
+  
+  .star-icon {
+    width: 25px; /* Yıldız ikonu boyutunu ayarlıyoruz */
+    height: 25px; 
+    margin-left: 88px; /* Yıldız ile yazı arasına boşluk bırakıyoruz */
+  }
+  
+  
