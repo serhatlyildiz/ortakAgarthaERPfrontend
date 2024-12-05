@@ -24,8 +24,8 @@ import { ProductDetailComponent } from './app/components/product-detail/product-
 import { ProductOperationComponent } from './app/components/product-operation/product-operation.component';
 import { PasswordResetComponent } from './app/components/password-reset/password-reset.component';
 import { CartSummaryComponent } from './app/components/cart-summary/cart-summary.component';
+import { ProductStockUpdateComponent } from './app/components/product-stock-update/product-stock-update.component';
 
-// Rota yapılandırması
 const routes: Routes = [
   { path: '', component: ProductComponent },
   { path: 'products', component: ProductComponent },
@@ -44,6 +44,7 @@ const routes: Routes = [
   { path: 'product-operations', component: ProductOperationComponent },
   { path: 'password-reset', component: PasswordResetComponent },
   { path: 'cart-summary', component: CartSummaryComponent },
+  { path: 'product-stock-update/:productStockId', component: ProductStockUpdateComponent},
 ];
 
 bootstrapApplication(AppComponent, {

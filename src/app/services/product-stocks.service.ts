@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ListResponseModel } from '../models/listResponseModel';
 import { ProductStocks } from '../models/productStocks';
+import { ResponseModel } from '../models/responseModel';
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +33,8 @@ export class ProductStocksService {
     return this.http.get<ListResponseModel<ProductStocks>>(newPath);
   }
 
-
+  deleteProductStock(productIdStockId: number): Observable<ResponseModel> {
+    let newPath = this.apiUrl + '/delete?productStockId=' + productIdStockId;
+    return this.http.get<ResponseModel>(newPath);
+  }
 }
