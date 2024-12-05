@@ -110,34 +110,6 @@ export class ProductComponent implements OnInit {
       });
   }
 
-  addToCart(product: Product): void {
-    if (this.authService.isAuthenticated()) {
-      // Kullanıcı giriş yapmışsa
-      const userId = this.authService.getUsername(); // Kullanıcı kimliğini almak için bir metod
-      this.cartService.addToDatabaseCart(userId, product.productId).subscribe({
-        next: () => {
-          this.toastrService.success(
-            `${product.productName} sepete eklendi.`,
-            'Başarılı'
-          );
-        },
-        error: (err) => {
-          this.toastrService.error(
-            'Ürün sepete eklenirken bir hata oluştu.',
-            'Hata'
-          );
-        },
-      });
-    } else {
-      // Kullanıcı giriş yapmamışsa
-      this.cartService.addToLocalStorageCart(product);
-      this.toastrService.success(
-        `${product.productName} sepete eklendi.`,
-        'Başarılı'
-      );
-    }
-  }
-
   sort(column: string) {
     if (this.sortColumn === column) {
       // Aynı kolona basılmışsa sıralama yönünü değiştir

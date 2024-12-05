@@ -47,13 +47,13 @@
             </ul>
           </li>
           <li class="active"><a href="contact.html">Contact</a></li>
-          <li class="has-children active" *ngIf="!authService.isAuthenticated()">
+          <li class="has-children active" *ngIf="!isAuthenticated()">
             <a (click)="login()">Giriş Yap</a>
             <ul class="dropdown">
               <li><a (click)="register()">Kayıt Ol</a></li>
             </ul>
           </li>
-          <li class="has-children active" *ngIf="authService.isAuthenticated()">
+          <li class="has-children active" *ngIf="isAuthenticated()">
             <a>{{ username }}</a>
             <ul class="dropdown">
               <li><a (click)="logout()">Çıkış Yap</a></li>
@@ -65,7 +65,7 @@
         </nav>
       </div>
       <div class="icons">        
-        <a href="cart.html" class="icons-btn d-inline-block bag">
+        <a (click)="goToCart()" class="icons-btn d-inline-block bag">
           <span class="icon-shopping-bag"></span>
           <span class="number">{{ cartItemCount }}</span>
         </a>

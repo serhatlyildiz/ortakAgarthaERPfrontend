@@ -12,3 +12,4 @@ export interface ProductDetailDto {
     images: string[];
     status: boolean;
   }
+

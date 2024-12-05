@@ -1,6 +1,6 @@
-import { Product } from "./product";
+import { ProductDetailDto } from './ProductDetailDto';
 
-export class CartItem{
-    product:Product;
-    quantity:number;
+export interface CartItem {
+  product: ProductDetailDto;
+  quantity: number;
 }

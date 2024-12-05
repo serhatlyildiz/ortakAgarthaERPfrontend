@@ -3,114 +3,96 @@ import { Product } from '../models/product';
 import { CartItems } from '../models/cartItems';
 import { CartItem } from '../models/cartItem';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { jwtDecode } from 'jwt-decode';
+import { ProductDetailDto } from '../models/ProductDetailDto';
+import { ListResponseModel } from '../models/listResponseModel';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
+  // private cartItems: CartItem[] = [];
+  // private cartItemCount = new BehaviorSubject<number>(0);
+  // private apiUrl = 'http://localhost:5038/api/cart/';
 
-  private cartItems: Product[] = [];
-  private cartItemCount = new BehaviorSubject<number>(0);
-  private apiUrl = 'http://localhost:5038/api/cart/';
+  // constructor(
+  //   private httpClient: HttpClient,
+  //   private authService: AuthService
+  // ) {
+  //   this.loadCart();
+  // }
 
-  constructor(
-    private httpClient: HttpClient,
-    private authService: AuthService
-  ) {}
+  // private loadCart(): void {
+  //   const userInfo = this.authService.getTokenInfo();
+  //   if (userInfo) {
+  //     //this.fetchCartFromApi(userInfo.userId);
+  //   } else {
+  //     this.loadCartFromLocalStorage();
+  //   }
+  // }
 
-  addToCart(product: Product) {
-    const isAuthenticated = this.authService.isAuthenticated();
+  // //daha başlamadı
+  // // private fetchCartFromApi(userId: number): void {
+  // //   this.httpClient
+  // //     .get<ListResponseModel<CartItem>>(this.apiUrl + , { headers })
+  // //     .subscribe((response) => {
+  // //       if (response.success) {
+  // //         this.cartItems = response.data;
+  // //         this.updateCartItemCount();
+  // //       }
+  // //     });
+  // // }
 
-    if (isAuthenticated) {
-      // Kullanıcı giriş yapmış, veritabanına ekle
-      const userId = this.getUserId();
-      if (userId) {
-        const cartData = {
-          userId: userId,
-          productId: product.productId,
-        };
-        this.httpClient.post(this.apiUrl + "add-to-cart", cartData).subscribe({
-          next: () => {
-            console.log('Ürün veritabanına başarıyla eklendi.');
-          },
-          error: (err) => {
-            console.error('Ürün eklenirken bir hata oluştu:', err);
-          },
-        });
-      }
-    } else {
-      // Kullanıcı giriş yapmamış, localStorage'ye ekle
-      let item = this.cartItems.find((c) => c.productId === product.productId);
-      if (item) {
-        // Ürün zaten localStorage'de, sadece miktarı arttır
-        item['Quantity'] = (item['Quantity'] || 1) + 1;
-      } else {
-        // Yeni bir ürün ekle
-        this.cartItems.push(product);
-        this.updateCartItemCount();
-      }
-      localStorage.setItem('cart', JSON.stringify(this.cartItems));
-    }
-  }
+  // private loadCartFromLocalStorage(): void {
+  //   const savedCart = localStorage.getItem('cart');
+  //   if (savedCart) {
+  //     this.cartItems = JSON.parse(savedCart);
+  //     this.updateCartItemCount();
+  //   }
+  // }
 
-  removeFromCart(product: Product) {
-    const itemIndex = this.cartItems.findIndex(
-      (c) => c.productId === product.productId
-    );
-    if (itemIndex !== -1) {
-      this.cartItems.splice(itemIndex, 1);
-      this.updateCartItemCount();
-      localStorage.setItem('cart', JSON.stringify(this.cartItems));
-    }
-  }
+  // private updateCartItemCount(): void {
+  //   this.cartItemCount.next(this.cartItems.length);
+  // }
 
-  list(): Product[] {
-    const cartFromStorage = localStorage.getItem('cart');
-    if (cartFromStorage) {
-      this.cartItems = JSON.parse(cartFromStorage);
-    }
-    return this.cartItems;
-  }
+  // // // Sepete ürün eklemek için
+  // // addToCart(product: CartItem): void {
+  // //   this.cartItems.push(product);
+  // //   this.updateCartItemCount();
+  // //   this.saveCart();
+  // // }
 
-  getCartItemCount() {
-    return this.cartItemCount.asObservable();
-  }
+  // // // Sepeti güncellemek için
+  // // updateCart(updatedCart: CartItem[]): void {
+  // //   this.cartItems = updatedCart;
+  // //   this.updateCartItemCount();
+  // //   this.saveCart();
+  // // }
 
-  private updateCartItemCount() {
-    this.cartItemCount.next(this.cartItems.length);
-  }
+  // // Sepeti API'ye kaydetmek için
+  // private saveCart(productId: number): void {
+  //   const userId = this.authService.getTokenInfo().userId;
 
-  private getUserId(): number | null {
-    // Kullanıcı ID'sini token'dan çözümleyerek al
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedToken: any = jwtDecode(token);
-      return decodedToken[
-        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
-      ];
-    }
-    return null;
-  }
+  //   if (userId) {
+  //     this.httpClient
+  //       .post(this.apiUrl + 'add-to-cart', { userId, productId })
+  //       .subscribe((response) => {
+  //         console.log(response);
+  //       });
+  //   } else {
+  //     localStorage.setItem('cart', JSON.stringify(this.cartItems));
+  //   }
+  // }
 
-  addToDatabaseCart(userId: string, productId: number): Observable<any> {
-    const url = 'http://localhost:5038/api/Cart/add-to-cart';
-    return this.httpClient.post(url, { userId, productId });
-  }
-  
-  addToLocalStorageCart(product: Product): void {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existingProduct = cart.find((item: any) => item.productId === product.productId);
-  
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      cart.push({ ...product, quantity: 1 });
-    }
-  
-    localStorage.setItem('cart', JSON.stringify(cart));
-    this.updateCartItemCount();
-  }
+  // // Sepet öğelerini al
+  // getCartItems(): CartItem[] {
+  //   return this.cartItems;
+  // }
+
+  // // Sepet öğesi sayısını al
+  // getCartItemCount(): BehaviorSubject<number> {
+  //   return this.cartItemCount;
+  // }
 }
