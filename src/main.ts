@@ -23,6 +23,7 @@ import { AdminUserUpdateComponent } from './app/components/admin-user-update/adm
 import { ProductDetailComponent } from './app/components/product-detail/product-detail.component';
 import { ProductOperationComponent } from './app/components/product-operation/product-operation.component';
 import { PasswordResetComponent } from './app/components/password-reset/password-reset.component';
+import { ProductStockUpdateComponent } from './app/components/product-stock-update/product-stock-update.component';
 
 // Rota yapılandırması
 const routes: Routes = [
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'product-detail/:id', component: ProductDetailComponent},
   { path: 'product-operations', component: ProductOperationComponent},
   { path: 'password-reset', component: PasswordResetComponent },
+  { path: 'product-stock-update/:productStockId', component: ProductStockUpdateComponent},
 ];
 
 bootstrapApplication(AppComponent, {

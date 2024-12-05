@@ -1,4 +1,5 @@
 export interface ProductDetailDto {
+    productStockId: number;
     productId: number;
     productName: string;
     superCategoryName: string;

@@ -79,83 +79,87 @@
         ></textarea>
       </div>
 
-      <!-- Cinsiyet -->
-      <div class="form-group">
-        <label>Cinsiyet:</label>
-        <div class="radio-group">
-          <input
-            type="radio"
-            id="Erkek"
-            name="cinsiyet"
-            [(ngModel)]="user.cinsiyet"
-            value="Erkek"
-          />
-          <label for="Erkek">Erkek</label>
-          <input
-            type="radio"
-            id="Kadın"
-            name="cinsiyet"
-            [(ngModel)]="user.cinsiyet"
-            value="Kadın"
-          />
-          <label for="Kadın">Kadın</label>
+      <div class="form-row">
+        <!-- Cinsiyet -->
+        <div class="form-group">
+          <label>Cinsiyet:</label>
+          <div class="radio-group">
+            <input
+              type="radio"
+              id="Erkek"
+              name="cinsiyet"
+              [(ngModel)]="user.cinsiyet"
+              value="Erkek"
+            />
+            <label for="Erkek">Erkek</label>
+            <input
+              type="radio"
+              id="Kadın"
+              name="cinsiyet"
+              [(ngModel)]="user.cinsiyet"
+              value="Kadın"
+            />
+            <label for="Kadın">Kadın</label>
+          </div>
         </div>
-      </div>
-
-      <!-- Durum -->
-      <div class="form-group">
-        <label>Durum:</label>
-        <div class="radio-group">
-          <input
-            type="radio"
-            id="active"
-            name="status"
-            [(ngModel)]="user.status"
-            [value]="true"
-          />
-          <label for="active">Aktif</label>
-          <input
-            type="radio"
-            id="inactive"
-            name="status"
-            [(ngModel)]="user.status"
-            [value]="false"
-          />
-          <label for="inactive">Pasif</label>
+      
+        <!-- Durum -->
+        <div class="form-group">
+          <label>Durum:</label>
+          <div class="radio-group">
+            <input
+              type="radio"
+              id="active"
+              name="status"
+              [(ngModel)]="user.status"
+              [value]="true"
+            />
+            <label for="active">Aktif</label>
+            <input
+              type="radio"
+              id="inactive"
+              name="status"
+              [(ngModel)]="user.status"
+              [value]="false"
+            />
+            <label for="inactive">Pasif</label>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="rolesDropdown">Roller:</label>
-        <div class="dropdown">
-          <button
-            class="dropdown-toggle"
-            type="button"
-            (click)="toggleDropdown()"
-            id="rolesDropdown"
-          >
-            Roller Seçin
-          </button>
-          <div
-            class="dropdown-menu"
-            [class.show]="dropdownOpen"
-            *ngIf="dataLoaded"
-          >
-            <div
-              *ngFor="let role of roles; let i = index"
-              class="dropdown-item"
+        <div class="form-group">
+          <label for="rolesDropdown">Roller:</label>
+          <div class="dropdown">
+            <button
+              class="dropdown-toggle"
+              type="button"
+              (click)="toggleDropdown()"
+              id="rolesDropdown"
             >
-              <label [for]="'role-' + i">{{ role.name }}</label>
-              <input
-                type="checkbox"
-                [id]="'role-' + i"
-                [(ngModel)]="roles[i].selected"
-                [name]="'role-' + i"
-              />
+              Roller Seçin
+            </button>
+            <div
+              class="dropdown-menu"
+              [class.show]="dropdownOpen"
+              *ngIf="dataLoaded"
+            >
+              <div
+                *ngFor="let role of roles; let i = index"
+                class="dropdown-item"
+              >
+                <label [for]="'role-' + i">{{ role.name }}</label>
+                <input
+                  type="checkbox"
+                  [id]="'role-' + i"
+                  [(ngModel)]="roles[i].selected"
+                  [name]="'role-' + i"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      
 
       <!-- Butonlar -->
       <div class="buttons">

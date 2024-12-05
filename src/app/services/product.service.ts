@@ -51,10 +51,18 @@ export class ProductService {
       this.apiUrl + '/getproductdetails'
     );
   }
-
-  filterProducts(filter: ProductFilterModel): Observable<ListResponseModel<ProductDetailDto>> {
-    let newPath = this.apiUrl + '/filter';
-    return this.httpClient.post<ListResponseModel<ProductDetailDto>>(newPath, filter);
-  }
   
+  filterProducts(filters: any): Observable<ListResponseModel<ProductDetailDto>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.httpClient.post<ListResponseModel<ProductDetailDto>>(`${this.apiUrl}/filter`, filters, { headers });
+  }
+    
+  /*
+  filterProducts(filters: any): Observable<ListResponseModel<ProductDetailDto>> {
+    return this.httpClient.post<ListResponseModel<ProductDetailDto>>(
+      'http://localhost:5038/api/products/filters',
+      filters
+    );
+  }
+    */
 }

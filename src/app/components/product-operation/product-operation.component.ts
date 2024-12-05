@@ -12,6 +12,8 @@ import { ColorService } from '../../services/colors.service';
 import { Component, OnInit } from '@angular/core';
 import { ProductFilterModel } from '../../models/productfiltermodel';
 import { ListResponseModel } from '../../models/listResponseModel';
+import { Router } from '@angular/router';
+import { ProductStocksService } from '../../services/product-stocks.service';
 
 @Component({
   selector: 'app-product-operations',
@@ -34,17 +36,17 @@ export class ProductOperationComponent implements OnInit {
   categories: CategoryModel[] = [];
   colors: Colors[] = [];
   filters: any = {
-    productName: null,
-    priceMin: null,
-    priceMax: null,
-    stockMin: null,
-    stockMax: null,
-    size: null,
-    color: null,
-    category: null,
-    superCategory: null,
-    status: null,
-  };
+    ProductName: null,
+    SuperCategoryName: null,
+    CategoryName: null,
+    MinPrice: null,
+    MaxPrice: null,
+    MinStock: null,
+    MaxStock: null,
+    ColorName: null,
+    ProductSize: null,
+    Status: null,
+  };  
   sizes = [
     { id: 'XS', name: 'XS' },
     { id: 'S', name: 'S' },
@@ -60,14 +62,17 @@ export class ProductOperationComponent implements OnInit {
     private toastrService: ToastrService,
     private superCategoryService: SuperCategoryService,
     private categoryService: CategoryService,
-    private colorService: ColorService
+    private colorService: ColorService,
+    private router:Router,
+    private productStocksService: ProductStocksService,
   ) {}
 
   ngOnInit(): void {
+    this.isLoading=true;
     this.productService.getProductDetails().subscribe({
       next: (response) => {
         console.log('Gelen Veri:', response.data);
-        this.productDetails = response.data;
+        this.productDetails = response.data.filter(product => product.status === true);
         this.isLoading = false;
 
         // Resim dizini başlatma
@@ -80,8 +85,6 @@ export class ProductOperationComponent implements OnInit {
         this.isLoading = false;
       },
     });
-    this.loadSuperCategories();
-    this.loadColors();
     this.loadSuperCategories();
     this.loadColors();
   }
@@ -123,102 +126,58 @@ export class ProductOperationComponent implements OnInit {
     this.isFilterMenuOpen = false;
   }
 
-  fetchProducts(): void {
-    this.productService.getProductDetails().subscribe({
-      next: (response) => {
-        this.productDetails = response.data;
-        this.filteredProducts = [...this.productDetails];
-        this.isLoading = false;
+  applyFilter(): void {
+    if(this.filters.superCategoryName=="1"){
+      this.filters.superCategoryName="Kadın";
+    }
+    else if(this.filters.superCategoryName=="2"){
+      this.filters.superCategoryName="Erkek";
+    }
+    else if(this.filters.superCategoryName=="3"){
+      this.filters.superCategoryName="Kız Çocuk";
+    }
+    else if(this.filters.superCategoryName=="4"){
+      this.filters.superCategoryName="Erkek Çocuk";
+    }
+    else if(this.filters.superCategoryName=="5"){
+      this.filters.superCategoryName="Bebek";
+    }
+    console.log("status = "+this.filters.status);
+    this.filters = {
+      ProductName: this.filters.productName || null,
+      SuperCategoryName: this.filters.superCategoryName || null,
+      CategoryName: this.filters.categoryName || null,
+      MinPrice: this.filters.minPrice || null,
+      MaxPrice: this.filters.maxPrice || null,
+      MinStock: this.filters.minStock || null,
+      MaxStock: this.filters.maxStock || null,
+      ColorName: this.filters.colorName || null,
+      ProductSize: this.filters.productSize || null,
+      Status: this.filters.status === null ? this.filters.status : null,
+    };
+  
+    console.log('Gönderilen filtre:', this.filters); // Filtre objesini kontrol
+  
+    this.productService.filterProducts(this.filters).subscribe({
+      next: (response: any) => {
+        console.log('API Yanıtı:', response); // Yanıtı kontrol
+        this.productDetails = response.filter((product: any) => {
+          // Status true olanlar
+          return product.status === true;
+        });
+        console.log('Ürün Detayları:', this.productDetails);
       },
-      error: (err) => {
-        this.errorMessage = err.error?.message;
-        this.isLoading = false;
+      error: (error) => {
+        console.error('Hata:', error); // Hata durumunu kontrol
       },
     });
-  }
-
-  applyFilter(): void {
-    console.log('Gönderilen filtre:', this.filters); // Gönderilen filtreyi konsola yazdır
-  
-    this.productService.filterProducts(this.filters).subscribe(
-      (response: any) => {
-        console.log('API Yanıtı:', response); // API yanıtını detaylı şekilde inceleyin
-        if (response && Array.isArray(response) && response.length > 0) {
-          // Yanıtın veri dizisi içerdiğinden emin olun
-          let filtered = response;
-  
-          // Price Min/Max filtresi
-          if (this.filters.priceMin != null) {
-            filtered = filtered.filter(product => product.unitPrice >= this.filters.priceMin);
-          }
-          if (this.filters.priceMax != null) {
-            filtered = filtered.filter(product => product.unitPrice <= this.filters.priceMax);
-          }
-  
-          // Stock Min/Max filtresi
-          if (this.filters.stockMin != null) {
-            filtered = filtered.filter(product => product.unitsInStock >= this.filters.stockMin);
-          }
-          if (this.filters.stockMax != null) {
-            filtered = filtered.filter(product => product.unitsInStock <= this.filters.stockMax);
-          }
-  
-          // Product Name filtresi
-          if (this.filters.productName) {
-            filtered = filtered.filter(product => product.productName.toLowerCase().includes(this.filters.productName.toLowerCase()));
-          }
-  
-          // Size filtresi
-          if (this.filters.size) {
-            filtered = filtered.filter(product => product.size === this.filters.size);
-          }
-  
-          // Color filtresi
-          if (this.filters.color) {
-            filtered = filtered.filter(product => product.color === this.filters.color);
-          }
-  
-          // Category filtresi
-          if (this.filters.category) {
-            filtered = filtered.filter(product => product.categoryId === this.filters.category);
-          }
-  
-          // SuperCategory filtresi
-          if (this.filters.superCategory) {
-            filtered = filtered.filter(product => product.superCategoryId === this.filters.superCategory);
-          }
-  
-          // Status filtresi (true/false kontrolü)
-          if (this.filters.status !== null) {
-            filtered = filtered.filter(product => product.status === this.filters.status);
-          }
-  
-          // Filtrelenmiş ürünleri güncelle
-          this.productDetails = filtered;
-          console.log('Filtrelenmiş ürünler:', this.productDetails);  // Filtrelenmiş ürünleri kontrol edin
-        } else {
-          console.error('Yanıt beklenen yapıdaki veriyi içermiyor.');
-        }
-      },
-      (error) => {
-        console.error('Hata:', error);
-      }
-    );
+    console.log('isLoading:', this.isLoading);
+    console.log('errorMessage:', this.errorMessage);
   }
 
   resetFilters(): void {
-    this.filters = {
-      productName: '',
-      priceMin: null,
-      priceMax: null,
-      stockMin: null,
-      stockMax: null,
-      size: null,
-      color: null,
-      category: null,
-      superCategory: null,
-      status: null,
-    };
+    this.filters = {}; // Tüm filtreleri temizle
+    this.applyFilter(); // Filtreyi uygula
   }
 
   // Resim değiştirme fonksiyonu
@@ -239,27 +198,20 @@ export class ProductOperationComponent implements OnInit {
         product.images.length;
     }
   }
+  updateProduct(productStockId: number){
+    this.router.navigate(['/product-stock-update', productStockId]);
+  }
 
   toggleStatus(productDetails: any): void {
-    const productId = productDetails.productId;
+    const productStockId = productDetails.productStockId;
 
-    if (productDetails.status === true) {
-      this.productService.deleteProduct(productId).subscribe({
+      this.productStocksService.deleteProductStock(productStockId).subscribe({
         next: () => {
           productDetails.status = !productDetails.status;
-          this.toastrService.success('User status updated successfully.');
+          this.toastrService.success('Product status updated successfully.');
         },
         error: () => this.toastrService.error('Failed to update status.'),
       });
-    } else {
-      this.productService.activateProduct(productId).subscribe({
-        next: () => {
-          productDetails.status = !productDetails.status;
-          this.toastrService.success('User status updated successfully.');
-        },
-        error: () => this.toastrService.error('Failed to update status.'),
-      });
-    }
   }
 
   // Sıralama fonksiyonu
