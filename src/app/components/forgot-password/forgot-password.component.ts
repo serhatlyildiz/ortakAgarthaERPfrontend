@@ -32,7 +32,7 @@ export class ForgotPasswordComponent {
         }, 3000);
       },
       error: (err) => {
-        this.toastrService.error(err.message);
+        this.toastrService.error("Lütfen geçerli bir E-Posta adresi giriniz");
         this.isButtonDisabled = false;
       },
     });

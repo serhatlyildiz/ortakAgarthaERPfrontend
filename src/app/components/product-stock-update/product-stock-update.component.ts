@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProductDetailDto } from '../../models/ProductDetailDto';
 import { Colors } from '../../models/colors';
@@ -20,11 +20,12 @@ import { ActivatedRoute, Router} from '@angular/router';
 })
 export class ProductStockUpdateComponent implements OnInit {
   productDetail: ProductDetailDto = {
-    productStockId: 0,
+    productDetailsId: 0,
     productId: 0,
-    categoryId: 0,
-    superCategoryId: 0,
     colorId: 0,
+    productStocksId: 0,
+    superCategoryId: 0,
+    categoryId: 0,
     productName: '',
     superCategoryName: '',
     categoryName: '',
@@ -53,6 +54,12 @@ export class ProductStockUpdateComponent implements OnInit {
   productStockId: number = 0;
   isLoading: boolean = true;
   originalProductDetail: ProductDetailDto = { ...this.productDetail };
+  @ViewChild('fileInputn') fileInput: any;
+  productImages = {
+    images: [] as any[], // Mevcut fotoğraflar ve yeni eklenenler
+  };
+  temporaryImages: { file: File | null; preview: string; isNew: boolean }[] = []; // Yeni veya mevcut fotoğraflar
+  deletedImages: string[] = []; // Silinen fotoğrafların yolları
 
 
   constructor(
@@ -128,13 +135,13 @@ export class ProductStockUpdateComponent implements OnInit {
           this.onSuperCategoryChange(this.selectedSuperCategoryId).then(() => {
             console.log('Categories:', this.categories); // Tüm kategorileri yazdır
             console.log('Product Category Name:', this.productDetail.categoryName); // Ürün detaylarındaki kategori adı
-          
+  
             const matchedCategory = this.categories.find(
               (category) =>
                 category.categoryName.trim().toLowerCase() ===
                 this.productDetail.categoryName.trim().toLowerCase() // Case-insensitive eşleşme
             );
-          
+  
             if (matchedCategory) {
               this.productDetail.categoryId = matchedCategory.categoryId;
               console.log('Matched Category:', matchedCategory);
@@ -165,10 +172,28 @@ export class ProductStockUpdateComponent implements OnInit {
         } else {
           console.warn('No matching color found!');
         }
+  
+        // Fotoğrafları veritabanından yükle
+        this.loadPhotosFromDatabase();
       } else {
         console.error('No product details found for the given productStockId.');
       }
     });
+  }
+  
+  loadPhotosFromDatabase() {
+    // Veritabanından gelen fotoğraf yolları (örnek olarak)
+    const databasePhotos: string[] = this.productDetail.images || [];
+  
+    // Fotoğrafları geçici dizide saklayalım
+    this.temporaryImages = databasePhotos.map((photoPath) => ({
+      file: null,          // Fotoğraf dosyası başlangıçta null
+      preview: photoPath,  // Veritabanındaki yol
+      isNew: false,        // Bu fotoğraf veritabanında var, yeni değil
+    }));
+  
+    // Konsola geçici fotoğrafları yazdır
+    console.log('Preview:', this.temporaryImages);
   }
   
   
@@ -210,17 +235,67 @@ export class ProductStockUpdateComponent implements OnInit {
     console.log('Form resetlendi:', this.productDetail);
   }
 
-  addPhoto(): void {
-    console.log('Add photo button clicked');
-    // Burada fotoğraf ekleme işlemi yapılabilir
+  selectFiles() {
+    this.fileInput.nativeElement.click();
   }
   
-  deletePhoto(image: string): void {
-    console.log('Delete photo clicked for image:', image);
-    // Fotoğraf silme işlemi burada yapılabilir
-    // Örneğin, diziden bu fotoğrafı silebilirsiniz:
-    this.productDetail.images = this.productDetail.images.filter(img => img !== image);
+  onFilesSelected(event: any) {
+    const files = event.target.files;
+    for (let file of files) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.temporaryImages.push({
+          file: file,
+          preview: reader.result as string,
+          isNew: true, // Yeni fotoğraf olduğunu işaretliyoruz
+        });
+        // Klasöre kopyalama işlemi
+        this.copyToFolder(file);
+      };
+      reader.readAsDataURL(file);
+    }
   }
-  
 
+ // Fotoğrafı Listeden Kaldırma
+ removeFile(index: number) {
+  const image = this.temporaryImages[index];
+  if (!image.isNew) {
+    // Mevcut fotoğraflar için silme işlemi
+    this.deletedImages.push(image.preview);
+  } else {
+    // Yeni eklenen ama kaydedilmemiş dosyalar için klasörden silme
+    if (image.file) this.deleteFromFolder(image.file.name);
+  }
+  this.temporaryImages.splice(index, 1);
 }
+
+copyToFolder(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  // Backend API'ye gönderim örneği
+  console.log('Klasöre kopyalanan dosya:', file.name);
+  // API çağrısı yapılabilir: this.http.post('api/upload', formData).subscribe();
+}
+
+deleteFromFolder(fileName: string) {
+  console.log('Klasörden silinen dosya:', fileName);
+  // API çağrısı yapılabilir: this.http.delete(`api/delete/${fileName}`).subscribe();
+}
+
+  // Fotoğrafları Kaydetme
+  saveChanges() {
+    const newImages = this.temporaryImages
+      .filter((img) => img.isNew)
+      .map((img) => img.file);
+
+    const removedImages = this.deletedImages;
+
+    console.log('Yeni Fotoğraflar:', newImages);
+    console.log('Silinen Fotoğraflar:', removedImages);
+
+    // API ile veritabanına kaydetme işlemi
+    // this.http.post('api/save', { newImages, removedImages }).subscribe();
+  }
+}
+  

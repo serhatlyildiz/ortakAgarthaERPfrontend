@@ -132,25 +132,34 @@
     <div class="col-12">
       <label class="form-label">Fotoğraflar</label>&nbsp;
       <!-- Fotoğraf Ekle Butonu -->
-      <button class="add-photo-btn" (click)="addPhoto()">+</button>
+      <button class="add-photo-btn" (click)="selectFiles()">+</button>
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        style="display: none"
+        #fileInputn
+        (change)="onFilesSelected($event)"
+      />
     
       <!-- Ana Fotoğraf başlığı ve logo -->
       <div class="main-photo-header">
-        <img src="assets/icons/star.png" alt="Star Icon" class="star-icon">
+        <img src="assets/icons/star.png" alt="Star Icon" class="star-icon" />
+        <span>Ana Fotoğraf</span>
       </div>
     
+      <!-- Fotoğraflar Listesi -->
       <ul class="image-list">
-        <li *ngFor="let image of productDetail.images" class="image-item">
+        <li *ngFor="let image of temporaryImages; let i = index" class="image-item">
           <div class="image-container">
-            <img [src]="image" alt="Product Image" class="product-image">
+            <img [src]="image.preview || image" alt="Product Image" class="product-image" />
           </div>
           <!-- Fotoğrafı Sil Butonu -->
-          <button class="delete-photo-btn" (click)="deletePhoto(image)">Fotoğrafı Sil</button>
+          <button class="delete-photo-btn" (click)="removeFile(i)">Fotoğrafı Sil</button>
         </li>
       </ul>
     </div>
-
-    <input type="file" (change)="onFileSelected($event)" style="display: none" #fileInput />
+    
     
     
     
