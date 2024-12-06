@@ -1,9 +1,10 @@
 export interface ProductDetailDto {
-    productStockId: number;
+    productDetailsId: number;
     productId: number;
-    categoryId: number;
-    superCategoryId: number;
     colorId: number;
+    productStocksId: number;
+    superCategoryId: number;
+    categoryId: number;
     productName: string;
     superCategoryName: string;
     categoryName: string;
