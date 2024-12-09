@@ -10,6 +10,7 @@ import { CategoryService } from '../../services/category.service';
 import { CategoryModel } from '../../models/category';
 import { ProductService } from '../../services/product.service';
 import { ActivatedRoute, Router} from '@angular/router';
+import { ProductImageService } from '../../services/product-image.service';
 
 @Component({
   selector: 'app-product-stock-update',
@@ -61,14 +62,14 @@ export class ProductStockUpdateComponent implements OnInit {
   temporaryImages: { file: File | null; preview: string; isNew: boolean }[] = []; // Yeni veya mevcut fotoğraflar
   deletedImages: string[] = []; // Silinen fotoğrafların yolları
 
-
   constructor(
     private colorService: ColorService,
     private route: ActivatedRoute,
     private superCategoryService: SuperCategoryService,
     private categoryService: CategoryService,
     private productService: ProductService,
-    private router:Router,
+    private router: Router,
+    private productImageService: ProductImageService,
   ) {}
 
   ngOnInit(): void {
@@ -119,91 +120,62 @@ export class ProductStockUpdateComponent implements OnInit {
       if (response.data && response.data.length > 0) {
         this.productDetail = response.data[0]; // Ürün detaylarını yükle
         console.log('Product Details:', this.productDetail);
-  
+
         // Super Category Eşleştirme
         const matchedSuperCategory = this.superCategories.find(
           (sc) =>
             sc.superCategoryName.trim().toLowerCase() ===
             this.productDetail.superCategoryName.trim().toLowerCase()
         );
-        console.log('Matched Super Category:', matchedSuperCategory);
-  
+
         if (matchedSuperCategory) {
           this.selectedSuperCategoryId = matchedSuperCategory.superCategoryId;
-  
-          // Kategorileri yükle ve eşleştir
-          this.onSuperCategoryChange(this.selectedSuperCategoryId).then(() => {
-            console.log('Categories:', this.categories); // Tüm kategorileri yazdır
-            console.log('Product Category Name:', this.productDetail.categoryName); // Ürün detaylarındaki kategori adı
-  
-            const matchedCategory = this.categories.find(
-              (category) =>
-                category.categoryName.trim().toLowerCase() ===
-                this.productDetail.categoryName.trim().toLowerCase() // Case-insensitive eşleşme
-            );
-  
-            if (matchedCategory) {
-              this.productDetail.categoryId = matchedCategory.categoryId;
-              console.log('Matched Category:', matchedCategory);
-            } else {
-              console.warn('No matching category found!');
-              console.log(
-                'Possible Categories:',
-                this.categories.map((c) => c.categoryName) // Kategori adlarını yazdır
-              );
-              console.log('Looking for:', this.productDetail.categoryName);
-            }
-          });
-        } else {
-          console.warn('No matching super category found!');
         }
-  
+
+        // Kategorileri yükle ve eşleştir
+        this.onSuperCategoryChange(this.selectedSuperCategoryId).then(() => {
+          const matchedCategory = this.categories.find(
+            (category) =>
+              category.categoryName.trim().toLowerCase() ===
+              this.productDetail.categoryName.trim().toLowerCase()
+          );
+
+          if (matchedCategory) {
+            this.productDetail.categoryId = matchedCategory.categoryId;
+          }
+        });
+
         // Renk Eşleştirme
-        console.log('Colors:', this.colors);
         const matchedColor = this.colors.find(
           (color) =>
             color.colorName.trim().toLowerCase() ===
             this.productDetail.colorName.trim().toLowerCase()
         );
-  
+
         if (matchedColor) {
-          this.productDetail.colorId = matchedColor.colorId; // Renk ID'sini ata
-          console.log('Matched Color:', matchedColor);
-        } else {
-          console.warn('No matching color found!');
+          this.productDetail.colorId = matchedColor.colorId;
         }
-  
+
         // Fotoğrafları veritabanından yükle
         this.loadPhotosFromDatabase();
-      } else {
-        console.error('No product details found for the given productStockId.');
       }
     });
   }
-  
+
   loadPhotosFromDatabase() {
-    // Veritabanından gelen fotoğraf yolları (örnek olarak)
     const databasePhotos: string[] = this.productDetail.images || [];
-  
-    // Fotoğrafları geçici dizide saklayalım
     this.temporaryImages = databasePhotos.map((photoPath) => ({
-      file: null,          // Fotoğraf dosyası başlangıçta null
-      preview: photoPath,  // Veritabanındaki yol
-      isNew: false,        // Bu fotoğraf veritabanında var, yeni değil
+      file: null,
+      preview: photoPath, // Dönen yol frontend için geçerli olacak
+      isNew: false,
     }));
-  
-    // Konsola geçici fotoğrafları yazdır
-    console.log('Preview:', this.temporaryImages);
   }
-  
-  
 
   onSuperCategoryChange(superCategoryId: number): Promise<void> {
     return new Promise((resolve) => {
       if (superCategoryId) {
         this.categoryService.getBySuperCategoryId(superCategoryId).subscribe((response) => {
-          this.categories = response.data; // Kategorileri güncelle
-          console.log('Categories Loaded:', this.categories);
+          this.categories = response.data;
           resolve();
         });
       } else {
@@ -212,90 +184,82 @@ export class ProductStockUpdateComponent implements OnInit {
       }
     });
   }
-  
 
   saveProduct() {
-    console.log('Ürün kaydedildi:', this.productDetail);
-    // Ürün kaydetme işlemleri burada yapılabilir
+    const updatedData = {
+      product: {
+        productId: this.productDetail.productId,
+        productName: this.productDetail.productName,
+        unitPrice: this.productDetail.unitPrice,
+        productDescription: this.productDetail.productDescription,
+        status: this.productDetail.status,
+      },
+      productDetails: {
+        productDetailsId: this.productDetail.productDetailsId,
+        colorId: Number(this.productDetail.colorId),
+        superCategoryId: Number(this.selectedSuperCategoryId),
+        categoryId: Number(this.productDetail.categoryId),
+        productSize: this.productDetail.productSize,
+      },
+      productStocks: {
+        productStocksId: this.productDetail.productStocksId,
+        unitsInStock: this.productDetail.unitsInStock,
+      },
+    };
+    console.log(updatedData);
+    this.productService.update(updatedData.product, updatedData.productDetails, updatedData.productStocks).subscribe(
+      (response) => {
+        console.log('Ürün başarıyla güncellendi:', response);
+        alert('Ürün başarıyla güncellendi!');
+        this.router.navigate(['/product-operations']);
+      },
+      (error) => {
+        console.error('Ürün güncelleme sırasında hata oluştu:', error);
+        alert('Ürün güncellenirken bir hata oluştu!');
+      }
+    );
   }
 
   cancelUpdate(): void {
-    console.log('Güncelleme iptal edildi');
     this.router.navigate(['/product-operations']);
   }
-  
+
   resetForm(): void {
-    // Orijinal ürün verisini geri yükleriz
     this.productDetail = { ...this.originalProductDetail };
-
-    // İlçe verilerini tekrar yükleriz (örneğin, loadInitialIlce gibi)
+    this.temporaryImages = [];
+    this.deletedImages = [];
+    this.loadPhotosFromDatabase();
     this.loadInitialData();
-
-    // Konsola resetlendi bilgisini yazdırırız
-    console.log('Form resetlendi:', this.productDetail);
   }
 
   selectFiles() {
     this.fileInput.nativeElement.click();
   }
-  
+
   onFilesSelected(event: any) {
-    const files = event.target.files;
-    for (let file of files) {
+    const files: FileList = event.target.files;
+    const fileArray: File[] = Array.from(files);
+
+    for (let file of fileArray) {
       const reader = new FileReader();
       reader.onload = () => {
         this.temporaryImages.push({
           file: file,
           preview: reader.result as string,
-          isNew: true, // Yeni fotoğraf olduğunu işaretliyoruz
+          isNew: true,
         });
-        // Klasöre kopyalama işlemi
-        this.copyToFolder(file);
       };
       reader.readAsDataURL(file);
     }
   }
 
- // Fotoğrafı Listeden Kaldırma
- removeFile(index: number) {
-  const image = this.temporaryImages[index];
-  if (!image.isNew) {
-    // Mevcut fotoğraflar için silme işlemi
-    this.deletedImages.push(image.preview);
-  } else {
-    // Yeni eklenen ama kaydedilmemiş dosyalar için klasörden silme
-    if (image.file) this.deleteFromFolder(image.file.name);
-  }
-  this.temporaryImages.splice(index, 1);
-}
-
-copyToFolder(file: File) {
-  const formData = new FormData();
-  formData.append('file', file);
-
-  // Backend API'ye gönderim örneği
-  console.log('Klasöre kopyalanan dosya:', file.name);
-  // API çağrısı yapılabilir: this.http.post('api/upload', formData).subscribe();
-}
-
-deleteFromFolder(fileName: string) {
-  console.log('Klasörden silinen dosya:', fileName);
-  // API çağrısı yapılabilir: this.http.delete(`api/delete/${fileName}`).subscribe();
-}
-
-  // Fotoğrafları Kaydetme
-  saveChanges() {
-    const newImages = this.temporaryImages
-      .filter((img) => img.isNew)
-      .map((img) => img.file);
-
-    const removedImages = this.deletedImages;
-
-    console.log('Yeni Fotoğraflar:', newImages);
-    console.log('Silinen Fotoğraflar:', removedImages);
-
-    // API ile veritabanına kaydetme işlemi
-    // this.http.post('api/save', { newImages, removedImages }).subscribe();
+  removeFile(index: number) {
+    const image = this.temporaryImages[index];
+    if (!image.isNew) {
+      this.deletedImages.push(image.preview);
+    }
+    this.temporaryImages.splice(index, 1);
   }
 }
+
   

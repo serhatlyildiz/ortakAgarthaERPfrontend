@@ -5,7 +5,6 @@
   </div>
 </div>
 
-
 <div *ngIf="!isLoading">
   <form class="row g-3">
     <!-- Ürün Adı -->
@@ -145,7 +144,6 @@
       <!-- Ana Fotoğraf başlığı ve logo -->
       <div class="main-photo-header">
         <img src="assets/icons/star.png" alt="Star Icon" class="star-icon" />
-        <span>Ana Fotoğraf</span>
       </div>
     
       <!-- Fotoğraflar Listesi -->
@@ -160,18 +158,10 @@
       </ul>
     </div>
     
-    
-    
-    
-    
-    
-    
-
-
     <!-- Butonlar -->
     <div class="row">
       <div class="col-4 text-start">
-        <button type="submit" class="btn btn-primary">Kaydet</button>
+        <button type="submit" class="btn btn-primary" (click)="saveProduct()">Kaydet</button>
       </div>
       <div class="col-4 text-center">
         <button type="button" class="btn btn-secondary" (click)="resetForm()">Temizle</button>
