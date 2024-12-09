@@ -62,6 +62,16 @@ export class ProductService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.httpClient.post<ListResponseModel<ProductDetailDto>>(`${this.apiUrl}/filter`, filters, { headers });
   }
+
+  update(product: any, productDetails: any, productStocks: any): Observable<ResponseModel> {
+    const token = localStorage.getItem('token'); // Token'ı al
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiUrl}/update?productId=${product.productId}&productDetailsId=${productDetails.productDetailsId}&productStocksId=${productStocks.productStocksId}`,
+      { product, productDetails, productStocks },
+      { headers }
+    );
+  }
     
   /*
   filterProducts(filters: any): Observable<ListResponseModel<ProductDetailDto>> {
