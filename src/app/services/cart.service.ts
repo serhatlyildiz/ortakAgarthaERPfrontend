@@ -1,98 +1,88 @@
 import { Injectable } from '@angular/core';
-import { Product } from '../models/product';
-import { CartItems } from '../models/cartItems';
 import { CartItem } from '../models/cartItem';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { jwtDecode } from 'jwt-decode';
-import { ProductDetailDto } from '../models/ProductDetailDto';
-import { ListResponseModel } from '../models/listResponseModel';
+import { Cart } from '../models/cart';
+import { ResponseModel } from '../models/responseModel';
+import { CartForPost } from '../models/cartforpost';
+import { SingleResponseModel } from '../models/singleResponseModel';
+import { GetCart } from '../models/getcart';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
-  // private cartItems: CartItem[] = [];
-  // private cartItemCount = new BehaviorSubject<number>(0);
-  // private apiUrl = 'http://localhost:5038/api/cart/';
+  private apiUrl = 'http://localhost:5038/api/cart/';
+  userId: number;
 
-  // constructor(
-  //   private httpClient: HttpClient,
-  //   private authService: AuthService
-  // ) {
-  //   this.loadCart();
-  // }
+  constructor(
+    private httpClient: HttpClient,
+    private authService: AuthService
+  ) {
+    this.userId = this.authService.getTokenInfo()?.userId || 0;
+  }
+  addToCart(cartItem: CartItem): Observable<ResponseModel> {
+    const cartForPost: CartForPost = {
+      userId: this.userId,
+      productStockId: cartItem.product,
+      quantity: cartItem.quantity,
+    };
+    return this.httpClient.post<ResponseModel>(
+      this.apiUrl + 'add-to-cart',
+      cartForPost
+    );
+  }
 
-  // private loadCart(): void {
-  //   const userInfo = this.authService.getTokenInfo();
-  //   if (userInfo) {
-  //     //this.fetchCartFromApi(userInfo.userId);
-  //   } else {
-  //     this.loadCartFromLocalStorage();
-  //   }
-  // }
+  getCart(): Observable<SingleResponseModel<GetCart>> {
+    return this.httpClient.get<SingleResponseModel<GetCart>>(
+      this.apiUrl + 'your-cart?userId=' + 18
+    );
+  }
 
-  // //daha başlamadı
-  // // private fetchCartFromApi(userId: number): void {
-  // //   this.httpClient
-  // //     .get<ListResponseModel<CartItem>>(this.apiUrl + , { headers })
-  // //     .subscribe((response) => {
-  // //       if (response.success) {
-  // //         this.cartItems = response.data;
-  // //         this.updateCartItemCount();
-  // //       }
-  // //     });
-  // // }
+  clearCart(): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(this.apiUrl + 'clear-cart', {
+      // this.userId,
+    });
+  }
 
-  // private loadCartFromLocalStorage(): void {
-  //   const savedCart = localStorage.getItem('cart');
-  //   if (savedCart) {
-  //     this.cartItems = JSON.parse(savedCart);
-  //     this.updateCartItemCount();
-  //   }
-  // }
+  // Local Storage İşlemleri
+  private addToLocalCart(cartItem: CartItem): void {
+    let cart: Cart = JSON.parse(localStorage.getItem('cart') || 'null');
+    if (!cart) {
+      cart = {
 
-  // private updateCartItemCount(): void {
-  //   this.cartItemCount.next(this.cartItems.length);
-  // }
+        cartId: 0,
+        cartItems: [],
+        userId: 0,
+        totalPrice: 0,
+        status: true,
+      };
+    }
 
-  // // // Sepete ürün eklemek için
-  // // addToCart(product: CartItem): void {
-  // //   this.cartItems.push(product);
-  // //   this.updateCartItemCount();
-  // //   this.saveCart();
-  // // }
+    const existingItem = cart.cartItems.find(
+      (item) => item.product === cartItem.product
+    );
 
-  // // // Sepeti güncellemek için
-  // // updateCart(updatedCart: CartItem[]): void {
-  // //   this.cartItems = updatedCart;
-  // //   this.updateCartItemCount();
-  // //   this.saveCart();
-  // // }
+    if (existingItem) {
+      existingItem.quantity += cartItem.quantity;
+    } else {
+      cart.cartItems.push(cartItem);
+    }
 
-  // // Sepeti API'ye kaydetmek için
-  // private saveCart(productId: number): void {
-  //   const userId = this.authService.getTokenInfo().userId;
+    cart.totalPrice = cart.cartItems.reduce(
+      (total, item) => total + item.quantity * 100,
+      0
+    );
 
-  //   if (userId) {
-  //     this.httpClient
-  //       .post(this.apiUrl + 'add-to-cart', { userId, productId })
-  //       .subscribe((response) => {
-  //         console.log(response);
-  //       });
-  //   } else {
-  //     localStorage.setItem('cart', JSON.stringify(this.cartItems));
-  //   }
-  // }
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
 
-  // // Sepet öğelerini al
-  // getCartItems(): CartItem[] {
-  //   return this.cartItems;
-  // }
+  private getLocalCart(): Cart | null {
+    return JSON.parse(localStorage.getItem('cart') || 'null');
+  }
 
-  // // Sepet öğesi sayısını al
-  // getCartItemCount(): BehaviorSubject<number> {
-  //   return this.cartItemCount;
-  // }
+  private clearLocalCart(): void {
+    localStorage.removeItem('cart');
+  }
 }
