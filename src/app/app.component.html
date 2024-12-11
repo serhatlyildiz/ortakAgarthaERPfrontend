@@ -1,3 +1,22 @@
+<div class="top" *ngIf="loadingSalah">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-1">ANKARA:</div>
+      <div class="col-lg-1">İmsak:{{ salahTime.times.imsak }}</div>
+      <div class="col-lg-1"></div>
+      <div class="col-lg-1">Güneş:{{ salahTime.times.gunes }}</div>
+      <div class="col-lg-1"></div>
+      <div class="col-lg-1">Öğle:{{ salahTime.times.ogle }}</div>
+      <div class="col-lg-1"></div>
+      <div class="col-lg-1">İkindi:{{ salahTime.times.ikindi }}</div>
+      <div class="col-lg-1"></div>
+      <div class="col-lg-1">Akşam:{{ salahTime.times.aksam }}</div>
+      <div class="col-lg-1"></div>
+      <div class="col-lg-1">Yatsı:{{ salahTime.times.yatsi }}</div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <app-navi></app-navi>
   <!-- 12 satır -->
@@ -6,6 +25,4 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-
-  
 </div>

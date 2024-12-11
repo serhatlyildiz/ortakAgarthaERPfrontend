@@ -1,75 +1,94 @@
 <div class="site-section">
   <div class="container">
-    <div class="row mb-5">
-      <form class="col-md-12" method="post">
-        <div class="site-blocks-table">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th class="product-thumbnail">Image</th>
-                <th class="product-name">Product</th>
-                <th class="product-price">Price</th>
-                <th class="product-quantity">Quantity</th>
-                <th class="product-total">Total</th>
-                <th class="product-remove">Remove</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of cartItems">
-                <td class="product-thumbnail">
-                  <img
-                    [src]="item.product.images[0]"
-                    alt="Image"
-                    class="img-fluid"
-                  />
-                </td>
-                <td class="product-name">
-                  <h2 class="h5 text-black">{{ item.product.productName }}</h2>
-                </td>
-                <td>{{ item.product.unitPrice | currency }}</td>
-                <td>
-                  <div class="input-group mb-3" style="max-width: 120px">
-                    <div class="input-group-prepend">
-                      <button
-                        (click)="updateQuantity(item, item.quantity - 1)"
-                        class="btn btn-outline-primary js-btn-minus"
-                        type="button"
-                      >
-                        &minus;
-                      </button>
-                    </div>
-                    <input
-                      type="text"
-                      class="form-control text-center"
-                      [value]="item.quantity"
-                      aria-label="Quantity"
-                      aria-describedby="button-addon1"
+    <div *ngIf="loading">
+      <p>Sepet yükleniyor...</p>
+    </div>
+    <div *ngIf="!isLoading && cartSummary.length > 0">
+      <div class="row mb-5">
+        <form class="col-md-12">
+          <div class="site-blocks-table">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th class="product-thumbnail">Image</th>
+                  <th class="product-name">Product</th>
+                  <th class="product-price">Price</th>
+                  <th class="product-quantity">Quantity</th>
+                  <th class="product-total">Total Price</th>
+                  <th class="product-remove">Remove</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of cart">
+                  <td class="product-thumbnail">
+                    <img
+                      [src]="item.images[0]"
+                      alt="{{ item.productName }}"
+                      class="img-fluid"
                     />
-                    <div class="input-group-append">
-                      <button
-                        (click)="updateQuantity(item, item.quantity + 1)"
-                        class="btn btn-outline-primary js-btn-plus"
-                        type="button"
-                      >
-                        &plus;
-                      </button>
+                  </td>
+                  <td class="product-name">
+                    <h2 class="h5 text-black">
+                      {{ item.productName }}
+                    </h2>
+                  </td>
+                  <td>
+                    {{ item.unitPrice | currency : "TRY" : "symbol" : "1.2-2" }}
+                  </td>
+                  <td>
+                    <div class="input-group mb-3" style="max-width: 120px">
+                      <div class="input-group-prepend">
+                        <button
+                          (click)="updateQuantity(item, item.quantity - 1)"
+                          class="btn btn-outline-primary js-btn-minus"
+                          type="button"
+                        >
+                          &minus;
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        class="form-control text-center"
+                        [value]="item.quantity"
+                        readonly
+                      />
+                      <div class="input-group-append">
+                        <button
+                          (click)="updateQuantity(item, item.quantity + 1)"
+                          class="btn btn-outline-primary js-btn-plus"
+                          type="button"
+                        >
+                          &plus;
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td>{{ item.product.unitPrice * item.quantity | currency }}</td>
-                <td>
-                  <button
-                    (click)="removeItem(item)"
-                    class="btn btn-primary height-auto btn-sm"
-                  >
-                    X
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </form>
+                  </td>
+                  <td>
+                    {{
+                      item.quantity * item.unitPrice
+                        | currency : "TRY" : "symbol" : "1.2-2"
+                    }}
+                  </td>
+                  <td>
+                    <button
+                      (click)="removeItem(item)"
+                      class="btn btn-primary height-auto btn-sm"
+                    >
+                      X
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div *ngIf="!isLoading && cartSummary.length === 0">
+      <p>Sepetiniz boş.</p>
+    </div>
+    <div *ngIf="errorMessage">
+      <p class="text-danger">{{ errorMessage }}</p>
     </div>
   </div>
 </div>

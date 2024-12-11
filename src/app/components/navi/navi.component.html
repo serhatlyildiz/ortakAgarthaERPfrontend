@@ -26,50 +26,59 @@
           class="site-navigation text-right text-md-center"
           role="navigation"
         >
-        <ul class="site-menu js-clone-nav d-none d-lg-block">
-          <li class="has-children active">
-            <a>Kategoriler</a>
-            <ul class="dropdown">
-              <li 
-                class="has-children" 
-                *ngFor="let superCategory of superCategories" 
-                (mouseenter)="loadCategoriesBySuperCategoryId(superCategory.superCategoryId)"
-              >
-                <a>
-                  {{ superCategory.superCategoryName }}
-                </a>
-                <ul class="dropdown">
-                  <li *ngFor="let category of filteredCategories">
-                    <a href="#">{{ category.categoryName }}</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li class="active"><a href="contact.html">Contact</a></li>
-          <li class="has-children active" *ngIf="!isAuthenticated()">
-            <a (click)="login()">Giriş Yap</a>
-            <ul class="dropdown">
-              <li><a (click)="register()">Kayıt Ol</a></li>
-            </ul>
-          </li>
-          <li class="has-children active" *ngIf="isAuthenticated()">
-            <a>{{ username }}</a>
-            <ul class="dropdown">
-              <li><a (click)="logout()">Çıkış Yap</a></li>
-            </ul>
-          </li>
-          <li class="active" *ngIf="isAdmin()"><a href="/admin">Admin Page</a></li>
-          <li class="active" *ngIf="isAdmin()"><a href="/product-operations">Product Operations</a></li>
-        </ul>                                
+          <ul class="site-menu js-clone-nav d-none d-lg-block">
+            <li class="has-children active">
+              <a>Kategoriler</a>
+              <ul class="dropdown">
+                <li
+                  class="has-children"
+                  *ngFor="let superCategory of superCategories"
+                  (mouseenter)="
+                    loadCategoriesBySuperCategoryId(
+                      superCategory.superCategoryId
+                    )
+                  "
+                >
+                  <a>
+                    {{ superCategory.superCategoryName }}
+                  </a>
+                  <ul class="dropdown">
+                    <li *ngFor="let category of filteredCategories">
+                      <a href="#">{{ category.categoryName }}</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li class="active"><a href="contact.html">Contact</a></li>
+            <li class="has-children active" *ngIf="!isAuthenticated()">
+              <a (click)="login()">Giriş Yap</a>
+              <ul class="dropdown">
+                <li><a (click)="register()">Kayıt Ol</a></li>
+              </ul>
+            </li>
+            <li class="has-children active" *ngIf="isAuthenticated()">
+              <a>{{ username }}</a>
+              <ul class="dropdown">
+                <li><a (click)="logout()">Çıkış Yap</a></li>
+              </ul>
+            </li>
+            <li class="active" *ngIf="isAdmin()">
+              <a href="/admin">Admin Page</a>
+            </li>
+            <li class="active" *ngIf="isAdmin()">
+              <a href="/product-operations">Product Operations</a>
+            </li>
+          </ul>
         </nav>
       </div>
-      <div class="icons">        
+      <div class="icons">
         <a (click)="goToCart()" class="icons-btn d-inline-block bag">
           <span class="icon-shopping-bag"></span>
           <span class="number">{{ cartItemCount }}</span>
         </a>
-      </div>      
+      </div>
     </div>
-  </div>
+      
+  </div>
 </div>

@@ -76,26 +76,28 @@ export class AuthService {
   }
 
   getTokenInfo(): TokenInfo {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedToken: any = jwtDecode(token);
-      this.user.userId =
-        decodedToken[
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
-        ];
-      this.user.email = decodedToken['email'];
-      this.user.name =
-        decodedToken[
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
-        ];
-      this.user.roles =
-        decodedToken[
-          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-        ] || [];
-      return this.user;
-    } else {
-      return null;
-    }
+    // const token = localStorage.getItem('token');
+    // if (token) {
+    //   const decodedToken: any = jwtDecode(token);
+    //   this.user.userId = 18
+    //     decodedToken[
+    //       'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+    //     ];
+    //   this.user.email = decodedToken['email'];
+    //   this.user.name =
+    //     decodedToken[
+    //       'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
+    //     ];
+    //   this.user.roles =
+    //     decodedToken[
+    //       'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+    //     ] || [];
+    //   console.log(this.user);
+    //   return this.user;
+    // } else {
+    //   return null;
+    // }
+    return null
   }
 
   // Token süresi dolduğunda çıkış yapma işlemi
