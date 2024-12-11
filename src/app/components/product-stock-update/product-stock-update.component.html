@@ -137,6 +137,7 @@
         multiple
         accept="image/*"
         style="display: none"
+        
         #fileInputn
         (change)="onFilesSelected($event)"
       />
@@ -150,7 +151,7 @@
       <ul class="image-list">
         <li *ngFor="let image of temporaryImages; let i = index" class="image-item">
           <div class="image-container">
-            <img [src]="image.preview || image" alt="Product Image" class="product-image" />
+            <img [src]="image.preview" alt="Product Image" class="product-image" />
           </div>
           <!-- Fotoğrafı Sil Butonu -->
           <button class="delete-photo-btn" (click)="removeFile(i)">Fotoğrafı Sil</button>

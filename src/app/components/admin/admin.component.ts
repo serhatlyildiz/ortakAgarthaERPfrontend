@@ -300,6 +300,7 @@ export class AdminComponent implements OnInit {
         next: () => {
           user.status = !user.status;
           this.toastrService.success('User status updated successfully.');
+          //this.applyFilters();
         },
         error: () => this.toastrService.error('Failed to update status.'),
       });
