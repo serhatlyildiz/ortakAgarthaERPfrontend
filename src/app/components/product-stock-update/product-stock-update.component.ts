@@ -11,6 +11,8 @@ import { CategoryModel } from '../../models/category';
 import { ProductService } from '../../services/product.service';
 import { ActivatedRoute, Router} from '@angular/router';
 import { ProductImageService } from '../../services/product-image.service';
+import { ToastrService } from 'ngx-toastr';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-product-stock-update',
@@ -70,6 +72,7 @@ export class ProductStockUpdateComponent implements OnInit {
     private productService: ProductService,
     private router: Router,
     private productImageService: ProductImageService,
+    private toastrService: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -192,30 +195,31 @@ export class ProductStockUpdateComponent implements OnInit {
         productName: this.productDetail.productName,
         unitPrice: this.productDetail.unitPrice,
         productDescription: this.productDetail.productDescription,
-        status: this.productDetail.status,
+        superCategoryId: Number(this.selectedSuperCategoryId),
+        categoryId: Number(this.productDetail.categoryId),
       },
       productDetails: {
         productDetailsId: this.productDetail.productDetailsId,
-        colorId: Number(this.productDetail.colorId),
-        superCategoryId: Number(this.selectedSuperCategoryId),
-        categoryId: Number(this.productDetail.categoryId),
         productSize: this.productDetail.productSize,
       },
       productStocks: {
         productStocksId: this.productDetail.productStocksId,
         unitsInStock: this.productDetail.unitsInStock,
+        productColorId: Number(this.productDetail.colorId),
+        images: this.temporaryImages.map(tempImage => tempImage.preview),
+        status: this.productDetail.status,
       },
     };
     console.log(updatedData);
     this.productService.update(updatedData.product, updatedData.productDetails, updatedData.productStocks).subscribe(
       (response) => {
         console.log('Ürün başarıyla güncellendi:', response);
-        alert('Ürün başarıyla güncellendi!');
+        this.toastrService.success("Ürün güncellendi");
         this.router.navigate(['/product-operations']);
       },
       (error) => {
         console.error('Ürün güncelleme sırasında hata oluştu:', error);
-        alert('Ürün güncellenirken bir hata oluştu!');
+        this.toastrService.error("Ürün güncellenirken hata oluştu");
       }
     );
   }
@@ -236,10 +240,11 @@ export class ProductStockUpdateComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
 
+  /*
   onFilesSelected(event: any) {
     const files: FileList = event.target.files;
     const fileArray: File[] = Array.from(files);
-
+    console.log(this.temporaryImages);
     for (let file of fileArray) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -251,13 +256,76 @@ export class ProductStockUpdateComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     }
+    console.log(this.temporaryImages);
   }
+    */
 
+  onFilesSelected(event: any) {
+    const files: FileList = event.target.files;
+    const fileArray: File[] = Array.from(files);
+  
+    for (let file of fileArray) {
+      // Base64 ile geçici önizleme ekle
+      const reader = new FileReader();
+      reader.onload = () => {
+        const tempImage = {
+          file: file,
+          preview: reader.result as string,  // Base64 formatında
+          isNew: true,
+        };
+  
+        // Geçici listeye ekle
+        this.temporaryImages.push(tempImage);
+  
+        // Fotoğrafı backend'e yükle
+        const formData = new FormData();
+        formData.append('files', file);
+  
+        this.productImageService.uploadPhoto(formData).subscribe(
+          (response) => {
+            // Backend'den gelen yolu al ve preview'i güncelle
+            response.forEach((path: string) => {
+              const index = this.temporaryImages.indexOf(tempImage);
+              if (index !== -1) {
+                this.temporaryImages[index] = {
+                  file: file,
+                  preview: path,  // Backend'den gelen URL
+                  isNew: false,    // Artık yeni değil
+                };
+              }
+            });
+          },
+          (error) => {
+            console.error('Dosya yükleme hatası:', error);
+          }
+        );
+      };
+      reader.readAsDataURL(file);  // Fotoğrafı Base64 formatında oku
+    }
+  }
+  
+  
+  /*
   removeFile(index: number) {
     const image = this.temporaryImages[index];
     if (!image.isNew) {
       this.deletedImages.push(image.preview);
     }
+    this.temporaryImages.splice(index, 1);
+  }
+    */
+  removeFile(index: number) {
+    const image = this.temporaryImages[index];
+  
+    if (!image.isNew) {
+      this.deletedImages.push(image.preview); // Silinecek fotoğraf GUID'si eklenir
+    } else if (image.file) {
+      this.productImageService.deletePhoto(image.preview).subscribe(
+        () => console.log(`Fotoğraf silindi: ${image.preview}`),
+        (error) => console.error('Fotoğraf silme hatası:', error)
+      );
+    }
+  
     this.temporaryImages.splice(index, 1);
   }
 }

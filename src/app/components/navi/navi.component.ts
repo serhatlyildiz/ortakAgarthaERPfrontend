@@ -85,4 +85,12 @@ export class NaviComponent implements OnInit {
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
   }
+
+  productAdd(){
+    this.router.navigate(['/products-add']);
+  }
+
+  productUpdated(){
+    this.router.navigate(['/product-operations']);
+  }
 }

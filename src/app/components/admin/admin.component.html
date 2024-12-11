@@ -235,12 +235,6 @@
                       {{ sortOrder === "asc" ? "🔼" : "🔽" }}
                     </span>
                   </th>
-                  <th (click)="sort('status')">
-                    Status
-                    <span *ngIf="sortColumn === 'status'">
-                      {{ sortOrder === "asc" ? "🔼" : "🔽" }}
-                    </span>
-                  </th>
                   <th (click)="sort('cinsiyet')">
                     Gender
                     <span *ngIf="sortColumn === 'gender'">
@@ -264,7 +258,6 @@
                   <td>{{ user.city }}</td>
                   <td>{{ user.district }}</td>
                   <td>{{ user.adress }}</td>
-                  <td>{{ user.status ? "Active" : "Inactive" }}</td>
                   <td>{{ user.cinsiyet }}</td>
                   <td>
                     <div ngbDropdown class="btn-group">

@@ -13,4 +13,8 @@ export class ProductImageService {
   uploadPhoto(formData: FormData): Observable<string[]> {
     return this.http.post<string[]>(`${this.apiUrl}/upload`, formData); // FormData'yı POST isteği olarak gönderiyoruz
   }
+
+  deletePhoto(fileName: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/delete?fileName=${encodeURIComponent(fileName)}`); // Fotoğraf silme
+  }
 }

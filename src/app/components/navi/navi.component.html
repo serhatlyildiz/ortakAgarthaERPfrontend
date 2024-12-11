@@ -60,7 +60,12 @@
             </ul>
           </li>
           <li class="active" *ngIf="isAdmin()"><a href="/admin">Admin Page</a></li>
-          <li class="active" *ngIf="isAdmin()"><a href="/product-operations">Product Operations</a></li>
+          <li class="has-children active" *ngIf="isAdmin()"><a>Product Operations</a>
+            <ul class="dropdown">
+              <li><a (click)="productAdd()">Product Add</a></li>
+              <li><a (click)="productUpdated()">Product Updated</a></li>
+            </ul>
+          </li>
         </ul>                                
         </nav>
       </div>
