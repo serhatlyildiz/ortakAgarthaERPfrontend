@@ -1,6 +1,4 @@
-import { ProductDetailDto } from './ProductDetailDto';
-
 export interface CartItem {
-  product: ProductDetailDto;
+  product: number;
   quantity: number;
 }
