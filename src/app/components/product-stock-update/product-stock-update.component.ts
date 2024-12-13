@@ -13,6 +13,7 @@ import { ActivatedRoute, Router} from '@angular/router';
 import { ProductImageService } from '../../services/product-image.service';
 import { ToastrService } from 'ngx-toastr';
 import { v4 as uuidv4 } from 'uuid';
+import { TemporaryImage } from '../../models/temporayImage';
 
 @Component({
   selector: 'app-product-stock-update',
@@ -39,6 +40,7 @@ export class ProductStockUpdateComponent implements OnInit {
     productSize: '',
     images: [],
     status: true,
+    productCode: '',
   };
 
   sizes = [
@@ -61,7 +63,7 @@ export class ProductStockUpdateComponent implements OnInit {
   productImages = {
     images: [] as any[], // Mevcut fotoğraflar ve yeni eklenenler
   };
-  temporaryImages: { file: File | null; preview: string; isNew: boolean }[] = []; // Yeni veya mevcut fotoğraflar
+  temporaryImages: TemporaryImage[] = [];
   deletedImages: string[] = []; // Silinen fotoğrafların yolları
 
   constructor(
@@ -240,72 +242,43 @@ export class ProductStockUpdateComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
 
-  /*
   onFilesSelected(event: any) {
     const files: FileList = event.target.files;
     const fileArray: File[] = Array.from(files);
-    console.log(this.temporaryImages);
+  
     for (let file of fileArray) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.temporaryImages.push({
-          file: file,
-          preview: reader.result as string,
-          isNew: true,
-        });
-      };
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append('files', file, file.name);
+  
+      // Dosyayı backend'e yüklüyoruz
+      this.productImageService.uploadPhoto(formData).subscribe(
+        (response: string[]) => {
+          // Backend'den gelen veriyi dizimize ekliyoruz
+          response.forEach((guid: string) => {
+            if (guid) {
+              this.temporaryImages.push({
+                file: file,
+                preview: guid,  // Backend'den gelen veri
+                isNew: true
+              });
+            }
+          });
+          this.displayImages();
+        },
+        (error) => {
+          console.error('Dosya yükleme hatası:', error);
+        }
+      );
     }
-    console.log(this.temporaryImages);
   }
-    */
 
-  onFilesSelected(event: any) {
-    const files: FileList = event.target.files;
-    const fileArray: File[] = Array.from(files);
-  
-    for (let file of fileArray) {
-      // Base64 ile geçici önizleme ekle
-      const reader = new FileReader();
-      reader.onload = () => {
-        const tempImage = {
-          file: file,
-          preview: reader.result as string,  // Base64 formatında
-          isNew: true,
-        };
-  
-        // Geçici listeye ekle
-        this.temporaryImages.push(tempImage);
-  
-        // Fotoğrafı backend'e yükle
-        const formData = new FormData();
-        formData.append('files', file);
-  
-        this.productImageService.uploadPhoto(formData).subscribe(
-          (response) => {
-            // Backend'den gelen yolu al ve preview'i güncelle
-            response.forEach((path: string) => {
-              const index = this.temporaryImages.indexOf(tempImage);
-              if (index !== -1) {
-                this.temporaryImages[index] = {
-                  file: file,
-                  preview: path,  // Backend'den gelen URL
-                  isNew: false,    // Artık yeni değil
-                };
-              }
-            });
-          },
-          (error) => {
-            console.error('Dosya yükleme hatası:', error);
-          }
-        );
-      };
-      reader.readAsDataURL(file);  // Fotoğrafı Base64 formatında oku
-    }
-  }
+  displayImages() {
+  console.log('Görüntülenen Fotoğraflar:', this.temporaryImages);
+}
   
   
-  /*
+  
+  
   removeFile(index: number) {
     const image = this.temporaryImages[index];
     if (!image.isNew) {
@@ -313,21 +286,5 @@ export class ProductStockUpdateComponent implements OnInit {
     }
     this.temporaryImages.splice(index, 1);
   }
-    */
-  removeFile(index: number) {
-    const image = this.temporaryImages[index];
-  
-    if (!image.isNew) {
-      this.deletedImages.push(image.preview); // Silinecek fotoğraf GUID'si eklenir
-    } else if (image.file) {
-      this.productImageService.deletePhoto(image.preview).subscribe(
-        () => console.log(`Fotoğraf silindi: ${image.preview}`),
-        (error) => console.error('Fotoğraf silme hatası:', error)
-      );
-    }
-  
-    this.temporaryImages.splice(index, 1);
-  }
+    
 }
-
-  

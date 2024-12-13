@@ -9,6 +9,18 @@
   <form class="row g-3">
     <!-- Ürün Adı -->
     <div class="col-md-3">
+      <label for="productName" class="form-label">Ürün Kodu</label>
+      <input
+        type="text"
+        class="form-control"
+        id="productCode"
+        [(ngModel)]="productDetail.productCode"
+        name="productCode"
+        [disabled]="true"
+        required
+      />
+    </div>
+    <div class="col-md-3">
       <label for="productName" class="form-label">Ürün Adı</label>
       <input
         type="text"
@@ -70,21 +82,8 @@
       />
     </div>
 
-    <!-- Ürün Açıklaması -->
-    <div class="col-12">
-      <label for="productDescription" class="form-label">Ürün Açıklaması</label>
-      <textarea
-        id="productDescription"
-        class="form-control"
-        [(ngModel)]="productDetail.productDescription"
-        name="productDescription"
-        rows="3"
-        placeholder="Ürün açıklaması giriniz"
-      ></textarea>
-    </div>
-
     <!-- Stok -->
-    <div class="col-md-4">
+    <div class="col-md-3">
       <label for="unitsInStock" class="form-label">Stok</label>
       <input
         type="number"
@@ -98,7 +97,7 @@
     </div>
 
     <!-- Renk -->
-    <div class="col-md-4">
+    <div class="col-md-3">
       <label for="colorName" class="form-label">Renk</label>
       <select
         id="colorName"
@@ -115,7 +114,7 @@
     </div>
 
     <!-- Ürün Boyutu -->
-    <div class="col-md-4">
+    <div class="col-md-3">
       <label for="filterSize" class="form-label">Size</label>
       <select
         class="form-select"
@@ -128,6 +127,19 @@
       </select>
     </div>
 
+    <!-- Ürün Açıklaması -->
+    <div class="col-12">
+      <label for="productDescription" class="form-label">Ürün Açıklaması</label>
+      <textarea
+        id="productDescription"
+        class="form-control"
+        [(ngModel)]="productDetail.productDescription"
+        name="productDescription"
+        rows="3"
+        placeholder="Ürün açıklaması giriniz"
+      ></textarea>
+    </div>
+
     <div class="col-12">
       <label class="form-label">Fotoğraflar</label>&nbsp;
       <!-- Fotoğraf Ekle Butonu -->
@@ -137,7 +149,6 @@
         multiple
         accept="image/*"
         style="display: none"
-        
         #fileInputn
         (change)="onFilesSelected($event)"
       />

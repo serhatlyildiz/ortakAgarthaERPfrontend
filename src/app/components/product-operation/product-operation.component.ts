@@ -12,7 +12,7 @@ import { ColorService } from '../../services/colors.service';
 import { Component, OnInit } from '@angular/core';
 import { ProductFilterModel } from '../../models/productfiltermodel';
 import { ListResponseModel } from '../../models/listResponseModel';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductStocksService } from '../../services/product-stocks.service';
 
 @Component({
@@ -35,6 +35,8 @@ export class ProductOperationComponent implements OnInit {
   superCategories: SuperCategoryModel[] = [];
   categories: CategoryModel[] = [];
   colors: Colors[] = [];
+  paramProductCode: string;
+  paramProductId: number;
   filters: any = {
     ProductName: null,
     SuperCategoryName: null,
@@ -46,6 +48,7 @@ export class ProductOperationComponent implements OnInit {
     ColorName: null,
     ProductSize: null,
     Status: null,
+    ProductCode: null,
   };  
   sizes = [
     { id: 'XS', name: 'XS' },
@@ -58,6 +61,7 @@ export class ProductOperationComponent implements OnInit {
   ];
 
   constructor(
+    private route: ActivatedRoute,
     private productService: ProductService,
     private toastrService: ToastrService,
     private superCategoryService: SuperCategoryService,
@@ -68,13 +72,38 @@ export class ProductOperationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isLoading=true;
+    this.isLoading = true;
+  
+    // Route parametrelerini kontrol et
+    this.route.paramMap.subscribe((params) => {
+      const productCode = params.get('productCode');
+      const productId = params.get('productId');
+      this.paramProductCode = productCode;
+      this.paramProductId = Number(productId);
+  
+      if (productCode !=="navi") {
+        // Eğer productCode varsa, filtreleme yap
+        this.filters = {
+          ProductCode: productCode,
+        };
+        this.filterByProductCode(productCode);
+      } else {
+        // Eğer productCode yoksa, tüm ürünleri listele
+        this.loadAllProducts();
+      }
+    });
+  
+    this.loadSuperCategories();
+    this.loadColors();
+  }
+
+  loadAllProducts(): void {
     this.productService.getProductDetails().subscribe({
       next: (response) => {
         console.log('Gelen Veri:', response.data);
-        this.productDetails = response.data.filter(product => product.status === true);
+        this.productDetails = response.data.filter((product) => product.status === true);
         this.isLoading = false;
-
+  
         // Resim dizini başlatma
         this.productDetails.forEach((product) => {
           this.currentImageIndex[product.productId] = 0; // İlk resim gösterilsin
@@ -85,8 +114,24 @@ export class ProductOperationComponent implements OnInit {
         this.isLoading = false;
       },
     });
-    this.loadSuperCategories();
-    this.loadColors();
+  }
+  
+  filterByProductCode(productCode: string): void {
+    this.productService.filterProducts({ ProductCode: productCode }).subscribe({
+      next: (response: any) => {
+        console.log('API Yanıtı:', response); // Yanıtı kontrol
+        this.productDetails = response.filter((product: any) => product.status === true);
+        this.productDetails.forEach((product) => {
+          this.currentImageIndex[product.productId] = 0; // İlk resim gösterilsin
+        });
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Hata:', error);
+        this.errorMessage = 'Ürün detayları alınırken bir hata oluştu.';
+        this.isLoading = false;
+      },
+    });
   }
 
   loadColors() {
@@ -154,6 +199,7 @@ export class ProductOperationComponent implements OnInit {
       ColorName: this.filters.colorName || null,
       ProductSize: this.filters.productSize || null,
       Status: this.filters.status === null ? this.filters.status : null,
+      ProductCode: this.filters.productCode || null,
     };
   
     console.log('Gönderilen filtre:', this.filters); // Filtre objesini kontrol
@@ -253,5 +299,13 @@ export class ProductOperationComponent implements OnInit {
         (this.sortOrder === 'asc' ? 1 : -1)
       );
     });
+  }
+
+  navigateToProductStockOp(): void {
+    this.router.navigate(['/product-stock-op']);
+  }
+
+  productStockAdd(): void {
+    this.router.navigate(['product-stock-add', this.paramProductCode,this.paramProductId]);
   }
 }
