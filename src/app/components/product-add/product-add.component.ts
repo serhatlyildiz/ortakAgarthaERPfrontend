@@ -107,7 +107,7 @@ export class ProductAddComponent implements OnInit {
       console.log("Gönderilen model:", productModel);
   
       // Son olarak, API'ye yeni objeyi gönderiyoruz
-      this.productService.add(productModel).subscribe(
+      this.productService.productStockAdd(productModel).subscribe(
         (response) => {
           if (response.success) {
             this.toastrService.success(response.message, 'Başarılı');

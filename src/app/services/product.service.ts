@@ -33,6 +33,13 @@ export class ProductService {
   
     return this.httpClient.post<ResponseModel>(this.apiUrl + '/add', product, { headers });
   }
+
+  productStockAdd(product: Product): Observable<ResponseModel> {
+    const token = localStorage.getItem('token'); // Token'ı al
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+    return this.httpClient.post<ResponseModel>(this.apiUrl + '/productstockadd', product, { headers });
+  }
   
 
   deleteProduct(productId: number): Observable<ResponseModel> {

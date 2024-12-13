@@ -50,6 +50,7 @@ const routes: Routes = [
   { path: 'product-stock-update/:productStockId', component: ProductStockUpdateComponent},
   { path: 'product-stock-op', component: ProductStockOpComponent},
   { path: 'product-stock-add/:productCode/:productId', component: ProductStockAddComponent},
+  { path: 'product-stock-add', component: ProductStockAddComponent},
 ];
 
 bootstrapApplication(AppComponent, {
