@@ -4,6 +4,6 @@ export interface Product{
     productName:string;
     productDescription:string;
     unitPrice:number;
-    IsActive: boolean;
-    Quantity:number;
+    Status: boolean;
+    productCode: string;
 }

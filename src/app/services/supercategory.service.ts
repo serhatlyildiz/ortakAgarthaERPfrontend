@@ -16,4 +16,10 @@ export class SuperCategoryService {
   getAll(): Observable<ListResponseModel<SuperCategoryModel>>{
     return this.http.get<ListResponseModel<SuperCategoryModel>>(this.apiUrl + '/getall');
   }
+
+  getBySuperCategoryId(superCategoryId: number): Observable<SuperCategoryModel> {
+    return this.http.get<SuperCategoryModel>(
+      `${this.apiUrl}/getbyid?superCategoryId=${superCategoryId}`
+    );
+  }   
 }

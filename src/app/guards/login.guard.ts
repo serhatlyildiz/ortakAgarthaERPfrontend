@@ -38,8 +38,15 @@ export class LoginGuard implements CanActivate {
 
   private isTokenExpired(token: string | null): boolean {
     if (!token) return true; // Token yoksa geçersiz say
-    const decoded: { exp: number } = jwtDecode(token);
+    const decoded: { exp: number } = jwtDecode(token); // JWT'yi decode et
     const currentTime = Math.floor(Date.now() / 1000); // Geçerli zamanı al
-    return decoded.exp < currentTime; // Eğer exp süresi dolmuşsa true döner
-  }
+    const isExpired = decoded.exp < currentTime; // Token süresi dolmuş mu?
+  
+    if (isExpired) {
+      localStorage.removeItem('token'); // Süresi dolmuşsa storage'den sil
+      console.warn('Token süresi dolduğu için silindi.');
+    }
+  
+    return isExpired; // Süresi dolmuşsa true döner
+  }
 }

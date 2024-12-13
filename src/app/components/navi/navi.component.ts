@@ -86,11 +86,13 @@ export class NaviComponent implements OnInit {
     return this.authService.isAuthenticated();
   }
 
+  /*
   productAdd(){
-    this.router.navigate(['/products-add']);
+    this.router.navigate(['/product-stock-op']);
   }
 
   productUpdated(){
-    this.router.navigate(['/product-operations']);
+    this.router.navigate(['/product-operations',"navi"]);
   }
+    */
 }

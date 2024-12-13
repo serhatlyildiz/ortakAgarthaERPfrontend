@@ -25,6 +25,8 @@ import { ProductOperationComponent } from './app/components/product-operation/pr
 import { PasswordResetComponent } from './app/components/password-reset/password-reset.component';
 import { CartSummaryComponent } from './app/components/cart-summary/cart-summary.component';
 import { ProductStockUpdateComponent } from './app/components/product-stock-update/product-stock-update.component';
+import { ProductStockOpComponent } from './app/components/product-stock-op/product-stock-op.component';
+import { ProductStockAddComponent } from './app/components/product-stock-add/product-stock-add.component';
 
 const routes: Routes = [
   { path: '', component: ProductComponent },
@@ -41,10 +43,13 @@ const routes: Routes = [
   { path: 'admin-user-update/:productId', component: AdminUserUpdateComponent },
   { path: 'admin', component: AdminComponent, canActivate: [LoginGuard] },
   { path: 'product-detail/:id', component: ProductDetailComponent },
-  { path: 'product-operations', component: ProductOperationComponent },
+  //{ path: 'product-operations', component: ProductOperationComponent },
+  { path: 'product-operations/:productCode/:productId', component: ProductOperationComponent },
   { path: 'password-reset', component: PasswordResetComponent },
   { path: 'cart-summary', component: CartSummaryComponent },
   { path: 'product-stock-update/:productStockId', component: ProductStockUpdateComponent},
+  { path: 'product-stock-op', component: ProductStockOpComponent},
+  { path: 'product-stock-add/:productCode/:productId', component: ProductStockAddComponent},
 ];
 
 bootstrapApplication(AppComponent, {

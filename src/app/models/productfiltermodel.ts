@@ -9,4 +9,5 @@ export interface ProductFilterModel {
   superCategoryName: string | null;
   categoryName: string | null;
   status: boolean | null;
+  productCode: string | null;
 }

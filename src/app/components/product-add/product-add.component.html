@@ -1,139 +1,103 @@
 <div class="content">
-  <div class="col-md-12">
-    <div class="card shadow-sm">
-      <div class="card-header bg-primary text-white">
-        <h5 class="title mb-0">Ürün Ekle</h5>
-      </div>
-      <div class="card-body">
-        <form [formGroup]="productAddForm">
-          <div class="row g-3">
-            <!-- Supercategory -->
-            <div class="col-md-6">
-              <label for="superCategoryId" class="form-label"
-                >Cinsiyet Kategorisi</label
-              >
-              <select
-                id="superCategoryId"
-                formControlName="superCategoryId"
-                class="form-select"
-              >
-                <option value="" disabled selected>Üst Kategori Seçin</option>
-                <option
-                  *ngFor="let superCategory of superCategories"
-                  [value]="superCategory.id"
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="title mb-0">Ürün Ekle</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="productAddForm">
+            <div class="row g-3">
+              <!-- Supercategory -->
+              <div class="col-md-6">
+                <label for="superCategoryId" class="form-label">Cinsiyet Kategorisi</label>
+                <select
+                  id="superCategoryId"
+                  formControlName="superCategoryId"
+                  [(ngModel)]="selectedSuperCategoryId"
+                  (ngModelChange)="onSuperCategoryChange($event)"
+                  class="form-select"
                 >
-                  {{ superCategory.name }}
-                </option>
-              </select>
-            </div>
-
-            <!-- Category -->
-            <div class="col-md-6">
-              <label for="categoryId" class="form-label">Kategori</label>
-              <select
-                id="categoryId"
-                formControlName="categoryId"
-                class="form-select"
-              >
-                <option value="" disabled selected>Kategori Seçin</option>
-                <option
-                  *ngFor="let category of categories"
-                  [value]="category.id"
+                  <option value="" disabled selected>Üst Kategori Seçin</option>
+                  <option *ngFor="let superCategory of superCategories" [value]="superCategory.superCategoryId">
+                    {{ superCategory.superCategoryName }}
+                  </option>
+                </select>
+              </div>
+  
+              <!-- Category -->
+              <div class="col-md-6">
+                <label for="categoryId" class="form-label">Kategori</label>
+                <select
+                  id="categoryId"
+                  formControlName="categoryId"
+                  class="form-select"
                 >
-                  {{ category.name }}
-                </option>
-              </select>
-            </div>
+                  <option value="" disabled selected>Kategori Seçin</option>
+                  <option *ngFor="let category of categories" [value]="category.categoryId">
+                    {{ category.categoryName }}
+                  </option>
+                </select>
+              </div>
+              
+              <!-- Product Code -->
+              <div class="col-md-5">
+                <label for="productCode" class="form-label">Ürün Kodu</label>
+                <input
+                  type="text"
+                  id="productCode"
+                  formControlName="productCode"
+                  class="form-control"
+                  placeholder="Ürün kodunuzu giriniz"
+                />
+              </div>
 
-            <!-- Product Name -->
-            <div class="col-md-6">
-              <label for="productName" class="form-label">Ürün Adı</label>
-              <input
-                type="text"
-                id="productName"
-                formControlName="productName"
-                class="form-control"
-                placeholder="Ürün adı giriniz"
-              />
+              <!-- Product Name -->
+              <div class="col-md-5">
+                <label for="productName" class="form-label">Ürün Adı</label>
+                <input
+                  type="text"
+                  id="productName"
+                  formControlName="productName"
+                  class="form-control"
+                  placeholder="Ürün adı giriniz"
+                />
+              </div>
+  
+              <!-- Price -->
+              <div class="col-md-2">
+                <label for="unitPrice" class="form-label">Birim Fiyatı ₺</label>
+                <input
+                  type="number"
+                  id="unitPrice"
+                  formControlName="unitPrice"
+                  class="form-control"
+                  placeholder="Fiyat giriniz ₺"
+                />
+              </div>
+  
+              <!-- Product Description -->
+              <div class="col-md-12">
+                <label for="description" class="form-label">Ürün Açıklaması</label>
+                <textarea
+                  id="description"
+                  formControlName="description"
+                  class="form-control"
+                  rows="2"
+                  placeholder="Ürün açıklaması giriniz"
+                ></textarea>
+              </div>
             </div>
-
-            <!-- Product Description -->
-            <div class="col-md-6">
-              <label for="description" class="form-label"
-                >Ürün Açıklaması</label
-              >
-              <textarea
-                id="description"
-                formControlName="description"
-                class="form-control"
-                rows="2"
-                placeholder="Ürün açıklaması giriniz"
-              ></textarea>
-            </div>
-
-            <!-- Price -->
-            <div class="col-md-6">
-              <label for="unitPrice" class="form-label">Birim Fiyatı</label>
-              <input
-                type="number"
-                id="unitPrice"
-                formControlName="unitPrice"
-                class="form-control"
-                placeholder="Fiyat giriniz"
-              />
-            </div>
-
-            <!-- Stock -->
-            <div class="col-md-6">
-              <label for="unitsInStock" class="form-label">Stok Adedi</label>
-              <input
-                type="number"
-                id="unitsInStock"
-                formControlName="unitsInStock"
-                class="form-control"
-                placeholder="Stok adedi giriniz"
-              />
-            </div>
-
-            <!-- Color -->
-            <div class="col-md-6">
-              <label for="colorId" class="form-label">Renk</label>
-              <select
-                id="colorId"
-                formControlName="colorId"
-                class="form-select"
-              >
-                <option value="" disabled selected>Renk Seçin</option>
-                <option *ngFor="let color of colors" [value]="color.id">
-                  {{ color.name }}
-                </option>
-              </select>
-            </div>
-
-            <!-- Product Size -->
-            <div class="col-md-6">
-              <label for="sizeId" class="form-label">Ürün Bedeni</label>
-              <select id="sizeId" formControlName="sizeId" class="form-select">
-                <option value="" disabled selected>Boyut Seçin</option>
-                <option *ngFor="let size of sizes" [value]="size.id">
-                  {{ size.name }}
-                </option>
-              </select>
-            </div>
-
-            <!-- Photo Upload -->
-            <div class="col-md-12">
-              <label for="productImage" class="form-label"
-                >Ürün Fotoğrafı</label
-              >
-              <input type="file" id="productImage" class="form-control" />
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="card-footer text-end">
-        <button class="btn btn-primary" (click)="add()">Ürünü Ekle</button>
+          </form>
+        </div>
+        <div class="card-footer text-end">
+          <button
+            class="btn btn-primary"
+            (click)="add()"
+          >
+            Ürünü Ekle
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+ 
