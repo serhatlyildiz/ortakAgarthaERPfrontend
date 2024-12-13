@@ -173,11 +173,13 @@ export class ProductStockUpdateComponent implements OnInit {
 
   loadPhotosFromDatabase() {
     const databasePhotos: string[] = this.productDetail.images || [];
-    this.temporaryImages = databasePhotos.map((photoPath) => ({
-      file: null,
-      preview: photoPath, // Dönen yol frontend için geçerli olacak
-      isNew: false,
-    }));
+    this.temporaryImages = databasePhotos.map((photoPath) => {
+      return ({
+        file: null,
+        preview: photoPath, // Dönen yol frontend için geçerli olacak
+        isNew: false,
+      });
+    });
   }
 
   onSuperCategoryChange(superCategoryId: number): Promise<void> {
@@ -252,36 +254,6 @@ export class ProductStockUpdateComponent implements OnInit {
 
   selectFiles() {
     this.fileInput.nativeElement.click();
-  }
-
-  onFilesSelected(event: any) {
-    const files: FileList = event.target.files;
-    const fileArray: File[] = Array.from(files);
-  
-    for (let file of fileArray) {
-      const formData = new FormData();
-      formData.append('files', file, file.name);
-  
-      // Dosyayı backend'e yüklüyoruz
-      this.productImageService.uploadPhoto(formData).subscribe(
-        (response: string[]) => {
-          // Backend'den gelen veriyi dizimize ekliyoruz
-          response.forEach((guid: string) => {
-            if (guid) {
-              this.temporaryImages.push({
-                file: file,
-                preview: guid,  // Backend'den gelen veri
-                isNew: true
-              });
-            }
-          });
-          this.displayImages();
-        },
-        (error) => {
-          console.error('Dosya yükleme hatası:', error);
-        }
-      );
-    }
   }
 
   onFilesSelected(event: any) {
