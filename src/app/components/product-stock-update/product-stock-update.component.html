@@ -1,4 +1,4 @@
-<base href="/">
+<base href="/" />
 <div *ngIf="isLoading" class="loading-container">
   <div class="spinner-border text-primary" role="status">
     <span class="visually-hidden">Loading...</span>
@@ -23,7 +23,9 @@
 
     <!-- Super Kategori -->
     <div class="col-md-3">
-      <label for="superCategoryName" class="form-label">Cinsiyet Kategori</label>
+      <label for="superCategoryName" class="form-label"
+        >Cinsiyet Kategori</label
+      >
       <select
         id="superCategoryName"
         class="form-select"
@@ -33,7 +35,10 @@
         required
       >
         <option disabled>Üst Kategori seçiniz...</option>
-        <option *ngFor="let superCategory of superCategories" [value]="superCategory.superCategoryId">
+        <option
+          *ngFor="let superCategory of superCategories"
+          [value]="superCategory.superCategoryId"
+        >
           {{ superCategory.superCategoryName }}
         </option>
       </select>
@@ -50,7 +55,10 @@
         required
       >
         <option disabled>Kategori seçiniz...</option>
-        <option *ngFor="let category of categories" [value]="category.categoryId">
+        <option
+          *ngFor="let category of categories"
+          [value]="category.categoryId"
+        >
           {{ category.categoryName }}
         </option>
       </select>
@@ -124,7 +132,9 @@
         name="productSize"
       >
         <option selected disabled>Size seçiniz...</option>
-        <option *ngFor="let size of sizes" [value]="size.id">{{ size.name }}</option>
+        <option *ngFor="let size of sizes" [value]="size.id">
+          {{ size.name }}
+        </option>
       </select>
     </div>
 
@@ -137,38 +147,52 @@
         multiple
         accept="image/*"
         style="display: none"
-        
         #fileInputn
         (change)="onFilesSelected($event)"
       />
-    
+
       <!-- Ana Fotoğraf başlığı ve logo -->
       <div class="main-photo-header">
         <img src="assets/icons/star.png" alt="Star Icon" class="star-icon" />
       </div>
-    
+
       <!-- Fotoğraflar Listesi -->
       <ul class="image-list">
-        <li *ngFor="let image of temporaryImages; let i = index" class="image-item">
+        <li
+          *ngFor="let image of temporaryImages; let i = index"
+          class="image-item"
+        >
           <div class="image-container">
-            <img [src]="image.preview" alt="Product Image" class="product-image" />
+            <img
+              [src]="image.preview"
+              alt="Product Image"
+              class="product-image"
+            />
           </div>
           <!-- Fotoğrafı Sil Butonu -->
-          <button class="delete-photo-btn" (click)="removeFile(i)">Fotoğrafı Sil</button>
+          <button class="delete-photo-btn" (click)="removeFile(i)">
+            Fotoğrafı Sil
+          </button>
         </li>
       </ul>
     </div>
-    
+
     <!-- Butonlar -->
     <div class="row">
       <div class="col-4 text-start">
-        <button type="submit" class="btn btn-primary" (click)="saveProduct()">Kaydet</button>
+        <button type="submit" class="btn btn-primary" (click)="saveProduct()">
+          Kaydet
+        </button>
       </div>
       <div class="col-4 text-center">
-        <button type="button" class="btn btn-secondary" (click)="resetForm()">Temizle</button>
+        <button type="button" class="btn btn-secondary" (click)="resetForm()">
+          Temizle
+        </button>
       </div>
       <div class="col-4 text-end">
-        <button type="button" class="btn btn-danger" (click)="cancelUpdate()">Geri</button>
+        <button type="button" class="btn btn-danger" (click)="cancelUpdate()">
+          Geri
+        </button>
       </div>
     </div>
   </form>
