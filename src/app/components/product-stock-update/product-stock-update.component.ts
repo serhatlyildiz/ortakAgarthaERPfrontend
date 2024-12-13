@@ -59,6 +59,8 @@ export class ProductStockUpdateComponent implements OnInit {
   productStockId: number = 0;
   isLoading: boolean = true;
   originalProductDetail: ProductDetailDto = { ...this.productDetail };
+  paramProductCode: string;
+  paramPorductId: number;
   @ViewChild('fileInputn') fileInput: any;
   productImages = {
     images: [] as any[], // Mevcut fotoğraflar ve yeni eklenenler
@@ -129,7 +131,8 @@ export class ProductStockUpdateComponent implements OnInit {
         if (response.data && response.data.length > 0) {
           this.productDetail = response.data[0]; // Ürün detaylarını yükle
           console.log('Product Details:', this.productDetail);
-
+          this.paramProductCode= this.productDetail.productCode;
+          this.paramPorductId = this.productDetail.productId;
           // Super Category Eşleştirme
           const matchedSuperCategory = this.superCategories.find(
             (sc) =>
@@ -205,10 +208,12 @@ export class ProductStockUpdateComponent implements OnInit {
         productDescription: this.productDetail.productDescription,
         superCategoryId: Number(this.selectedSuperCategoryId),
         categoryId: Number(this.productDetail.categoryId),
+        productCode: this.productDetail.productCode,
       },
       productDetails: {
         productDetailsId: this.productDetail.productDetailsId,
         productSize: this.productDetail.productSize,
+        productCode: this.productDetail.productCode,
       },
       productStocks: {
         productStocksId: this.productDetail.productStocksId,
@@ -238,8 +243,8 @@ export class ProductStockUpdateComponent implements OnInit {
       );
   }
 
-  cancelUpdate(): void {
-    this.router.navigate(['/product-operations']);
+  cancelUpdate(productCode: string, productId: number): void {
+    this.router.navigate(['/product-operations', productCode,productId]);
   }
 
   resetForm(): void {
@@ -252,36 +257,6 @@ export class ProductStockUpdateComponent implements OnInit {
 
   selectFiles() {
     this.fileInput.nativeElement.click();
-  }
-
-  onFilesSelected(event: any) {
-    const files: FileList = event.target.files;
-    const fileArray: File[] = Array.from(files);
-  
-    for (let file of fileArray) {
-      const formData = new FormData();
-      formData.append('files', file, file.name);
-  
-      // Dosyayı backend'e yüklüyoruz
-      this.productImageService.uploadPhoto(formData).subscribe(
-        (response: string[]) => {
-          // Backend'den gelen veriyi dizimize ekliyoruz
-          response.forEach((guid: string) => {
-            if (guid) {
-              this.temporaryImages.push({
-                file: file,
-                preview: guid,  // Backend'den gelen veri
-                isNew: true
-              });
-            }
-          });
-          this.displayImages();
-        },
-        (error) => {
-          console.error('Dosya yükleme hatası:', error);
-        }
-      );
-    }
   }
 
   onFilesSelected(event: any) {
