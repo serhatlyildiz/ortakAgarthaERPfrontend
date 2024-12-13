@@ -15,5 +15,6 @@ export interface ProductDetailDto {
     productSize: string;
     images: string[];
     status: boolean;
+    productCode: string;
   }
 

@@ -16,6 +16,8 @@ import { ProductDetailComponent } from './components/product-detail/product-deta
 import { ProductOperationComponent } from './components/product-operation/product-operation.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { ProductStockUpdateComponent } from './components/product-stock-update/product-stock-update.component';
+import { ProductStockOpComponent } from './components/product-stock-op/product-stock-op.component';
+import { ProductStockAddComponent } from './components/product-stock-add/product-stock-add.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: ProductComponent },
@@ -32,9 +34,12 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'product-detail/:id', component: ProductDetailComponent},
-  { path: 'product-operations', component: ProductOperationComponent},
+  //{ path: 'product-operations', component: ProductOperationComponent},
+  { path: 'product-operations/:productCode/:productId', component: ProductOperationComponent},
   { path: 'password-reset', component: PasswordResetComponent },
   { path: 'product-stock-update/:productStockId', component: ProductStockUpdateComponent},
+  { path: 'product-stock-op', component: ProductStockOpComponent},
+  { path: 'product-stock-add/:productCode/:productId', component: ProductStockAddComponent},
 ];
 
 @NgModule({
