@@ -176,11 +176,13 @@ export class ProductStockUpdateComponent implements OnInit {
 
   loadPhotosFromDatabase() {
     const databasePhotos: string[] = this.productDetail.images || [];
-    this.temporaryImages = databasePhotos.map((photoPath) => ({
-      file: null,
-      preview: photoPath, // Dönen yol frontend için geçerli olacak
-      isNew: false,
-    }));
+    this.temporaryImages = databasePhotos.map((photoPath) => {
+      return ({
+        file: null,
+        preview: photoPath, // Dönen yol frontend için geçerli olacak
+        isNew: false,
+      });
+    });
   }
 
   onSuperCategoryChange(superCategoryId: number): Promise<void> {
