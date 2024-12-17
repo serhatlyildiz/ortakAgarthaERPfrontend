@@ -27,6 +27,7 @@ import { CartSummaryComponent } from './app/components/cart-summary/cart-summary
 import { ProductStockUpdateComponent } from './app/components/product-stock-update/product-stock-update.component';
 import { ProductStockOpComponent } from './app/components/product-stock-op/product-stock-op.component';
 import { ProductStockAddComponent } from './app/components/product-stock-add/product-stock-add.component';
+import { ContactComponent } from './app/components/contact/contact.component';
 
 const routes: Routes = [
   { path: '', component: ProductComponent },
@@ -44,13 +45,23 @@ const routes: Routes = [
   { path: 'admin', component: AdminComponent, canActivate: [LoginGuard] },
   { path: 'product-detail/:id', component: ProductDetailComponent },
   //{ path: 'product-operations', component: ProductOperationComponent },
-  { path: 'product-operations/:productCode/:productId', component: ProductOperationComponent },
+  {
+    path: 'product-operations/:productCode/:productId',
+    component: ProductOperationComponent,
+  },
   { path: 'password-reset', component: PasswordResetComponent },
   { path: 'cart-summary', component: CartSummaryComponent },
-  { path: 'product-stock-update/:productStockId', component: ProductStockUpdateComponent},
-  { path: 'product-stock-op', component: ProductStockOpComponent},
-  { path: 'product-stock-add/:productCode/:productId', component: ProductStockAddComponent},
-  { path: 'product-stock-add', component: ProductStockAddComponent},
+  {
+    path: 'product-stock-update/:productStockId',
+    component: ProductStockUpdateComponent,
+  },
+  { path: 'product-stock-op', component: ProductStockOpComponent },
+  {
+    path: 'product-stock-add/:productCode/:productId',
+    component: ProductStockAddComponent,
+  },
+  { path: 'product-stock-add', component: ProductStockAddComponent },
+  { path: 'contact', component: ContactComponent },
 ];
 
 bootstrapApplication(AppComponent, {

@@ -18,6 +18,7 @@ import { PasswordResetComponent } from './components/password-reset/password-res
 import { ProductStockUpdateComponent } from './components/product-stock-update/product-stock-update.component';
 import { ProductStockOpComponent } from './components/product-stock-op/product-stock-op.component';
 import { ProductStockAddComponent } from './components/product-stock-add/product-stock-add.component';
+import { ContactComponent } from './components/contact/contact.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: ProductComponent },
@@ -33,14 +34,24 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'admin', component: AdminComponent },
-  { path: 'product-detail/:id', component: ProductDetailComponent},
+  { path: 'product-detail/:id', component: ProductDetailComponent },
   //{ path: 'product-operations', component: ProductOperationComponent},
-  { path: 'product-operations/:productCode/:productId', component: ProductOperationComponent},
+  {
+    path: 'product-operations/:productCode/:productId',
+    component: ProductOperationComponent,
+  },
   { path: 'password-reset', component: PasswordResetComponent },
-  { path: 'product-stock-update/:productStockId', component: ProductStockUpdateComponent},
-  { path: 'product-stock-op', component: ProductStockOpComponent},
-  { path: 'product-stock-add/:productCode/:productId', component: ProductStockAddComponent},
-  { path: 'product-stock-add', component: ProductStockAddComponent},
+  {
+    path: 'product-stock-update/:productStockId',
+    component: ProductStockUpdateComponent,
+  },
+  { path: 'product-stock-op', component: ProductStockOpComponent },
+  {
+    path: 'product-stock-add/:productCode/:productId',
+    component: ProductStockAddComponent,
+  },
+  { path: 'product-stock-add', component: ProductStockAddComponent },
+  { path: 'contact', component: ContactComponent },
 ];
 
 @NgModule({
@@ -48,7 +59,6 @@ export const routes: Routes = [
     RouterModule.forRoot(routes),
     ReactiveFormsModule,
     NgbDropdownModule,
-
   ],
   exports: [RouterModule],
   providers: [

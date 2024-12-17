@@ -66,8 +66,7 @@ export class ProductStockUpdateComponent implements OnInit {
     images: [] as any[], // Mevcut fotoğraflar ve yeni eklenenler
   };
 
-  temporaryImages: { file: File | ""; preview: string; isNew: boolean }[] =
-    []; // Yeni veya mevcut fotoğraflar
+  temporaryImages: { fileName: File | ''; preview: string; isNew: boolean }[] = []; // Yeni veya mevcut fotoğraflar
   deletedImages: string[] = []; // Silinen fotoğrafların yolları
 
   constructor(
@@ -131,7 +130,7 @@ export class ProductStockUpdateComponent implements OnInit {
         if (response.data && response.data.length > 0) {
           this.productDetail = response.data[0]; // Ürün detaylarını yükle
           console.log('Product Details:', this.productDetail);
-          this.paramProductCode= this.productDetail.productCode;
+          this.paramProductCode = this.productDetail.productCode;
           this.paramPorductId = this.productDetail.productId;
           // Super Category Eşleştirme
           const matchedSuperCategory = this.superCategories.find(
@@ -177,11 +176,11 @@ export class ProductStockUpdateComponent implements OnInit {
   loadPhotosFromDatabase() {
     const databasePhotos: string[] = this.productDetail.images || [];
     this.temporaryImages = databasePhotos.map((photoPath) => {
-      return ({
-        file: "",
+      return {
+        fileName: '',
         preview: photoPath, // Dönen yol frontend için geçerli olacak
         isNew: false,
-      });
+      };
     });
   }
 
@@ -251,7 +250,7 @@ export class ProductStockUpdateComponent implements OnInit {
   }
 
   cancelUpdate(productCode: string, productId: number): void {
-    this.router.navigate(['/product-operations', productCode,productId]);
+    this.router.navigate(['/product-operations', productCode, productId]);
   }
 
   resetForm(): void {
@@ -274,7 +273,7 @@ export class ProductStockUpdateComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         const tempImage = {
-          file: file,
+          fileName: file,
           preview: reader.result as string, // Base64 formatında önizleme
           isNew: true,
         };
@@ -291,7 +290,7 @@ export class ProductStockUpdateComponent implements OnInit {
               const index = this.temporaryImages.indexOf(tempImage);
               if (index !== -1) {
                 this.temporaryImages[index] = {
-                  file: "",
+                  fileName: '',
                   preview: `data:image/png;base64,${base64}`, // Base64 string
                   isNew: false,
                 };
@@ -311,7 +310,7 @@ export class ProductStockUpdateComponent implements OnInit {
 
     if (!image.isNew) {
       this.deletedImages.push(image.preview); // Silinecek fotoğraf GUID'si eklenir
-    } else if (image.file) {
+    } else if (image.fileName) {
       this.productImageService.deletePhoto(image.preview).subscribe(
         () => console.log(`Fotoğraf silindi: ${image.preview}`),
         (error) => console.error('Fotoğraf silme hatası:', error)

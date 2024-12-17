@@ -8,6 +8,8 @@ import { ProductDetailDto } from '../models/ProductDetailDto';
 import { ProductFilterModel } from '../models/productfiltermodel';
 import { productDto } from '../models/productDto';
 import { ProductStockAddDto } from '../models/productStockAddDto';
+import { SingleResponseModel } from '../models/singleResponseModel';
+import { ProductDetailDto2 } from '../models/ProductDetailDto2';
 
 @Injectable({
   providedIn: 'root',
@@ -37,8 +39,10 @@ export class ProductService {
   add(product: Product): Observable<ResponseModel> {
     const token = localStorage.getItem('token'); // Token'ı al
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
-    return this.httpClient.post<ResponseModel>(this.apiUrl + '/add', product, { headers });
+
+    return this.httpClient.post<ResponseModel>(this.apiUrl + '/add', product, {
+      headers,
+    });
   }
 
   productAdd(product: Product): Observable<ResponseModel> {
@@ -53,17 +57,17 @@ export class ProductService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
   
     return this.httpClient.post<ResponseModel>(this.apiUrl + '/productstockadd', productStock, { headers });
+
   }
-  
 
   deleteProduct(productId: number): Observable<ResponseModel> {
     let newPath = this.apiUrl + '/delete?productID=' + productId;
     return this.httpClient.get<ResponseModel>(newPath);
   }
 
-  activateProduct(productId:number): Observable<ResponseModel>{
-    let newPath = this.apiUrl + "/restore?productID=" + productId;
-    return this.httpClient.get<ResponseModel>(newPath)
+  activateProduct(productId: number): Observable<ResponseModel> {
+    let newPath = this.apiUrl + '/restore?productID=' + productId;
+    return this.httpClient.get<ResponseModel>(newPath);
   }
 
   getProductDetails(): Observable<ListResponseModel<ProductDetailDto>> {
@@ -72,24 +76,40 @@ export class ProductService {
     );
   }
 
+  getProductDetails2(): Observable<ListResponseModel<ProductDetailDto2>> {
+    return this.httpClient.get<ListResponseModel<ProductDetailDto2>>(
+      this.apiUrl + '/getproductdetails2'
+    );
+  }
+
   getByProductDetails(productStockId: number): Observable<any> {
     return this.httpClient.get(
-      this.apiUrl + '/getproductstockdetails?productStockId='+productStockId
+      this.apiUrl + '/getproductstockdetails?productStockId=' + productStockId
     );
   }
 
   getByProductCodeForProductDto(productCode: string): Observable<any> {
     return this.httpClient.get(
-      this.apiUrl + '/getproductstockdetails?productCode='+productCode
+      this.apiUrl + '/getproductstockdetails?productCode=' + productCode
     );
   }
-  
-  filterProducts(filters: any): Observable<ListResponseModel<ProductDetailDto>> {
+
+  filterProducts(
+    filters: any
+  ): Observable<ListResponseModel<ProductDetailDto>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.httpClient.post<ListResponseModel<ProductDetailDto>>(`${this.apiUrl}/filter`, filters, { headers });
+    return this.httpClient.post<ListResponseModel<ProductDetailDto>>(
+      `${this.apiUrl}/filter`,
+      filters,
+      { headers }
+    );
   }
 
-  update(product: any, productDetails: any, productStocks: any): Observable<ResponseModel> {
+  update(
+    product: any,
+    productDetails: any,
+    productStocks: any
+  ): Observable<ResponseModel> {
     const token = localStorage.getItem('token'); // Token'ı al
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.httpClient.post<ResponseModel>(
@@ -104,7 +124,22 @@ export class ProductService {
       this.apiUrl + '/getproductdto'
     );
   }
-    
+
+  getProductStockDetailsByProduct(
+    productId: number
+  ): Observable<ListResponseModel<ProductDetailDto>> {
+    return this.httpClient.get<ListResponseModel<ProductDetailDto>>(
+      this.apiUrl +
+        '/get-product-stock-details-by-product?productId=' +
+        productId
+    );
+  }
+
+  getById(productId: number): Observable<SingleResponseModel<Product>> {
+    return this.httpClient.get<SingleResponseModel<Product>>(
+      this.apiUrl + '/getbyid?id=' + productId
+    );
+  }
   /*
   filterProducts(filters: any): Observable<ListResponseModel<ProductDetailDto>> {
     return this.httpClient.post<ListResponseModel<ProductDetailDto>>(
