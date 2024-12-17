@@ -39,12 +39,9 @@ export class ProductComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private activatedRoute: ActivatedRoute,
-    private toastrService: ToastrService,
-    private cartService: CartService,
     private sortService: SortService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -92,7 +89,7 @@ export class ProductComponent implements OnInit {
   }
 
   getProducts() {
-    this.productService.getProductDetails().subscribe((response) => {
+    this.productService.getProductDetails2().subscribe((response) => {
       console.log('ürünler:', response.data);
       this.products = response.data;
       this.dataLoaded = true;
