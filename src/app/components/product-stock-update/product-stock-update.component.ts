@@ -66,8 +66,7 @@ export class ProductStockUpdateComponent implements OnInit {
     images: [] as any[], // Mevcut fotoğraflar ve yeni eklenenler
   };
 
-  temporaryImages: { fileName: File | ''; preview: string; isNew: boolean }[] =
-    []; // Yeni veya mevcut fotoğraflar
+  temporaryImages: { fileName: File | ''; preview: string; isNew: boolean }[] = []; // Yeni veya mevcut fotoğraflar
   deletedImages: string[] = []; // Silinen fotoğrafların yolları
 
   constructor(
@@ -236,11 +235,16 @@ export class ProductStockUpdateComponent implements OnInit {
         (response) => {
           console.log('Ürün başarıyla güncellendi:', response);
           this.toastrService.success('Ürün güncellendi');
-          this.router.navigate(['/product-operations']);
+          this.router.navigate(['/product-operations', this.paramProductCode, this.paramPorductId]);
         },
         (error) => {
-          console.error('Ürün güncelleme sırasında hata oluştu:', error);
-          this.toastrService.error('Ürün güncellenirken hata oluştu');
+          if (error.error && error.error.message) {
+            //alert(`Hata: ${error.error.message}`);
+            this.toastrService.error(error.error.message);
+          } else {
+            //alert('Ürün eklenirken bir hata oluştu. Lütfen tekrar deneyin.');
+            this.toastrService.error('Ürün eklenirken bir hata oluştu. Lütfen tekrar deneyin.')
+          }
         }
       );
   }

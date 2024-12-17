@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { SuperCategoryModel } from '../models/supercategory';
 import { ListResponseModel } from '../models/listResponseModel';
 import { CategoryModel } from '../models/category';
+import { SingleResponseModel } from '../models/singleResponseModel';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,8 @@ export class SuperCategoryService {
     return this.http.get<ListResponseModel<SuperCategoryModel>>(this.apiUrl + '/getall');
   }
 
-  getBySuperCategoryId(superCategoryId: number): Observable<SuperCategoryModel> {
-    return this.http.get<SuperCategoryModel>(
+  getBySuperCategoryId(superCategoryId: number): Observable<SingleResponseModel<SuperCategoryModel>> {
+    return this.http.get<SingleResponseModel<SuperCategoryModel>>(
       `${this.apiUrl}/getbyid?superCategoryId=${superCategoryId}`
     );
   }   

@@ -106,7 +106,7 @@ export class ProductOperationComponent implements OnInit {
   
         // Resim dizini başlatma
         this.productDetails.forEach((product) => {
-          this.currentImageIndex[product.productId] = 0; // İlk resim gösterilsin
+          this.currentImageIndex[product.productStocksId] = 0; // İlk resim gösterilsin
         });
       },
       error: (error) => {
@@ -122,7 +122,7 @@ export class ProductOperationComponent implements OnInit {
         console.log('API Yanıtı:', response); // Yanıtı kontrol
         this.productDetails = response.filter((product: any) => product.status === true);
         this.productDetails.forEach((product) => {
-          this.currentImageIndex[product.productId] = 0; // İlk resim gösterilsin
+          this.currentImageIndex[product.productStocksId] = 0; // İlk resim gösterilsin
         });
         this.isLoading = false;
       },
@@ -227,34 +227,26 @@ export class ProductOperationComponent implements OnInit {
   }
 
   // Resim değiştirme fonksiyonu
-  nextImage(productId: number): void {
-    const product = this.productDetails.find((p) => p.productId === productId);
+  nextImage(productStocksId: number): void {
+    const product = this.productDetails.find(p => p.productStocksId === productStocksId);
     if (product && product.images.length > 0) {
-      this.currentImageIndex[productId] =
-        (this.currentImageIndex[productId] + 1) % product.images.length;
+      this.currentImageIndex[productStocksId] =
+        (this.currentImageIndex[productStocksId] + 1) % product.images.length;
     }
   }
 
-  // Resim değiştirme işlemi
-  previousImage(productId: number): void {
-    const product = this.productDetails.find((p) => p.productId === productId);
-    if (product && product.images.length > 0) {
-      this.currentImageIndex[productId] =
-        (this.currentImageIndex[productId] - 1 + product.images.length) %
-        product.images.length;
-    }
-  }
   updateProduct(productStockId: number){
     this.router.navigate(['/product-stock-update', productStockId]);
   }
 
-  toggleStatus(productDetails: any): void {
-    const productStockId = productDetails.productStockId;
+  toggleStatus(productDetails: number): void {
+    //const productStockId = productDetails.productStockId;
 
-      this.productStocksService.deleteProductStock(productStockId).subscribe({
+      this.productStocksService.deleteProductStock(productDetails).subscribe({
         next: () => {
-          productDetails.status = !productDetails.status;
+          //productDetails.status = !productDetails.status;
           this.toastrService.success('Product status updated successfully.');
+          this.ngOnInit();
         },
         error: () => this.toastrService.error('Failed to update status.'),
       });
