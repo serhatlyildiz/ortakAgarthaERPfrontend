@@ -7,6 +7,7 @@ import { ResponseModel } from '../models/responseModel';
 import { ProductDetailDto } from '../models/ProductDetailDto';
 import { ProductFilterModel } from '../models/productfiltermodel';
 import { productDto } from '../models/productDto';
+import { ProductStockAddDto } from '../models/productStockAddDto';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,12 @@ export class ProductService {
   getProducts(): Observable<ListResponseModel<Product>> {
     let newPath = this.apiUrl + '/getall';
     return this.httpClient.get<ListResponseModel<Product>>(newPath);
+  }
+
+  getById(productId: number): Observable<any> {
+    return this.httpClient.get(
+      this.apiUrl + '/getbyid?id='+productId
+    );
   }
 
   getProductsByCategory(
@@ -34,11 +41,18 @@ export class ProductService {
     return this.httpClient.post<ResponseModel>(this.apiUrl + '/add', product, { headers });
   }
 
-  productStockAdd(product: Product): Observable<ResponseModel> {
+  productAdd(product: Product): Observable<ResponseModel> {
     const token = localStorage.getItem('token'); // Token'ı al
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
   
-    return this.httpClient.post<ResponseModel>(this.apiUrl + '/productstockadd', product, { headers });
+    return this.httpClient.post<ResponseModel>(this.apiUrl + '/productadd', product, { headers });
+  }
+
+  productStockAdd(productStock: ProductStockAddDto): Observable<ResponseModel> {
+    const token = localStorage.getItem('token'); // Token'ı al
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+    return this.httpClient.post<ResponseModel>(this.apiUrl + '/productstockadd', productStock, { headers });
   }
   
 

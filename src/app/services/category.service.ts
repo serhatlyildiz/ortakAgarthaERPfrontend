@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ListResponseModel } from '../models/listResponseModel';
 import { CategoryModel } from '../models/category';
+import { SingleResponseModel } from '../models/singleResponseModel';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +23,10 @@ export class CategoryService {
     );
   } 
 
-  getByCategoryId(categoryId: number): Observable<CategoryModel> {
-    return this.httpClient.get<CategoryModel>(
+  getByCategoryId(categoryId: number): Observable<SingleResponseModel<CategoryModel>> {
+    return this.httpClient.get<SingleResponseModel<CategoryModel>>(
       `${this.apiUrl}/getbyid?categoryId=${categoryId}`
     );
   }
+  
 }

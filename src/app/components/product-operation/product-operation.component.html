@@ -260,8 +260,6 @@
       <tr
         *ngFor="let product of productDetails"
         class="product-row"
-        (mouseenter)="showButton = true"
-        (mouseleave)="showButton = false"
       >
         <td>{{ product.productCode}}</td>
         <td>{{ product.productName }}</td>
@@ -275,14 +273,13 @@
         <td>
           <div class="image-container">
             <img
-              [src]="product.images[currentImageIndex[product.productId]] "
+              [src]="product.images[currentImageIndex[product.productStocksId]] "
               alt="{{ product.productName }}"
               class="table-image"
             />
             <button
-              *ngIf="showButton"
               class="next-button"
-              (click)="nextImage(product.productId)"
+              (click)="nextImage(product.productStocksId)"
             >
               &#8594;
             </button>
@@ -300,7 +297,7 @@
               [ngClass]="{
                 'btn-danger': product.status,
               }"
-              (click)="toggleStatus(product)"
+              (click)="toggleStatus(product.productStocksId)"
             >
               {{ "Sil" }}
             </button>

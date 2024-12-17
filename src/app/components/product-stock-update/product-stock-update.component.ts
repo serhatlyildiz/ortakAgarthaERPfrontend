@@ -66,7 +66,7 @@ export class ProductStockUpdateComponent implements OnInit {
     images: [] as any[], // Mevcut fotoğraflar ve yeni eklenenler
   };
 
-  temporaryImages: { file: File | null; preview: string; isNew: boolean }[] =
+  temporaryImages: { file: File | ""; preview: string; isNew: boolean }[] =
     []; // Yeni veya mevcut fotoğraflar
   deletedImages: string[] = []; // Silinen fotoğrafların yolları
 
@@ -178,7 +178,7 @@ export class ProductStockUpdateComponent implements OnInit {
     const databasePhotos: string[] = this.productDetail.images || [];
     this.temporaryImages = databasePhotos.map((photoPath) => {
       return ({
-        file: null,
+        file: "",
         preview: photoPath, // Dönen yol frontend için geçerli olacak
         isNew: false,
       });
@@ -236,11 +236,16 @@ export class ProductStockUpdateComponent implements OnInit {
         (response) => {
           console.log('Ürün başarıyla güncellendi:', response);
           this.toastrService.success('Ürün güncellendi');
-          this.router.navigate(['/product-operations']);
+          this.router.navigate(['/product-operations', this.paramProductCode, this.paramPorductId]);
         },
         (error) => {
-          console.error('Ürün güncelleme sırasında hata oluştu:', error);
-          this.toastrService.error('Ürün güncellenirken hata oluştu');
+          if (error.error && error.error.message) {
+            //alert(`Hata: ${error.error.message}`);
+            this.toastrService.error(error.error.message);
+          } else {
+            //alert('Ürün eklenirken bir hata oluştu. Lütfen tekrar deneyin.');
+            this.toastrService.error('Ürün eklenirken bir hata oluştu. Lütfen tekrar deneyin.')
+          }
         }
       );
   }
@@ -286,7 +291,7 @@ export class ProductStockUpdateComponent implements OnInit {
               const index = this.temporaryImages.indexOf(tempImage);
               if (index !== -1) {
                 this.temporaryImages[index] = {
-                  file: null,
+                  file: "",
                   preview: `data:image/png;base64,${base64}`, // Base64 string
                   isNew: false,
                 };

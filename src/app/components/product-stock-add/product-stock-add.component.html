@@ -1,1 +1,201 @@
-<p>product-stock-add works!</p>
+<base href="/" />
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div *ngIf="!isLoading">
+  <form #form="ngForm" class="row g-3">
+    <!-- Ürün Kodu (disabled, parametre olarak gelecek) -->
+    <div class="col-md-3">
+      <label for="productCode" class="form-label">Ürün Kodu</label>
+      <input
+        type="text"
+        class="form-control"
+        id="productCode"
+        [(ngModel)]="products.productCode"
+        name="productCode"
+        [disabled]="true"
+        required
+      />
+    </div>
+
+    <!-- Ürün Adı (disabled, parametre olarak gelecek) -->
+    <div class="col-md-3">
+      <label for="productName" class="form-label">Ürün Adı</label>
+      <input
+        type="text"
+        class="form-control"
+        id="productName"
+        [(ngModel)]="products.productName"
+        name="productName"
+        placeholder="Ürün adı giriniz"
+        [disabled]="true"
+        required
+      />
+    </div>
+
+    <!-- Super Kategori -->
+    <div class="col-md-3">
+      <label for="superCategoryName" class="form-label"
+        >Cinsiyet Kategori</label
+      >
+      <input
+        id="superCategoryName"
+        class="form-control"
+        [(ngModel)]="superCategoryName"
+        name="superCategoryName"
+        [disabled]="true"
+        required
+      />
+    </div>
+
+    <!-- Kategori -->
+    <div class="col-md-3">
+      <label for="categoryName" class="form-label">Kategori</label>
+      <input
+        id="categoryName"
+        class="form-control"
+        [(ngModel)]="categoryName"
+        name="categoryName"
+        [disabled]="true"
+        required
+      />
+    </div>
+
+    <!-- Fiyat (disabled, parametre olarak gelecek) -->
+    <div class="col-md-3">
+      <label for="unitPrice" class="form-label">Fiyat ₺</label>
+      <input
+        type="number"
+        class="form-control"
+        id="unitPrice"
+        [(ngModel)]="products.unitPrice"
+        name="unitPrice"
+        min="0"
+        [disabled]="true"
+        required
+      />
+    </div>
+
+    <!-- Stok -->
+    <div class="col-md-3">
+      <label for="unitsInStock" class="form-label">Stok</label>
+      <input
+        type="number"
+        class="form-control"
+        id="unitsInStock"
+        [(ngModel)]="productDetail.UnitsInStock"
+        name="unitsInStock"
+        min="0"
+        required
+      />
+    </div>
+
+    <!-- Renk (Bu alana ihtiyaç yoksa kaldırılabilir) -->
+    <div class="col-md-3">
+      <label for="colorName" class="form-label">Renk</label>
+      <select
+        id="colorName"
+        class="form-select"
+        [(ngModel)]="productDetail.ProductColorId"
+        name="colorName"
+        required
+      >
+        <option disabled>Renk seçiniz...</option>
+        <option *ngFor="let color of colors" [value]="color.colorId">
+          {{ color.colorName }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Ürün Boyutu -->
+    <div class="col-md-3">
+      <label for="filterSize" class="form-label">Boyut</label>
+      <select
+        class="form-select"
+        id="filterSize"
+        [(ngModel)]="productDetail.ProductSize"
+        name="productSize"
+      >
+        <option selected disabled>Size seçiniz...</option>
+        <option *ngFor="let size of sizes" [value]="size.id">
+          {{ size.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Ürün Açıklaması -->
+    <div class="col-12">
+      <label for="productDescription" class="form-label">Ürün Açıklaması</label>
+      <textarea
+        id="productDescription"
+        class="form-control"
+        [(ngModel)]="productDescription"
+        name="productDescription"
+        rows="3"
+        placeholder="Ürün açıklaması giriniz"
+        [disabled]="true"
+      ></textarea>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label">Fotoğraflar</label>&nbsp;
+      <!-- Fotoğraf Ekle Butonu -->
+      <button class="add-photo-btn" (click)="selectFiles()">+</button>
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        style="display: none"
+        #fileInputn
+        (change)="onFilesSelected($event)"
+      />
+
+      <!-- Ana Fotoğraf başlığı ve logo -->
+      <div class="main-photo-header">
+        <img src="assets/icons/star.png" alt="Star Icon" class="star-icon" />
+      </div>
+
+      <!-- Fotoğraflar Listesi -->
+      <ul class="image-list">
+        <li
+          *ngFor="let image of temporaryImages; let i = index"
+          class="image-item"
+        >
+          <div class="image-container">
+            <img
+              [src]="image.preview"
+              alt="Product Image"
+              class="product-image"
+            />
+          </div>
+          <!-- Fotoğrafı Sil Butonu -->
+          <button class="delete-photo-btn" (click)="removeFile(i)">
+            Fotoğrafı Sil
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Butonlar -->
+    <div class="row">
+      <div class="col-4 text-start">
+        <button type="submit" class="btn btn-primary" (click)="addProduct()">
+          Kaydet
+        </button>
+      </div>
+      <div class="col-4 text-center">
+        <button type="button" class="btn btn-secondary" (click)="resetForm()">
+          Temizle
+        </button>
+      </div>
+      <div class="col-4 text-end">
+        <button type="button" class="btn btn-danger" (click)="cancelUpdate(paramProductCode, paramProductId)">
+          Geri
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

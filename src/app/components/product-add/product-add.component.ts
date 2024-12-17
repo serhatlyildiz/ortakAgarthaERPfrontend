@@ -107,7 +107,7 @@ export class ProductAddComponent implements OnInit {
       console.log("Gönderilen model:", productModel);
   
       // Son olarak, API'ye yeni objeyi gönderiyoruz
-      this.productService.productStockAdd(productModel).subscribe(
+      this.productService.productAdd(productModel).subscribe(
         (response) => {
           if (response.success) {
             this.toastrService.success(response.message, 'Başarılı');
@@ -126,5 +126,9 @@ export class ProductAddComponent implements OnInit {
       this.toastrService.error('Formunuz Eksik', 'Dikkat');
     }
   }  
+
+  productStockOp(): void{
+    this.route.navigate(["/product-stock-op"]);
+  }
   
 }
