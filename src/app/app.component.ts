@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { MainService } from './services/main.service';
-import { SalahModel } from './models/salahModel';
+import { SalahModel, VakitModel } from './models/salahModel';
 
 @Component({
   selector: 'app-root',
@@ -25,17 +25,7 @@ import { SalahModel } from './models/salahModel';
 export class AppComponent implements OnInit {
   title: string = 'northwind';
   user: string = 'Serhat Yıldız';
-  salahTime: SalahModel = {
-    city: '',
-    times: {
-      imsak: '',
-      gunes: '',
-      ogle: '',
-      ikindi: '',
-      aksam: '',
-      yatsi: '',
-    },
-  };
+  vakitModel: VakitModel[] = []
   loadingSalah = false;
 
   constructor(private mainService: MainService) {}
@@ -46,7 +36,7 @@ export class AppComponent implements OnInit {
 
   loadSalah() {
     this.mainService.loadSalah().subscribe((response) => {
-      this.salahTime = response.data;
+      this.vakitModel = response.data.result;
       this.loadingSalah = true;
     });
   }

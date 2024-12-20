@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { CartItem } from '../models/cartItem';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { Cart } from '../models/cart';
 import { ResponseModel } from '../models/responseModel';
-import { CartForPost } from '../models/cartforpost';
 import { SingleResponseModel } from '../models/singleResponseModel';
 import { GetCart } from '../models/getcart';
 
@@ -22,67 +20,66 @@ export class CartService {
   ) {
     this.userId = this.authService.getTokenInfo()?.userId || 0;
   }
-  addToCart(cartItem: CartItem): Observable<ResponseModel> {
-    const cartForPost: CartForPost = {
+
+  saveCartToLocal(cartItems: CartItem[]): void {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }
+
+  getCartFromLocal(): CartItem[] {
+    const cart = localStorage.getItem('cart');
+    return cart ? JSON.parse(cart) : [];
+  }
+
+  addToCart(cartItems: CartItem[]): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(`${this.apiUrl}add-to-cart`, {
       userId: this.userId,
-      productStockId: cartItem.product,
-      quantity: cartItem.quantity,
-    };
-    return this.httpClient.post<ResponseModel>(
-      this.apiUrl + 'add-to-cart',
-      cartForPost
+      details: cartItems,
+    });
+  }
+
+  syncLocalCartToBackend(): Observable<ResponseModel> {
+    const localCart = this.getCartFromLocal();
+    if (localCart.length === 0) {
+      return new Observable<ResponseModel>((observer) => {
+        observer.next({ success: true, message: 'Local cart is empty' });
+        observer.complete();
+      });
+    }
+
+    return this.addToCart(localCart).pipe(
+      tap(() => {
+        localStorage.removeItem('cart'); // Başarıyla kaydedildikten sonra temizle
+      })
     );
   }
 
   getCart(): Observable<SingleResponseModel<GetCart>> {
     return this.httpClient.get<SingleResponseModel<GetCart>>(
-      this.apiUrl + 'your-cart?userId=' + 18
+      `${this.apiUrl}your-cart?userId=` + 18
+    );
+  }
+
+  updateCartItem(cartItem: CartItem): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiUrl}update-cart-quantity`,
+      {
+        productStockId: cartItem.productStocksId,
+        quantity: cartItem.quantity,
+        userId: this.userId,
+      }
+    );
+  }
+
+  removeCartItem(productStockId: number): Observable<ResponseModel> {
+    return this.httpClient.post<ResponseModel>(
+      `${this.apiUrl}remove-from-cart`,
+      { productStockId, userId: this.userId }
     );
   }
 
   clearCart(): Observable<ResponseModel> {
-    return this.httpClient.post<ResponseModel>(this.apiUrl + 'clear-cart', {
-      // this.userId,
+    return this.httpClient.post<ResponseModel>(`${this.apiUrl}clear-cart`, {
+      userId: this.userId,
     });
-  }
-
-  // Local Storage İşlemleri
-  private addToLocalCart(cartItem: CartItem): void {
-    let cart: Cart = JSON.parse(localStorage.getItem('cart') || 'null');
-    if (!cart) {
-      cart = {
-
-        cartId: 0,
-        cartItems: [],
-        userId: 0,
-        totalPrice: 0,
-        status: true,
-      };
-    }
-
-    const existingItem = cart.cartItems.find(
-      (item) => item.product === cartItem.product
-    );
-
-    if (existingItem) {
-      existingItem.quantity += cartItem.quantity;
-    } else {
-      cart.cartItems.push(cartItem);
-    }
-
-    cart.totalPrice = cart.cartItems.reduce(
-      (total, item) => total + item.quantity * 100,
-      0
-    );
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }
-
-  private getLocalCart(): Cart | null {
-    return JSON.parse(localStorage.getItem('cart') || 'null');
-  }
-
-  private clearLocalCart(): void {
-    localStorage.removeItem('cart');
   }
 }

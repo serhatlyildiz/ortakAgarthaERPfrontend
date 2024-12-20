@@ -23,11 +23,11 @@ export class ProductService {
     return this.httpClient.get<ListResponseModel<Product>>(newPath);
   }
 
-  getById(productId: number): Observable<any> {
-    return this.httpClient.get(
-      this.apiUrl + '/getbyid?id='+productId
-    );
-  }
+  // getById(productId: number): Observable<any> {
+  //   return this.httpClient.get(
+  //     this.apiUrl + '/getbyid?id='+productId
+  //   );
+  // }
 
   getProductsByCategory(
     categoryId: number
