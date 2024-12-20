@@ -17,4 +17,5 @@ export interface ProductDetailDto2 {
   status: boolean;
   productCode: string;
   RowNum: number;
+  currentImageIndex?: number;
 }

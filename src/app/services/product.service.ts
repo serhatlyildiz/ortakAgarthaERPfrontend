@@ -10,6 +10,7 @@ import { productDto } from '../models/productDto';
 import { ProductStockAddDto } from '../models/productStockAddDto';
 import { SingleResponseModel } from '../models/singleResponseModel';
 import { ProductDetailDto2 } from '../models/ProductDetailDto2';
+import { ProductWithTotalStockDto } from '../models/producWithTotalStockDto';
 
 @Injectable({
   providedIn: 'root',
@@ -23,18 +24,18 @@ export class ProductService {
     return this.httpClient.get<ListResponseModel<Product>>(newPath);
   }
 
-  getById(productId: number): Observable<any> {
-    return this.httpClient.get(
-      this.apiUrl + '/getbyid?id='+productId
-    );
-  }
+  // getById(productId: number): Observable<any> {
+  //   return this.httpClient.get(
+  //     this.apiUrl + '/getbyid?id='+productId
+  //   );
+  // }
 
-  getProductsByCategory(
-    categoryId: number
-  ): Observable<ListResponseModel<ProductDetailDto>> {
-    let newPath = this.apiUrl + '/getBycategory?categoryId=' + categoryId;
-    return this.httpClient.get<ListResponseModel<ProductDetailDto>>(newPath);
-  }
+  // getProductsByCategory(
+  //   categoryId: number
+  // ): Observable<ListResponseModel<ProductDetailDto>> {
+  //   let newPath = this.apiUrl + '/getBycategory?categoryId=' + categoryId;
+  //   return this.httpClient.get<ListResponseModel<ProductDetailDto>>(newPath);
+  // }
 
   add(product: Product): Observable<ResponseModel> {
     const token = localStorage.getItem('token'); // Token'ı al
@@ -140,6 +141,30 @@ export class ProductService {
       this.apiUrl + '/getbyid?id=' + productId
     );
   }
+
+  getProductsWithTotalStock(): Observable<SingleResponseModel<ProductWithTotalStockDto[]>> {
+    return this.httpClient.get<SingleResponseModel<ProductWithTotalStockDto[]>>(
+        `${this.apiUrl}/getproductswithtotalstock`
+    );
+}
+
+getProductsBySuperCategory(
+  superCategoryId: number
+): Observable<{ data: ProductDetailDto2[] }> {
+  return this.httpClient.get<{ data: ProductDetailDto2[] }>(
+    `${this.apiUrl}/getbycategoryidproductdetails2?superCategoryId=${superCategoryId}`
+  );
+}
+
+getProductsByCategory(
+  superCategoryId: number,
+  categoryId: number
+): Observable<{ data: ProductDetailDto2[] }> {
+  return this.httpClient.get<{ data: ProductDetailDto2[] }>(
+    `${this.apiUrl}/getbycategoryidproductdetails2?superCategoryId=${superCategoryId}&categoryId=${categoryId}`
+  );
+}
+
   /*
   filterProducts(filters: any): Observable<ListResponseModel<ProductDetailDto>> {
     return this.httpClient.post<ListResponseModel<ProductDetailDto>>(

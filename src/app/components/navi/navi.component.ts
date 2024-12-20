@@ -86,6 +86,16 @@ export class NaviComponent implements OnInit {
     return this.authService.isAuthenticated();
   }
 
+  navigateToProducts(superCategoryId: number, categoryId?: number) {
+    if (categoryId) {
+      // Hem superCategoryId hem categoryId ile yönlendirme
+      this.router.navigate(['/products', superCategoryId, categoryId]);
+    } else {
+      // Sadece superCategoryId ile yönlendirme
+      this.router.navigate(['/products', superCategoryId]);
+    }
+  }
+
   /*
   productAdd(){
     this.router.navigate(['/product-stock-op']);

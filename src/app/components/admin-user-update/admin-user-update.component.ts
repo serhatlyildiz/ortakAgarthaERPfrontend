@@ -47,6 +47,7 @@ export class AdminUserUpdateComponent implements OnInit {
         (data) => {
           this.user = data.data;
           this.originalUser = { ...data.data };
+          this.matchUserRoles();
           this.loadInitialIlce();
         },
         (error) => {
@@ -117,6 +118,7 @@ export class AdminUserUpdateComponent implements OnInit {
     console.log(this.roles);
     this.user = { ...this.originalUser }; // Orijinal veriye dön
     this.loadInitialIlce();
+    this.matchUserRoles();
     console.log('Form resetlendi:', this.user);
   }
 

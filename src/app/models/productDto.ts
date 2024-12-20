@@ -9,4 +9,5 @@ export interface productDto{
     unitPrice: number;
     status: boolean;
     productCode: string;
+    totalStock?: number;
 }
