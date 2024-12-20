@@ -31,19 +31,21 @@
             <a>Kategoriler</a>
             <ul class="dropdown">
               <li 
-                class="has-children" 
-                *ngFor="let superCategory of superCategories" 
-                (mouseenter)="loadCategoriesBySuperCategoryId(superCategory.superCategoryId)"
-              >
-                <a>
-                  {{ superCategory.superCategoryName }}
-                </a>
-                <ul class="dropdown">
-                  <li *ngFor="let category of filteredCategories">
-                    <a href="#">{{ category.categoryName }}</a>
-                  </li>
-                </ul>
-              </li>
+  class="has-children" 
+  *ngFor="let superCategory of superCategories" 
+  (mouseenter)="loadCategoriesBySuperCategoryId(superCategory.superCategoryId)"
+>
+  <a (click)="navigateToProducts(superCategory.superCategoryId)">
+    {{ superCategory.superCategoryName }}
+  </a>
+  <ul class="dropdown">
+    <li *ngFor="let category of filteredCategories">
+      <a (click)="navigateToProducts(superCategory.superCategoryId, category.categoryId)">
+        {{ category.categoryName }}
+      </a>
+    </li>
+  </ul>
+</li>
             </ul>
           </li>
           <li class="active"><a href="contact">Contact</a></li>

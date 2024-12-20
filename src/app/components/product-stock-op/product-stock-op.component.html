@@ -16,7 +16,9 @@
             placeholder="Ürün kodu ara"
           />
         </div>
-      
+        <button class="btn btn-danger" (click)="navigateToProductStatusHistory()">
+          Stok kayıtları
+         </button>
         <!-- Sağ tarafa [+] Yeni Ürün -->
         <button class="btn btn-success" (click)="navigateToProductAdd()">
          + Yeni Ürün
@@ -61,7 +63,12 @@
             {{ sortOrder === "asc" ? "🔼" : "🔽" }}
           </span>
         </th>
-        <th>Stok</th>
+        <th (click)="sort('totalStock')">
+          Stok
+          <span *ngIf="sortKey === 'totalStock'">
+            {{ sortOrder === "asc" ? "🔼" : "🔽" }}
+          </span>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -77,8 +84,15 @@
         <td>{{ product.unitPrice | currency : "₺" }}</td>
         <td>
           <button class="btn btn-primary" (click)="productStockUpdate(product.productCode, product.productId)">
-            Stokları Görüntüle
+            Stokları Görüntüle ({{ product.totalStock || 0 }})
           </button>
+
+          <button 
+    class="btn btn-danger ms-2" 
+    (click)="deleteProduct(product.productId)" 
+    [disabled]="product.totalStock > 0">
+    Sil
+  </button>
         </td>
       </tr>
     </tbody>

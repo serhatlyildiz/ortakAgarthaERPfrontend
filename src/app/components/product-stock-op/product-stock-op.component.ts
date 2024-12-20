@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { productDto } from '../../models/productDto';
 import { Router } from '@angular/router';
+import { ProductWithTotalStockDto } from '../../models/producWithTotalStockDto';
 
 @Component({
   selector: 'app-product-stock-op',
@@ -31,11 +32,35 @@ export class ProductStockOpComponent implements OnInit {
   }
   
   loadProducts(): void {
+    // Tüm ürünleri al
     this.productService.getProductDto().subscribe({
       next: (response) => {
-        this.products = response.data; // API'den gelen verileri al
-        this.filteredProducts = [...this.products]; // Başlangıçta tüm ürünleri göster
-        this.isLoading = false;
+        this.products = response.data; // API'den gelen veriler
+        this.filteredProducts = [...this.products]; // İlk filtreleme
+  
+        // Toplam stok verisini al
+        this.productService.getProductsWithTotalStock().subscribe({
+          next: (stockResponse) => {
+            const totalStockMap = new Map<number, number>();
+  
+            // Total stock verilerini bir haritaya kaydet
+            stockResponse.data.forEach((item: ProductWithTotalStockDto) => {
+              totalStockMap.set(item.productId, item.totalStock);
+            });
+  
+            // Stokları, ürünlere eşleştir
+            this.products.forEach((product) => {
+              product.totalStock = totalStockMap.get(product.productId) || 0;
+            });
+  
+            this.filteredProducts = [...this.products]; // Güncellenmiş ürün listesi
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('Stok verileri alınırken hata oluştu.', error);
+            this.isLoading = false;
+          }
+        });
       },
       error: (error) => {
         this.errorMessage = 'Ürünler yüklenirken bir hata oluştu.';
@@ -44,6 +69,34 @@ export class ProductStockOpComponent implements OnInit {
       }
     });
   }
+  
+  
+  loadTotalStocks(): void {
+    this.productService.getProductsWithTotalStock().subscribe({
+      next: (response) => {
+        const totalStockMap = new Map<number, number>();
+  
+        // Gelen veriyi bir Map yapısına çevir
+        response.data.forEach((item) => {
+          totalStockMap.set(item.productId, item.totalStock);
+        });
+  
+        // Mevcut ürünlere stok bilgisini ekle
+        this.products.forEach((product) => {
+          product['totalStock'] = totalStockMap.get(product.productId) || 0;
+        });
+  
+        this.filteredProducts = [...this.products]; // Güncellenmiş ürünleri yeniden ata
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMessage = 'Stok bilgileri yüklenirken bir hata oluştu.';
+        this.isLoading = false;
+        console.error(error);
+      },
+    });
+  }
+  
 
   filterProducts(): void {
     if (this.searchProductCode) {
@@ -56,15 +109,28 @@ export class ProductStockOpComponent implements OnInit {
   }
 
   // Örnek sort metodu
-  sort(column: keyof productDto): void {
+  sort(column: keyof productDto | 'totalStock'): void {
     this.filteredProducts.sort((a, b) => {
-      const valueA = a[column] ?? '';
-      const valueB = b[column] ?? '';
+      let valueA, valueB;
+  
+      // Eğer 'totalStock' sıralanıyorsa özel işleme tabi tutulur
+      if (column === 'totalStock') {
+        valueA = a['totalStock'] ?? 0;
+        valueB = b['totalStock'] ?? 0;
+      } else {
+        valueA = a[column] ?? '';
+        valueB = b[column] ?? '';
+      }
+  
+      // Karşılaştırma yapılır
       return (valueA > valueB ? 1 : -1) * (this.sortOrder === 'asc' ? 1 : -1);
     });
+  
+    // Sıralama yönünü değiştir
     this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
     this.sortKey = column;
   }
+  
 
   productStockUpdate(productCode: string, productId:  number){
     this.router.navigate(['/product-operations', productCode, productId]);
@@ -73,4 +139,22 @@ export class ProductStockOpComponent implements OnInit {
   navigateToProductAdd(): void {
     this.router.navigate(['/products-add']);
   }
+
+  deleteProduct(productId: number): void {
+    if (confirm('Bu ürünü silmek istediğinizden emin misiniz?')) {
+      this.productService.deleteProduct(productId).subscribe({
+        next: () => {
+          // API'den başarı dönerse ürünü listeden kaldır
+          this.products = this.products.filter(product => product.productId !== productId);
+          this.filteredProducts = this.filteredProducts.filter(product => product.productId !== productId);
+          alert('Ürün başarıyla silindi.');
+        },
+        error: (err) => {
+          console.error('Ürün silinirken bir hata oluştu:', err);
+          alert('Ürün silinirken bir hata oluştu.');
+        }
+      });
+    }
+  }
+  
 }

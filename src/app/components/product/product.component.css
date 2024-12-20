@@ -1,3 +1,37 @@
+.category-display {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  border: 1px solid #ccc; /* İnce bir gri çerçeve */
+  border-radius: 8px; /* Yuvarlak köşeler */
+  padding: 8px 15px; /* Çerçeve içi boşluk */
+  background-color: #ffffff; /* Hafif gri arka plan */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0); /* Hafif gölge efekti */
+}
+
+.category-display a {
+  text-decoration: none;
+  color: #ee4266;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.category-display .arrow {
+  margin-left: 5px;
+  color: #888; /* İstediğiniz renk kodunu buraya yazabilirsiniz */
+  font-size: 1.4rem;
+}
+
+.category-display span {
+  font-weight: normal;
+  font-size: 1.2rem;
+}
+
+.category-display a:hover {
+  text-decoration: underline;
+  color: #b4304d; /* Hover sırasında renk koyulaştır */
+}
+
 .tooltip {
   background-color: black;
   color: white;
@@ -91,8 +125,24 @@ tbody td {
 
 /* Kartın içeriği */
 .card-body {
-  padding: 10px;
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Dikey olarak ortalama */
+  align-items: center;    /* Yatay olarak ortalama */
   text-align: center;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  font-size: 1rem;
+  color: #6c757d;
 }
 
 /* Artı butonu stili */
@@ -126,7 +176,11 @@ tbody td {
   position: relative;
   width: 100%;
   height: 60%; /* Resim alanı */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
+  background-color: #f9f9f9; /* Arka plan rengi */
 }
 
 .image-container img {
@@ -144,15 +198,15 @@ tbody td {
   color: white;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   font-size: 20px;
   cursor: pointer;
   z-index: 10;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
 .slide-btn.left {
@@ -170,4 +224,15 @@ tbody td {
 .slide-btn:disabled {
   background-color: rgba(0, 0, 0, 0.3);
   cursor: not-allowed;
+}
+
+/* Genel kart düzeni */
+.product-card {
+  width: 18rem;
+  height: 28rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
 }

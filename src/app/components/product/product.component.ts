@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/product';
 import { ProductService } from '../../services/product.service';
@@ -12,6 +12,10 @@ import { SortService } from '../../services/sort.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ProductDetailDto } from '../../models/ProductDetailDto';
+import { ProductDetailDto2 } from '../../models/ProductDetailDto2';
+import { CategoryService } from '../../services/category.service';
+import { response } from 'express';
+import { SuperCategoryService } from '../../services/supercategory.service';
 
 @Component({
   selector: 'app-product',
@@ -21,7 +25,7 @@ import { ProductDetailDto } from '../../models/ProductDetailDto';
   styleUrls: ['./product.component.css'],
 })
 export class ProductComponent implements OnInit {
-  products: ProductDetailDto[] = [];
+  products: ProductDetailDto2[] = [];
   dataLoaded = false;
   filterText = '';
   sortColumn: string | null = null;
@@ -29,9 +33,13 @@ export class ProductComponent implements OnInit {
   productIdForDetailPage: number;
   hoveredProductId: number | null = null;
   currentImageIndex: number = 0;
+   superCategoryId: number | null = null;
+  categoryId: number | null = null;
 
   @ViewChild('buttonElement') buttonElement!: ElementRef;
   @ViewChild('tooltipElement') tooltipElement!: ElementRef;
+  @Input() superCategoryName?: string;
+  @Input() categoryName?: string;
   sortCriteria: any;
 
   selectedCategory: number;
@@ -41,24 +49,97 @@ export class ProductComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private sortService: SortService,
     private route: ActivatedRoute,
+    private categoryService: CategoryService,
+    private superCategoryService: SuperCategoryService,
     private router: Router,
   ) {}
 
   ngOnInit(): void {
-    this.productIdForDetailPage = +this.route.snapshot.paramMap.get('id')!;
-    // URL parametrelerine göre ürünleri al
     this.activatedRoute.params.subscribe((params) => {
-      if (params['categoryId']) {
-        this.getProductsByCategory(params['categoryId']);
+      this.superCategoryId = params['superCategoryId']
+        ? +params['superCategoryId']
+        : null;
+      this.categoryId = params['categoryId'] ? +params['categoryId'] : null;
+  
+      if (this.superCategoryId && this.categoryId) {
+        // Hem superCategoryId hem categoryId varsa
+        this.superCategoryService.getBySuperCategoryId(this.superCategoryId).subscribe((response) => {
+          this.superCategoryName = response.data.superCategoryName; // `response.d` yerine doğru alanı kullanın, genellikle `response.data` olur.
+        });
+        this.categoryService.getByCategoryId(this.categoryId).subscribe((response) => {
+          this.categoryName = response.data.categoryName; // `response.d` yerine doğru alanı kullanın, genellikle `response.data` olur.
+        });
+        this.getProductsByCategory(this.superCategoryId, this.categoryId);
+      } else if (this.superCategoryId) {
+        this.superCategoryService.getBySuperCategoryId(this.superCategoryId).subscribe((response) => {
+          this.superCategoryName = response.data.superCategoryName; // `response.d` yerine doğru alanı kullanın, genellikle `response.data` olur.
+        });
+        // Sadece superCategoryId varsa
+        this.getProductsBySuperCategory(this.superCategoryId);
       } else {
+        // Hiçbiri yoksa tüm ürünleri al
         this.getProducts();
       }
+      this.getCategoryDisplay();
     });
+  }
+  
+  getCategoryDisplay(): boolean {
+    return !!this.superCategoryName || !!this.categoryName; // SuperCategory veya Category varsa göster
+  }
+  
+  onSuperCategoryClick(): void {
+    if (this.superCategoryName) {
+      console.log(`Navigating to SuperCategory: ${this.superCategoryName}`);
+      // SuperCategory'ye tıklanırsa yapılacak işlem (örn: sayfa yenileme)
+       // Sayfayı yenile
+      if(this.categoryName === null){
+        location.reload();
+      }
+      else{
+        this.router.navigate(["products/",this.superCategoryId]);
+      }
+    }
+  }
 
-    // // Filtreleri dinle
-    // this.filterService.filter$.subscribe((filters) => {
-    //   this.applyFilters(filters);
-    // });
+  getProducts() {
+    this.productService.getProductDetails2().subscribe((response) => {
+      console.log('Ürünler:', response.data);
+      this.products = response.data.map((product) => ({
+        ...product,
+        currentImageIndex: 0, // Varsayılan olarak her ürünün indeksi 0
+      }));
+      this.dataLoaded = true;
+    });
+  }
+
+  getProductsBySuperCategory(superCategoryId: number) {
+    this.productService
+      .getProductsBySuperCategory(superCategoryId)
+      .subscribe((response) => {
+        console.log(`SuperCategory ID ${superCategoryId} için ürünler:`, response.data);
+        this.products = response.data.map((product) => ({
+          ...product,
+          currentImageIndex: 0, // Varsayılan olarak her ürünün indeksi 0
+        }));
+        this.dataLoaded = true;
+      });
+  }
+  
+  getProductsByCategory(superCategoryId: number, categoryId: number) {
+    this.productService
+      .getProductsByCategory(superCategoryId, categoryId)
+      .subscribe((response) => {
+        console.log(
+          `SuperCategory ID ${superCategoryId} ve Category ID ${categoryId} için ürünler:`,
+          response.data
+        );
+        this.products = response.data.map((product) => ({
+          ...product,
+          currentImageIndex: 0, // Varsayılan olarak her ürünün indeksi 0
+        }));
+        this.dataLoaded = true;
+      });
   }
 
   goToProductDetail(productId: number): void {
@@ -88,24 +169,30 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  getProducts() {
-    this.productService.getProductDetails2().subscribe((response) => {
-      console.log('ürünler:', response.data);
-      this.products = response.data;
-      this.dataLoaded = true;
-    });
-  }
+  
+  // getProducts() {
+  //   this.productService.getProductDetails2().subscribe((response) => {
+  //     console.log('ürünler:', response.data);
+  //     this.products = response.data.map((product) => ({
+  //       ...product,
+  //       currentImageIndex: 0, // Varsayılan olarak her ürünün indeksi 0
+  //     }));
+  //     this.dataLoaded = true;
+  //   });
+  // }  
+  
 
+  /*
   getProductsByCategory(categoryId: number) {
     this.productService
       .getProductsByCategory(categoryId)
       .subscribe((response) => {
         if (response.success) {
-          this.products = response.data;
+          this.products = response;
           this.dataLoaded = true;
         }
       });
-  }
+  }*/
 
   sort(column: string) {
     if (this.sortColumn === column) {
@@ -125,20 +212,22 @@ export class ProductComponent implements OnInit {
     );
   }
 
-  previousImage(event: Event) {
+  previousImage(event: Event, product: ProductDetailDto2) {
     event.stopPropagation(); // Olayın yukarı iletilmesini durdur
-    if (this.currentImageIndex > 0) {
-      this.currentImageIndex--;
+    if (product.currentImageIndex! > 0) {
+      product.currentImageIndex!--;
     }
   }
+  
+  nextImage(event: Event, product: ProductDetailDto2) {
+    event.stopPropagation(); // Olayın yukarı iletilmesini durdur
+    if (product.currentImageIndex! < product.images.length - 1) {
+      product.currentImageIndex!++;
+    }
+  }
+  
 
-  // Bir sonraki resme geçiş
-  nextImage(event: Event, imageCount: number) {
-    event.stopPropagation(); // Olayın yukarı iletilmesini durdur
-    if (this.currentImageIndex < imageCount - 1) {
-      this.currentImageIndex++;
-    }
-  }
+  
   // applyFilters(filters: any) {
   //   if (filters.category) {
   //     this.selectedCategory = filters.category;

@@ -23,34 +23,36 @@ import { ContactComponent } from './components/contact/contact.component';
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: ProductComponent },
   { path: 'products', component: ProductComponent },
+  { path: 'products/:superCategoryId/:categoryId', component: ProductComponent },
+  { path: 'products/:superCategoryId', component: ProductComponent },
   { path: 'products/category/:categoryId', component: ProductComponent },
   {
     path: 'products-add',
     component: ProductAddComponent,
     canActivate: [LoginGuard],
   },
-  { path: 'admin-user-update/:productId', component: AdminUserUpdateComponent },
+  { path: 'admin-user-update/:productId', component: AdminUserUpdateComponent, canActivate: [LoginGuard]  },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'admin', component: AdminComponent },
+  { path: 'admin', component: AdminComponent, canActivate: [LoginGuard] },
   { path: 'product-detail/:id', component: ProductDetailComponent },
   //{ path: 'product-operations', component: ProductOperationComponent},
   {
     path: 'product-operations/:productCode/:productId',
-    component: ProductOperationComponent,
+    component: ProductOperationComponent, canActivate: [LoginGuard]
   },
   { path: 'password-reset', component: PasswordResetComponent },
   {
     path: 'product-stock-update/:productStockId',
-    component: ProductStockUpdateComponent,
+    component: ProductStockUpdateComponent, canActivate: [LoginGuard]
   },
-  { path: 'product-stock-op', component: ProductStockOpComponent },
+  { path: 'product-stock-op', component: ProductStockOpComponent, canActivate: [LoginGuard] },
   {
     path: 'product-stock-add/:productCode/:productId',
-    component: ProductStockAddComponent,
+    component: ProductStockAddComponent, canActivate: [LoginGuard]
   },
-  { path: 'product-stock-add', component: ProductStockAddComponent },
+  { path: 'product-stock-add', component: ProductStockAddComponent, canActivate: [LoginGuard] },
   { path: 'contact', component: ContactComponent },
 ];
 
