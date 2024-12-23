@@ -15,6 +15,11 @@ import { ProductStockAddDto } from '../../models/productStockAddDto';
 import { ProductImageService } from '../../services/product-image.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ProductStatusHistoryService } from '../../services/product-status-history-service';
+import { ProductStatusHistoryModel } from '../../models/productStatusHistoryModel';
+import { TokenInfo } from '../../models/tokenInfo';
+import { AuthService } from '../../services/auth.service';
+import { ProductStocksService } from '../../services/product-stocks.service';
 
 @Component({
   selector: 'app-product-stock-add',
@@ -73,6 +78,11 @@ export class ProductStockAddComponent implements OnInit {
       
     };
 
+    tokenInfo: TokenInfo | null = null;
+      firstName: string;
+      lastName: string;
+      lastProductStockId: number;
+
   constructor(
     private route: ActivatedRoute,
     private colorService: ColorService,
@@ -82,6 +92,9 @@ export class ProductStockAddComponent implements OnInit {
     private productImageService: ProductImageService,
     private router: Router,
     private toastrService: ToastrService,
+    private productStatusHistoryService: ProductStatusHistoryService,
+    private authService: AuthService,
+    private productStocksService: ProductStocksService,
   ) {}
 
   ngOnInit(): void {
@@ -99,6 +112,13 @@ export class ProductStockAddComponent implements OnInit {
   
       this.loadColors();
     });
+    this.tokenInfo = this.authService.getTokenInfo();
+    if (this.tokenInfo) {
+      const fullName = this.tokenInfo.name;
+      const nameParts = fullName.split(' ');
+      this.firstName = nameParts[0];
+      this.lastName = nameParts.slice(1).join(' ');
+    }
   }
   
 
@@ -299,6 +319,35 @@ export class ProductStockAddComponent implements OnInit {
       (response) => {
         this.isLoading = false;
         console.log('Ürün başarıyla eklendi:', response);
+        let historyModel: ProductStatusHistoryModel = {
+                      historyId: 0, // Backend tarafından otomatik oluşturulabilir
+                      productStockId: 0, // Yeni eklenen stok ID burada kullanılırsa backend'den alınmalı
+                      productId: this.paramProductId,
+                      productDetailsId: 0, // Eğer productDetailsId kullanılacaksa backend'den alınmalı
+                      status: true, // Başarılı işlem olduğu için true
+                      changedBy: this.tokenInfo.userId , // Kullanıcı ID'si. Oturum açan kullanıcının ID'sini alabilirsiniz.
+                      productCode: this.paramProductCode,
+                      changedByFirstName: this.firstName, // Oturum açan kullanıcının adı alınabilir
+                      changedByLastName: this.lastName, // Oturum açan kullanıcının soyadı alınabilir
+                      email: this.tokenInfo.email, // Kullanıcı emaili
+                      changeDate: new Date(), // Değişiklik tarihi
+                      operations: "Ekleme", // İşlem türü
+                      remarks: "Yeni stok eklendi", // İsteğe bağlı açıklama
+                    };
+        
+                    this.productStatusHistoryService.add(historyModel).subscribe(
+                      (historyResponse) => {
+                        if (historyResponse.success) {
+        
+                        } else {
+        
+                        }
+                      },
+                      (historyError) => {
+                        this.toastrService.error("Geçmiş kaydı sırasında bir hata oluştu.", "Hata");
+                        console.error("Geçmiş kaydı hatası:", historyError);
+                      }
+                    );                                                                                                   
         this.router.navigate(['/product-operations', this.paramProductCode, this.paramProductId]);
       },
       (error) => {

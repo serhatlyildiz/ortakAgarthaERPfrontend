@@ -15,6 +15,10 @@ import { CategoryModel } from '../../models/category';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/product';
 import { Router } from '@angular/router';
+import { ProductStatusHistoryService } from '../../services/product-status-history-service';
+import { ProductStatusHistoryModel } from '../../models/productStatusHistoryModel';
+import { AuthService } from '../../services/auth.service';
+import { TokenInfo } from '../../models/tokenInfo';
 
 @Component({
   selector: 'app-product-add',
@@ -28,6 +32,9 @@ export class ProductAddComponent implements OnInit {
   superCategories: SuperCategoryModel[] = [];
   categories: CategoryModel[] = [];
   selectedSuperCategoryId: number | null = null;
+  tokenInfo: TokenInfo | null = null;
+  firstName: string;
+  lastName: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,12 +43,20 @@ export class ProductAddComponent implements OnInit {
     private superCategoryService: SuperCategoryService,
     private categoryService: CategoryService,
     private route: Router,
+    private productStatusHistoryService: ProductStatusHistoryService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     this.loadSuperCategories();
     this.createProductAddForm();
-    
+    this.tokenInfo = this.authService.getTokenInfo();
+    if (this.tokenInfo) {
+      const fullName = this.tokenInfo.name;
+      const nameParts = fullName.split(' ');
+      this.firstName = nameParts[0];
+      this.lastName = nameParts.slice(1).join(' ');
+    }
   }
   
   // SuperCategories'ı Yükle
@@ -111,6 +126,36 @@ export class ProductAddComponent implements OnInit {
         (response) => {
           if (response.success) {
             this.toastrService.success(response.message, 'Başarılı');
+            let historyModel: ProductStatusHistoryModel = {
+              historyId: 0, // Backend tarafından otomatik oluşturulabilir
+              productStockId: 0, // Yeni eklenen stok ID burada kullanılırsa backend'den alınmalı
+              productId: productModel.productId,
+              productDetailsId: 0, // Eğer productDetailsId kullanılacaksa backend'den alınmalı
+              status: true, // Başarılı işlem olduğu için true
+              changedBy: this.tokenInfo.userId, // Kullanıcı ID'si. Oturum açan kullanıcının ID'sini alabilirsiniz.
+              productCode: productModel.productCode,
+              changedByFirstName: this.firstName, // Oturum açan kullanıcının adı alınabilir
+              changedByLastName: this.lastName, // Oturum açan kullanıcının soyadı alınabilir
+              email: this.tokenInfo.email, // Kullanıcı emaili
+              changeDate: new Date(), // Değişiklik tarihi
+              operations: "Ekleme", // İşlem türü
+              remarks: "Yeni ürün eklendi", // İsteğe bağlı açıklama
+            };
+
+            this.productStatusHistoryService.add(historyModel).subscribe(
+              (historyResponse) => {
+                if (historyResponse.success) {
+
+                } else {
+
+                }
+              },
+              (historyError) => {
+                this.toastrService.error("Geçmiş kaydı sırasında bir hata oluştu.", "Hata");
+                console.error("Geçmiş kaydı hatası:", historyError);
+              }
+            );
+
             this.route.navigate(["product-stock-op"]);
           } else {
             this.toastrService.error(response.message, 'Hata');

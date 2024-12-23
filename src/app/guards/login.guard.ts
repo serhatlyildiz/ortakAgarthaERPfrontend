@@ -45,6 +45,7 @@ export class LoginGuard implements CanActivate {
     if (isExpired) {
       localStorage.removeItem('token'); // Süresi dolmuşsa storage'den sil
       console.warn('Token süresi dolduğu için silindi.');
+      this.router.navigate(['login']);
     }
   
     return isExpired; // Süresi dolmuşsa true döner

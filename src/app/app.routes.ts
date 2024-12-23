@@ -19,6 +19,7 @@ import { ProductStockUpdateComponent } from './components/product-stock-update/p
 import { ProductStockOpComponent } from './components/product-stock-op/product-stock-op.component';
 import { ProductStockAddComponent } from './components/product-stock-add/product-stock-add.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { ProductStatusHistoryComponent } from './components/product-status-history/product-status-history.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: ProductComponent },
@@ -38,6 +39,7 @@ export const routes: Routes = [
   { path: 'admin', component: AdminComponent, canActivate: [LoginGuard] },
   { path: 'product-detail/:id', component: ProductDetailComponent },
   //{ path: 'product-operations', component: ProductOperationComponent},
+  { path: 'product-status-history', component: ProductStatusHistoryComponent},
   {
     path: 'product-operations/:productCode/:productId',
     component: ProductOperationComponent, canActivate: [LoginGuard]
