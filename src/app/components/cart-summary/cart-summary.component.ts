@@ -7,6 +7,7 @@ import { ProductService } from '../../services/product.service';
 import { GetCart } from '../../models/getcart';
 import { GetCartItem } from '../../models/getcartitem';
 import { ToastrService } from 'ngx-toastr';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-cart-summary',
@@ -57,19 +58,22 @@ export class CartSummaryComponent implements OnInit {
         if (response.success) {
           this.cart = response.data;
           this.getCart = response.data.cartItems;
+          console.log(response)
+          
           const productRequests = this.getCart.map((cartItem) =>
-            this.productService
-              .getByProductDetails(cartItem.productStocksId)
-              .toPromise()
+            lastValueFrom(
+              this.productService.getByProductDetails(cartItem.productStocksId)
+            )
           );
-
+          
+          console.log(productRequests + " asd");
           Promise.all(productRequests)
             .then((responses) => {
+              console.log('2.satır');
               this.cartItem = responses.map((res, index) => ({
                 ...res.data[0], // İlk ürün detayını al
                 quantity: this.getCart[index].quantity, // Sepetteki miktar
               }));
-
               this.isLoading = false; // Yükleme tamamlandı
             })
             .catch((error) => {
@@ -88,7 +92,7 @@ export class CartSummaryComponent implements OnInit {
   syncCart(): void {
     const localCart = this.cartService.getCartFromLocal();
     if (localCart.length === 0) return;
-  
+
     this.cartService.addToCart(localCart).subscribe({
       next: () => {
         localStorage.removeItem('cart');
@@ -99,7 +103,6 @@ export class CartSummaryComponent implements OnInit {
       },
     });
   }
-  
 
   getByProductDetails(productStockId: number) {
     this.productService
@@ -149,7 +152,6 @@ export class CartSummaryComponent implements OnInit {
       },
     });
   }
-  
 
   clearCart(): void {
     this.cartService.clearCart().subscribe({
