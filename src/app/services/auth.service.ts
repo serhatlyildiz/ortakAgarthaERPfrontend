@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { LoginModule } from '../models/loginModel';
 import { HttpClient } from '@angular/common/http';
 import { TokenModel } from '../models/tokenModel';
@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ResponseModel } from '../models/responseModel';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { TokenInfo } from '../models/tokenInfo';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,9 @@ export class AuthService {
   apiUrl = 'http://localhost:5038/api/auth/';
   user: TokenInfo;
 
-  constructor(private httpClient: HttpClient, private router: Router) {}
+  constructor(private httpClient: HttpClient, private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   login(loginModel: LoginModule) {
     return this.httpClient
@@ -75,7 +78,7 @@ export class AuthService {
     return false;
   }
 
-  getTokenInfo(): TokenInfo {
+  //getTokenInfo(): TokenInfo {
     // const token = localStorage.getItem('token');
     // if (token) {
     //   const decodedToken: any = jwtDecode(token);
@@ -97,26 +100,52 @@ export class AuthService {
     // } else {
     //   return null;
     // }
-    return null
+    //return null
+ //}
+
+ getTokenInfo(): TokenInfo | null {
+  // Check if running in the browser (client-side)
+  if (isPlatformBrowser(this.platformId)) {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      return {
+        userId: decodedToken[
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+        ],
+        email: decodedToken['email'] || '',
+        name: decodedToken[
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
+        ] || '',
+        roles:
+          decodedToken[
+            'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+          ] || [],
+      };
+    }
   }
+  return null; // Return null if not in the browser or token not found
+}
+
 
   // Token süresi dolduğunda çıkış yapma işlemi
   private startTokenExpirationTimer() {
     const token = localStorage.getItem('token');
     if (token) {
       const decodedToken: any = jwtDecode(token);
-      const expirationTime = decodedToken.exp; // Expiration time in milliseconds
+      const expirationTime = decodedToken.exp * 1000; // Saniyeyi milisaniyeye çevir
       const currentTime = Date.now();
       const timeLeft = expirationTime - currentTime;
-
+  
       // Token süresi dolmadan 1 dakika önce logout işlemi yap
       if (timeLeft > 0) {
         setTimeout(() => {
           this.logout();
-        }, timeLeft);
+        }, timeLeft - 60000); // 1 dakika öncesi
       }
     }
   }
+  
 
   logout() {
     localStorage.removeItem('token');

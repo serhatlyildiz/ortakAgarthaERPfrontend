@@ -14,6 +14,10 @@ import { ProductImageService } from '../../services/product-image.service';
 import { ToastrService } from 'ngx-toastr';
 import { v4 as uuidv4 } from 'uuid';
 import { TemporaryImage } from '../../models/temporayImage';
+import { ProductStatusHistoryModel } from '../../models/productStatusHistoryModel';
+import { ProductStatusHistoryService } from '../../services/product-status-history-service';
+import { TokenInfo } from '../../models/tokenInfo';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-product-stock-update',
@@ -69,6 +73,10 @@ export class ProductStockUpdateComponent implements OnInit {
   temporaryImages: { fileName: File | ''; preview: string; isNew: boolean }[] = []; // Yeni veya mevcut fotoğraflar
   deletedImages: string[] = []; // Silinen fotoğrafların yolları
 
+  tokenInfo: TokenInfo | null = null;
+    firstName: string;
+    lastName: string;
+
   constructor(
     private colorService: ColorService,
     private route: ActivatedRoute,
@@ -77,7 +85,9 @@ export class ProductStockUpdateComponent implements OnInit {
     private productService: ProductService,
     private router: Router,
     private productImageService: ProductImageService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private productStatusHistoryService: ProductStatusHistoryService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -86,6 +96,13 @@ export class ProductStockUpdateComponent implements OnInit {
     });
 
     this.loadInitialData();
+    this.tokenInfo = this.authService.getTokenInfo();
+    if (this.tokenInfo) {
+      const fullName = this.tokenInfo.name;
+      const nameParts = fullName.split(' ');
+      this.firstName = nameParts[0];
+      this.lastName = nameParts.slice(1).join(' ');
+    }
   }
 
   loadInitialData() {
@@ -130,19 +147,25 @@ export class ProductStockUpdateComponent implements OnInit {
         if (response.data && response.data.length > 0) {
           this.productDetail = response.data[0]; // Ürün detaylarını yükle
           console.log('Product Details:', this.productDetail);
+          
+          // Eski ürün verilerini kaydediyoruz
+          this.originalProductDetail = { ...this.productDetail };
+  
+          // Parametreler için değerleri kaydedelim
           this.paramProductCode = this.productDetail.productCode;
           this.paramPorductId = this.productDetail.productId;
+  
           // Super Category Eşleştirme
           const matchedSuperCategory = this.superCategories.find(
             (sc) =>
               sc.superCategoryName.trim().toLowerCase() ===
               this.productDetail.superCategoryName.trim().toLowerCase()
           );
-
+  
           if (matchedSuperCategory) {
             this.selectedSuperCategoryId = matchedSuperCategory.superCategoryId;
           }
-
+  
           // Kategorileri yükle ve eşleştir
           this.onSuperCategoryChange(this.selectedSuperCategoryId).then(() => {
             const matchedCategory = this.categories.find(
@@ -150,28 +173,29 @@ export class ProductStockUpdateComponent implements OnInit {
                 category.categoryName.trim().toLowerCase() ===
                 this.productDetail.categoryName.trim().toLowerCase()
             );
-
+  
             if (matchedCategory) {
               this.productDetail.categoryId = matchedCategory.categoryId;
             }
           });
-
+  
           // Renk Eşleştirme
           const matchedColor = this.colors.find(
             (color) =>
               color.colorName.trim().toLowerCase() ===
               this.productDetail.colorName.trim().toLowerCase()
           );
-
+  
           if (matchedColor) {
             this.productDetail.colorId = matchedColor.colorId;
           }
-
+  
           // Fotoğrafları veritabanından yükle
           this.loadPhotosFromDatabase();
         }
       });
   }
+  
 
   loadPhotosFromDatabase() {
     const databasePhotos: string[] = this.productDetail.images || [];
@@ -224,7 +248,48 @@ export class ProductStockUpdateComponent implements OnInit {
         status: this.productDetail.status,
       },
     };
-    console.log(updatedData);
+  
+    // Eski ve yeni veriler arasındaki farkları karşılaştır
+    let remarks = '';
+  
+    if (this.originalProductDetail.productName !== this.productDetail.productName) {
+      remarks += `Ürün Adı değişti: Eski - ${this.originalProductDetail.productName}, Yeni - ${this.productDetail.productName}. `;
+    }
+    if (this.originalProductDetail.unitPrice !== this.productDetail.unitPrice) {
+      remarks += `Birim Fiyat değişti: Eski - ${this.originalProductDetail.unitPrice}, Yeni - ${this.productDetail.unitPrice}. `;
+    }
+    if (this.originalProductDetail.productDescription !== this.productDetail.productDescription) {
+      remarks += `Ürün Açıklaması değişti: Eski - ${this.originalProductDetail.productDescription}, Yeni - ${this.productDetail.productDescription}. `;
+    }
+    if (this.originalProductDetail.productSize !== this.productDetail.productSize) {
+      remarks += `Ürün Bedeni değişti: Eski - ${this.originalProductDetail.productSize}, Yeni - ${this.productDetail.productSize}. `;
+    }
+    if (this.originalProductDetail.unitsInStock !== this.productDetail.unitsInStock) {
+      remarks += `Stok Miktarı değişti: Eski - ${this.originalProductDetail.unitsInStock}, Yeni - ${this.productDetail.unitsInStock}. `;
+    }
+    if (this.originalProductDetail.colorName !== this.productDetail.colorName) {
+      remarks += `Renk değişti: Eski - ${this.originalProductDetail.colorName}, Yeni - ${this.productDetail.colorName}. `;
+    }
+    if (this.originalProductDetail.productCode !== this.productDetail.productCode) {
+      remarks += `Ürün Kodu değişti: Eski - ${this.originalProductDetail.productCode}, Yeni - ${this.productDetail.productCode}. `;
+    }
+  
+    let historyModel: ProductStatusHistoryModel = {
+      historyId: 0, // Backend tarafından otomatik oluşturulabilir
+      productStockId: this.productStockId, // Yeni eklenen stok ID burada kullanılırsa backend'den alınmalı
+      productId: this.paramPorductId,
+      productDetailsId: 0, // Eğer productDetailsId kullanılacaksa backend'den alınmalı
+      status: true, // Başarılı işlem olduğu için true
+      changedBy: this.tokenInfo.userId, // Kullanıcı ID'si. Oturum açan kullanıcının ID'sini alabilirsiniz.
+      productCode: this.paramProductCode,
+      changedByFirstName: this.firstName, // Oturum açan kullanıcının adı alınabilir
+      changedByLastName: this.lastName, // Oturum açan kullanıcının soyadı alınabilir
+      email: this.tokenInfo.email, // Kullanıcı emaili
+      changeDate: new Date(), // Değişiklik tarihi
+      operations: "Güncelleme", // İşlem türü
+      remarks: remarks || " Stok güncellendi.", // Eski ve yeni verilerin farkları
+    };
+  
     this.productService
       .update(
         updatedData.product,
@@ -235,19 +300,32 @@ export class ProductStockUpdateComponent implements OnInit {
         (response) => {
           console.log('Ürün başarıyla güncellendi:', response);
           this.toastrService.success('Ürün güncellendi');
+          
+          // Geçmiş kaydı ekleyelim
+          this.productStatusHistoryService.add(historyModel).subscribe(
+            (historyResponse) => {
+              if (historyResponse.success) {
+                console.log('Geçmiş kaydı başarıyla eklendi');
+              }
+            },
+            (historyError) => {
+              this.toastrService.error("Geçmiş kaydı sırasında bir hata oluştu.", "Hata");
+              console.error("Geçmiş kaydı hatası:", historyError);
+            }
+          );
+  
           this.router.navigate(['/product-operations', this.paramProductCode, this.paramPorductId]);
         },
         (error) => {
           if (error.error && error.error.message) {
-            //alert(`Hata: ${error.error.message}`);
             this.toastrService.error(error.error.message);
           } else {
-            //alert('Ürün eklenirken bir hata oluştu. Lütfen tekrar deneyin.');
-            this.toastrService.error('Ürün eklenirken bir hata oluştu. Lütfen tekrar deneyin.')
+            this.toastrService.error('Ürün eklenirken bir hata oluştu. Lütfen tekrar deneyin.');
           }
         }
       );
   }
+  
 
   cancelUpdate(productCode: string, productId: number): void {
     this.router.navigate(['/product-operations', productCode, productId]);

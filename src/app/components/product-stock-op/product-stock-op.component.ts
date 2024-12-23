@@ -156,5 +156,7 @@ export class ProductStockOpComponent implements OnInit {
       });
     }
   }
-  
+  navigateToProductStatusHistory(): void {
+    this.router.navigate(['/product-status-history']);
+  }
 }

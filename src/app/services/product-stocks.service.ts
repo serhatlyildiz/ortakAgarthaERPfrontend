@@ -37,4 +37,5 @@ export class ProductStocksService {
     let newPath = this.apiUrl + '/delete?productStockId=' + productIdStockId;
     return this.http.get<ResponseModel>(newPath);
   }
+
 }
