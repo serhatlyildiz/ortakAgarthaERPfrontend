@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { MainService } from './services/main.service';
-import { SalahModel, VakitModel } from './models/salahModel';
+import { VakitModel } from './models/salahModel';
 
 @Component({
   selector: 'app-root',

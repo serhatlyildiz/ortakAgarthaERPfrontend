@@ -83,9 +83,9 @@ export class ProductService {
     );
   }
 
-  getByProductDetails(productStockId: number): Observable<any> {
+  getByProductDetails(productStocksId: number): Observable<any> {
     return this.httpClient.get(
-      this.apiUrl + '/getproductstockdetails?productStockId=' + productStockId
+      this.apiUrl + '/getproductstockdetails?productStockId=' + productStocksId
     );
   }
 
