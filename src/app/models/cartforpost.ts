@@ -1,5 +1,4 @@
 export interface CartForPost {
-  userId: number;
-  productStocksId: number;
+  productStockId: number;
   quantity: number;
 }
