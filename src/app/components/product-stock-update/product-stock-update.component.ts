@@ -146,7 +146,6 @@ export class ProductStockUpdateComponent implements OnInit {
       .subscribe((response) => {
         if (response.data && response.data.length > 0) {
           this.productDetail = response.data[0]; // Ürün detaylarını yükle
-          console.log('Product Details:', this.productDetail);
           
           // Eski ürün verilerini kaydediyoruz
           this.originalProductDetail = { ...this.productDetail };
@@ -298,14 +297,13 @@ export class ProductStockUpdateComponent implements OnInit {
       )
       .subscribe(
         (response) => {
-          console.log('Ürün başarıyla güncellendi:', response);
           this.toastrService.success('Ürün güncellendi');
           
           // Geçmiş kaydı ekleyelim
           this.productStatusHistoryService.add(historyModel).subscribe(
             (historyResponse) => {
               if (historyResponse.success) {
-                console.log('Geçmiş kaydı başarıyla eklendi');
+                
               }
             },
             (historyError) => {

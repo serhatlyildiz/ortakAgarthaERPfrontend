@@ -1,0 +1,53 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  th button {
+    background: none;
+    border: none;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  th button:hover {
+    text-decoration: underline;
+  }
+  
+  th span {
+    margin-left: 5px;
+    text-align: center;
+  }
+  
+  th {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    position: relative;
+    transition: background-color 0.2s ease;
+    text-align: center;
+  }
+  
+  th:hover {
+    background-color: #e0e0e0;
+  }
+  
+  th span {
+    margin-left: 10px;
+  }

@@ -1,1 +1,91 @@
-<p>product-status-history works!</p>
+<div *ngIf="isLoading">Yükleniyor...</div>
+<div *ngIf="!isLoading && errorMessage" class="error-message">
+  {{ errorMessage }}
+</div>
+<div *ngIf="!isLoading && !errorMessage" style="overflow-x: auto">
+  <div class="d-flex align-items-center justify-content-between mb-3 search-container">
+    <!-- Ürün Kodu seçimi -->
+    <div>
+      <label for="productCodeSelect">Ürün Kodu :</label>
+      &nbsp;
+      <select id="productCodeSelect" [(ngModel)]="selectedProductCode">
+        <option value="">Tümü</option>
+        <option *ngFor="let productCode of productCodes" [value]="productCode">
+          {{ productCode }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Kullanıcı seçimi -->
+    <div>
+      <label for="userEmailSelect">Kullanıcı :</label>
+      &nbsp;
+      <select id="userEmailSelect" [(ngModel)]="selectedUserEmail">
+        <option value="">Tümü</option>
+        <option *ngFor="let user of userEmails" [value]="user.email">
+          {{ user.fullName }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Tarih aralığı seçimi -->
+    <div>
+      <label for="startDate">Başlangıç Tarihi :</label>
+      &nbsp;
+      <input id="startDate" type="date" [(ngModel)]="startDate" />
+    </div>
+    <div>
+      <label for="endDate">Bitiş Tarihi :</label>
+      &nbsp;
+      <input id="endDate" type="date" [(ngModel)]="endDate" />
+    </div>
+
+    <!-- İşlem türü seçimi -->
+    <div>
+      <label>İşlem Türü :</label>
+      &nbsp;
+      <label>
+        <input type="radio" name="operation" value="Ekleme" [(ngModel)]="selectedOperation" />
+        Ekleme
+      </label>
+      &nbsp;
+      <label>
+        <input type="radio" name="operation" value="Güncelleme" [(ngModel)]="selectedOperation" />
+        Güncelleme
+      </label>
+    </div>
+
+    <!-- Filtreleme Butonu -->
+    <button class="btn btn-primary" (click)="applyFilter()">Filtrele</button>
+    <!-- Reset Butonu -->
+    <button class="btn btn-secondary" (click)="resetFilters()">Resetle</button>
+    <button class="btn btn-danger" (click)="cancelButton()">Geri</button>
+  </div>
+
+  <!-- Tablo -->
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Ürün Kodu</th>
+        <th>Kullanıcı Adı Soyadı</th>
+        <th>E-Mail</th>
+        <th>Tarih</th>
+        <th>İşlem Bilgisi</th>
+        <th>Açıklama</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="!apiRecords || apiRecords.length === 0">
+        <td colspan="6" class="text-center">Kayıt bulunamadı.</td>
+      </tr>
+      <tr *ngFor="let record of apiRecords">
+        <td>{{ record.productCode }}</td>
+        <td>{{ record.changedByFirstName }} {{ record.changedByLastName }}</td>
+        <td>{{ record.email }}</td>
+        <td>{{ record.changeDate | date: 'short' }}</td>
+        <td>{{ record.operations }}</td>
+        <td [innerHTML]="record.remarks"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

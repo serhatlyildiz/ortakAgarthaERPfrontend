@@ -90,7 +90,6 @@ export class ProductComponent implements OnInit {
   
   onSuperCategoryClick(): void {
     if (this.superCategoryName) {
-      console.log(`Navigating to SuperCategory: ${this.superCategoryName}`);
       // SuperCategory'ye tıklanırsa yapılacak işlem (örn: sayfa yenileme)
        // Sayfayı yenile
       if(this.categoryName === null){
@@ -104,7 +103,6 @@ export class ProductComponent implements OnInit {
 
   getProducts() {
     this.productService.getProductDetails2().subscribe((response) => {
-      console.log('Ürünler:', response.data);
       this.products = response.data.map((product) => ({
         ...product,
         currentImageIndex: 0, // Varsayılan olarak her ürünün indeksi 0
@@ -117,7 +115,6 @@ export class ProductComponent implements OnInit {
     this.productService
       .getProductsBySuperCategory(superCategoryId)
       .subscribe((response) => {
-        console.log(`SuperCategory ID ${superCategoryId} için ürünler:`, response.data);
         this.products = response.data.map((product) => ({
           ...product,
           currentImageIndex: 0, // Varsayılan olarak her ürünün indeksi 0
@@ -130,10 +127,6 @@ export class ProductComponent implements OnInit {
     this.productService
       .getProductsByCategory(superCategoryId, categoryId)
       .subscribe((response) => {
-        console.log(
-          `SuperCategory ID ${superCategoryId} ve Category ID ${categoryId} için ürünler:`,
-          response.data
-        );
         this.products = response.data.map((product) => ({
           ...product,
           currentImageIndex: 0, // Varsayılan olarak her ürünün indeksi 0
@@ -143,17 +136,6 @@ export class ProductComponent implements OnInit {
   }
 
   goToProductDetail(productId: number): void {
-    // ID'yi kaydet
-    //localStorage.setItem('productId', productId.toString());
-
-    // 10 dakika sonra silmek için timer ayarla
-    /*
-    setTimeout(() => {
-      localStorage.removeItem('productId');
-      console.log('Product ID silindi');
-    }, 10 * 60 * 1000); // 10 dakika = 600,000 ms
-    */
-    // Detay sayfasına yönlendirme
     this.router.navigate(['/product-detail', productId]);
   }
 
@@ -168,31 +150,6 @@ export class ProductComponent implements OnInit {
       );
     }
   }
-
-  
-  // getProducts() {
-  //   this.productService.getProductDetails2().subscribe((response) => {
-  //     console.log('ürünler:', response.data);
-  //     this.products = response.data.map((product) => ({
-  //       ...product,
-  //       currentImageIndex: 0, // Varsayılan olarak her ürünün indeksi 0
-  //     }));
-  //     this.dataLoaded = true;
-  //   });
-  // }  
-  
-
-  /*
-  getProductsByCategory(categoryId: number) {
-    this.productService
-      .getProductsByCategory(categoryId)
-      .subscribe((response) => {
-        if (response.success) {
-          this.products = response;
-          this.dataLoaded = true;
-        }
-      });
-  }*/
 
   sort(column: string) {
     if (this.sortColumn === column) {
@@ -225,23 +182,4 @@ export class ProductComponent implements OnInit {
       product.currentImageIndex!++;
     }
   }
-  
-
-  
-  // applyFilters(filters: any) {
-  //   if (filters.category) {
-  //     this.selectedCategory = filters.category;
-  //     this.products = this.products.filter(
-  //       (product) => product.categoryId === this.selectedCategory
-  //     );
-  //   }
-  // }
-
-  // // Kullanıcı tarafından filtrelerin ayarlanması
-  // applyCategoryFilter(category: string) {
-  //   const filters = {
-  //     category: category,
-  //   };
-  //   this.filterService.setFilters(filters);
-  // }
 }

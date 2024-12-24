@@ -51,7 +51,7 @@ export class AdminUserUpdateComponent implements OnInit {
           this.loadInitialIlce();
         },
         (error) => {
-          console.error('Error fetching user data:', error);
+          this.toastrService.error(error);
         }
       );
     }
@@ -91,14 +91,13 @@ export class AdminUserUpdateComponent implements OnInit {
 
   updateUser(): void {
     this.prepareUserRoles(); // Seçili rolleri kullanıcıya ata
-    console.log(this.user); //2. kontrol
     this.userService.updateUser(this.user).subscribe(
       (response) => {
-        console.log('User updated successfully:', response);
+        this.toastrService.success('User updated successfully', response);
         this.router.navigate(['/admin']); // Admin sayfasına yönlendir
       },
       (error) => {
-        console.error('Error updating user:', error);
+        this.toastrService.success('Error updating user:', error);
       }
     );
   }
@@ -115,15 +114,12 @@ export class AdminUserUpdateComponent implements OnInit {
   
 
   resetForm(): void {
-    console.log(this.roles);
     this.user = { ...this.originalUser }; // Orijinal veriye dön
     this.loadInitialIlce();
     this.matchUserRoles();
-    console.log('Form resetlendi:', this.user);
   }
 
   cancelUpdate(): void {
-    console.log('Güncelleme iptal edildi');
     this.router.navigate(['/admin']);
   }
 

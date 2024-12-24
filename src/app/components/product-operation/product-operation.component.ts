@@ -100,7 +100,6 @@ export class ProductOperationComponent implements OnInit {
   loadAllProducts(): void {
     this.productService.getProductDetails().subscribe({
       next: (response) => {
-        console.log('Gelen Veri:', response.data);
         this.productDetails = response.data.filter((product) => product.status === true);
         this.isLoading = false;
   
@@ -119,7 +118,6 @@ export class ProductOperationComponent implements OnInit {
   filterByProductCode(productCode: string): void {
     this.productService.filterProducts({ ProductCode: productCode }).subscribe({
       next: (response: any) => {
-        console.log('API Yanıtı:', response); // Yanıtı kontrol
         this.productDetails = response.filter((product: any) => product.status === true);
         this.productDetails.forEach((product) => {
           this.currentImageIndex[product.productStocksId] = 0; // İlk resim gösterilsin
@@ -127,7 +125,7 @@ export class ProductOperationComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Hata:', error);
+        this.toastrService.error('Hata', error);
         this.errorMessage = 'Ürün detayları alınırken bir hata oluştu.';
         this.isLoading = false;
       },
@@ -187,7 +185,6 @@ export class ProductOperationComponent implements OnInit {
     else if(this.filters.superCategoryName=="5"){
       this.filters.superCategoryName="Bebek";
     }
-    console.log("status = "+this.filters.status);
     this.filters = {
       ProductName: this.filters.productName || null,
       SuperCategoryName: this.filters.superCategoryName || null,
@@ -202,22 +199,17 @@ export class ProductOperationComponent implements OnInit {
       ProductCode: this.filters.productCode || null,
     };
   
-    console.log('Gönderilen filtre:', this.filters); // Filtre objesini kontrol
-  
     this.productService.filterProducts(this.filters).subscribe({
       next: (response: any) => {
-        console.log('API Yanıtı:', response); // Yanıtı kontrol
         this.productDetails = response.filter((product: any) => {
           // Status true olanlar
           return product.status === true;
         });
-        console.log('Ürün Detayları:', this.productDetails);
       },
       error: (error) => {
         console.error('Hata:', error); // Hata durumunu kontrol
       },
     });
-    console.log('isLoading:', this.isLoading);
     console.log('errorMessage:', this.errorMessage);
   }
 
