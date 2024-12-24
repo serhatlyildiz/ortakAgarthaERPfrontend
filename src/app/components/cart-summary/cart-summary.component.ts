@@ -8,6 +8,7 @@ import { GetCart } from '../../models/getcart';
 import { GetCartItem } from '../../models/getcartitem';
 import { ToastrService } from 'ngx-toastr';
 import { lastValueFrom } from 'rxjs';
+import { CartForPost } from '../../models/cartforpost';
 
 @Component({
   selector: 'app-cart-summary',
@@ -47,7 +48,7 @@ export class CartSummaryComponent implements OnInit {
     if (!token) {
       this.cartItems = this.cartService.getCartFromLocal();
     } else {
-      this.syncCart();
+      // this.syncCart();
     }
     this.loadCart();
   }
@@ -58,15 +59,14 @@ export class CartSummaryComponent implements OnInit {
         if (response.success) {
           this.cart = response.data;
           this.getCart = response.data.cartItems;
-          console.log(response)
-          
+          console.log(this.getCart[0].quantity);
           const productRequests = this.getCart.map((cartItem) =>
             lastValueFrom(
               this.productService.getByProductDetails(cartItem.productStocksId)
             )
           );
-          
-          console.log(productRequests + " asd");
+
+          console.log(productRequests + ' asd');
           Promise.all(productRequests)
             .then((responses) => {
               console.log('2.satır');
@@ -89,20 +89,20 @@ export class CartSummaryComponent implements OnInit {
     });
   }
 
-  syncCart(): void {
-    const localCart = this.cartService.getCartFromLocal();
-    if (localCart.length === 0) return;
+  // syncCart(): void {
+  //   const localCart = this.cartService.getCartFromLocal();
+  //   if (localCart.length === 0) return;
 
-    this.cartService.addToCart(localCart).subscribe({
-      next: () => {
-        localStorage.removeItem('cart');
-      },
-      error: (error) => {
-        this.toastrService.error('Sepet senkronizasyonunda hata oluştu.');
-        console.error(error);
-      },
-    });
-  }
+  //   this.cartService.addToCart(localCart).subscribe({
+  //     next: () => {
+  //       localStorage.removeItem('cart');
+  //     },
+  //     error: (error) => {
+  //       this.toastrService.error('Sepet senkronizasyonunda hata oluştu.');
+  //       console.error(error);
+  //     },
+  //   });
+  // }
 
   getByProductDetails(productStockId: number) {
     this.productService
@@ -126,12 +126,13 @@ export class CartSummaryComponent implements OnInit {
       return;
     }
 
-    const updatedItem: CartItem = {
-      productStocksId,
-      quantity: updatedQuantity,
+    const updatedItem: CartForPost[] = [];
+    updatedItem[0] = {
+      productStockId: productStocksId,
+      quantity: quantityChange,
     };
 
-    this.cartService.updateCartItem(updatedItem).subscribe({
+    this.cartService.addToCart(updatedItem).subscribe({
       next: () => this.loadCart(),
       error: (error) => {
         alert('Ürün miktarı güncellenirken bir hata oluştu.');
@@ -164,8 +165,8 @@ export class CartSummaryComponent implements OnInit {
   }
 
   addItemToCart(productStocksId: number): void {
-    const newItem: CartItem[] = [
-      { productStocksId: productStocksId, quantity: 1 },
+    const newItem: CartForPost[] = [
+      { productStockId: productStocksId, quantity: 1 },
     ];
     this.cartService.addToCart(newItem).subscribe({
       next: (response) => {
