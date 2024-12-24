@@ -125,8 +125,6 @@ export class ProductStockAddComponent implements OnInit {
   loadInitialData(productId: number) {
     this.productService.getById(productId).subscribe(
       (response) => {
-        console.log('Ürünler:', response.data);
-  
         // Gelen response bir dizi mi yoksa nesne mi kontrol et
         if (response.data) {
           this.products = Array.isArray(response.data) ? response.data[0] : response.data;
@@ -162,8 +160,6 @@ export class ProductStockAddComponent implements OnInit {
   
     this.categoryService.getByCategoryId(categoryId).subscribe(
       (response) => {
-        console.log('Kategori:', response);
-  
         // Yanıtın içindeki data'yı işleyin
         if (response && response.data) {
           const category = response.data; // Tek bir nesne
@@ -198,8 +194,7 @@ export class ProductStockAddComponent implements OnInit {
   
     this.superCategoryService.getBySuperCategoryId(superCategoryId).subscribe(
       (response) => {
-        console.log('Super Kategori:', response);
-  
+
         if (response && response.data) {
           this.superCategoryName = response.data.superCategoryName;
         } else {
@@ -300,7 +295,6 @@ export class ProductStockAddComponent implements OnInit {
       UnitsInStock: this.productDetail.UnitsInStock,
       Images: this.temporaryImages.length > 0 ? this.temporaryImages.map(image => image.preview) : [],
     };
-    console.log("Gönderilen veriler = " + JSON.stringify(productStock));
     // Verinin tam olarak hazır olup olmadığını kontrol et
     if (!productStock.ProductColorId) {
       alert('Lütfen bir renk seçiniz!');
@@ -318,7 +312,6 @@ export class ProductStockAddComponent implements OnInit {
     this.productService.productStockAdd(productStock).subscribe(
       (response) => {
         this.isLoading = false;
-        console.log('Ürün başarıyla eklendi:', response);
         let historyModel: ProductStatusHistoryModel = {
                       historyId: 0, // Backend tarafından otomatik oluşturulabilir
                       productStockId: 0, // Yeni eklenen stok ID burada kullanılırsa backend'den alınmalı

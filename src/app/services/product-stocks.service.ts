@@ -38,4 +38,13 @@ export class ProductStocksService {
     return this.http.get<ResponseModel>(newPath);
   }
 
+  /*
+  getAllByProductDetailsIdAndColor(
+    productDetailsId: number,
+    productColorId: number
+  ): Observable<ListResponseModel<Products>> {
+    const url = `${this.apiUrl}/getallbyproductdetailsidandcolor?productDetailsId=${productDetailsId}&productColorId=${productColorId}`;
+    return this.http.get<ListResponseModel<ProductStock>>(url);
+  }
+*/
 }

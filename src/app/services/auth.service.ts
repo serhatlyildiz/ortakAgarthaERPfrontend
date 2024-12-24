@@ -54,8 +54,11 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    const token = localStorage.getItem('token');
-    return token !== null && !this.isTokenExpired(token);
+    if (typeof window !== 'undefined' && localStorage) {
+      const token = localStorage.getItem('token');
+      return token !== null && !this.isTokenExpired(token);
+    }
+    return false; // Tarayıcı ortamında değilse false döner
   }
 
   private isTokenExpired(token: string): boolean {
@@ -63,45 +66,21 @@ export class AuthService {
     const currentTime = Math.floor(Date.now() / 1000); // ms'yi sn'ye çevir
     return decoded.exp < currentTime;
   }
-
-  //tokendaki rolleri kontrol etme
-  hasRole(roles: string[]): boolean {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedToken: any = jwtDecode(token);
-      const userRoles: string[] =
-        decodedToken[
-          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-        ] || [];
-      return roles.some((role) => userRoles.includes(role));
+    hasRole(roles: string[]): boolean {
+      // Tarayıcı ortamında çalıştığından emin olun
+      if (isPlatformBrowser(this.platformId)) {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          const userRoles: string[] =
+            decodedToken[
+              'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+            ] || [];
+          return roles.some((role) => userRoles.includes(role));
+        }
+      }
+      return false; // Tarayıcı ortamında değilse veya token yoksa false döner
     }
-    return false;
-  }
-
-  //getTokenInfo(): TokenInfo {
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    //   const decodedToken: any = jwtDecode(token);
-    //   this.user.userId = 18
-    //     decodedToken[
-    //       'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
-    //     ];
-    //   this.user.email = decodedToken['email'];
-    //   this.user.name =
-    //     decodedToken[
-    //       'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
-    //     ];
-    //   this.user.roles =
-    //     decodedToken[
-    //       'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-    //     ] || [];
-    //   console.log(this.user);
-    //   return this.user;
-    // } else {
-    //   return null;
-    // }
-    //return null
- //}
 
  getTokenInfo(): TokenInfo | null {
   // Check if running in the browser (client-side)

@@ -106,7 +106,6 @@ export class ProductAddComponent implements OnInit {
 
   // Ürün ekle
   add() {
-    console.log(this.productAddForm.value);
     if (this.productAddForm.valid) {
       // Form verisini alıyoruz
       let productModel: Product = { 
@@ -118,8 +117,6 @@ export class ProductAddComponent implements OnInit {
         Status: true, // Backend büyük harf ile istiyor
         productCode: this.productAddForm.value.productCode
       };
-  
-      console.log("Gönderilen model:", productModel);
   
       // Son olarak, API'ye yeni objeyi gönderiyoruz
       this.productService.productAdd(productModel).subscribe(
@@ -152,7 +149,6 @@ export class ProductAddComponent implements OnInit {
               },
               (historyError) => {
                 this.toastrService.error("Geçmiş kaydı sırasında bir hata oluştu.", "Hata");
-                console.error("Geçmiş kaydı hatası:", historyError);
               }
             );
 
@@ -163,7 +159,6 @@ export class ProductAddComponent implements OnInit {
         },
         (responseError) => {
           const errorMessage = responseError?.error?.message || 'Bilinmeyen bir hata oluştu.';
-          console.error("Hata detayı:", responseError); // Hata detayını konsola yazdır
           this.toastrService.error(errorMessage, 'Hata');
         }
       );

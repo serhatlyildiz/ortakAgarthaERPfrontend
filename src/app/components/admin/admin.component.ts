@@ -247,12 +247,10 @@ export class AdminComponent implements OnInit {
           const ilAdi = city.data.iladi; // iladi'yi alıyoruz
           user.city = ilAdi;
         } else {
-          console.error('City data is invalid.');
           this.toastrService.error('City data is not valid.');
         }
       },
       error: (err) => {
-        console.error('Error fetching city:', err);
         this.toastrService.error('Failed to load city.');
       },
     });
@@ -276,12 +274,10 @@ export class AdminComponent implements OnInit {
           const ilceAdi = district.data.ilce; // ilce'yi alıyoruz
           user.district = ilceAdi; // Kullanıcının ilçe bilgisi güncelleniyor
         } else {
-          console.error('District data is invalid.');
           this.toastrService.error('District data is not valid.');
         }
       },
       error: (err) => {
-        console.error('Error fetching district:', err);
         this.toastrService.error('Failed to load district.');
       },
     });

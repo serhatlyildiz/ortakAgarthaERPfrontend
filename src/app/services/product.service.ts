@@ -24,19 +24,6 @@ export class ProductService {
     return this.httpClient.get<ListResponseModel<Product>>(newPath);
   }
 
-  // getById(productId: number): Observable<any> {
-  //   return this.httpClient.get(
-  //     this.apiUrl + '/getbyid?id='+productId
-  //   );
-  // }
-
-  // getProductsByCategory(
-  //   categoryId: number
-  // ): Observable<ListResponseModel<ProductDetailDto>> {
-  //   let newPath = this.apiUrl + '/getBycategory?categoryId=' + categoryId;
-  //   return this.httpClient.get<ListResponseModel<ProductDetailDto>>(newPath);
-  // }
-
   add(product: Product): Observable<ResponseModel> {
     const token = localStorage.getItem('token'); // Token'ı al
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -164,13 +151,4 @@ getProductsByCategory(
     `${this.apiUrl}/getbycategoryidproductdetails2?superCategoryId=${superCategoryId}&categoryId=${categoryId}`
   );
 }
-
-  /*
-  filterProducts(filters: any): Observable<ListResponseModel<ProductDetailDto>> {
-    return this.httpClient.post<ListResponseModel<ProductDetailDto>>(
-      'http://localhost:5038/api/products/filters',
-      filters
-    );
-  }
-    */
 }

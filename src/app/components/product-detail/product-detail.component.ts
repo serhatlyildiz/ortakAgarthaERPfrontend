@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProductService } from '../../services/product.service';
-import { ProductDetailDto } from '../../models/ProductDetailDto';
 import { CommonModule } from '@angular/common';
+import { ProductService } from '../../services/product.service';
+import { ProductDetailsService } from '../../services/product-details.service';
+import { Colors } from '../../models/colors';
+import { ProductDetailDto } from '../../models/ProductDetailDto';
+import { ColorService } from '../../services/colors.service';
 import { Product } from '../../models/product';
-import { ProductStocksService } from '../../services/product-stocks.service';
+import { ProductDetails } from '../../models/productDetail';
 
 @Component({
   selector: 'app-product-detail',
@@ -15,46 +18,51 @@ import { ProductStocksService } from '../../services/product-stocks.service';
 })
 export class ProductDetailComponent implements OnInit {
   productId!: number;
-  product: Product;
-  productDetail: ProductDetailDto[] = [];
+  product!: Product;
+  productSizes: string[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
+  availableSizes: string[] = [];
+  colors: Colors[] = [];
   isLoaded = false;
-  images: string[] = [];
-  currentIndex = 0;
+
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private productStocksService: ProductStocksService
+    private productDetailsService: ProductDetailsService,
+    private colorService: ColorService,
   ) {}
 
   ngOnInit(): void {
     this.productId = +this.route.snapshot.paramMap.get('id')!;
 
     this.getProductDetail(this.productId);
-    this.getStocksByProductId(this.productId);
+    this.getAvailableSizes(this.productId);
+    this.getColors();
   }
 
   getProductDetail(id: number): void {
-    console.log('Product Id: ', id);
-
     this.productService.getById(id).subscribe((response) => {
       this.product = response.data;
     });
   }
 
-  getStocksByProductId(productId: number): void {
-    this.productService
-      .getProductStockDetailsByProduct(productId)
-      .subscribe((response) => {
-        this.productDetail = response.data;
-        this.productDetail.forEach((element) => {
-          this.images = this.images.concat(element.images);
-        });
-        this.isLoaded = true;
-      });
+  getAvailableSizes(productId: number): void {
+    this.productDetailsService.getAllByProductId(productId).subscribe((response) => {
+      if (response && response.data) {
+        this.availableSizes = response.data.map((item) => item.productSize);
+      } else {
+        this.availableSizes = [];
+      }
+      this.isLoaded = true;
+    });
+  }    
+
+  getColors(): void {
+    this.colorService.getAll().subscribe((response) => {
+      this.colors = response.data;
+    });
   }
 
-  nextImage() {
-    this.currentIndex = (this.currentIndex + 1) % this.images.length;
+  isSizeAvailable(size: string): boolean {
+    return this.availableSizes.includes(size);
   }
-
 }

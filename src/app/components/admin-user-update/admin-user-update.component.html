@@ -152,6 +152,7 @@
                   [id]="'role-' + i"
                   [(ngModel)]="roles[i].selected"
                   [name]="'role-' + i"
+                  [disabled]="role.name === 'customer'"
                 />
               </div>
             </div>
