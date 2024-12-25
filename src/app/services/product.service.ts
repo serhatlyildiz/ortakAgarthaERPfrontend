@@ -70,6 +70,12 @@ export class ProductService {
     );
   }
 
+  GetByProductIdForProductDetails2(productId: number): Observable<ListResponseModel<ProductDetailDto2>> {
+    return this.httpClient.get<ListResponseModel<ProductDetailDto2>>(
+      `${this.apiUrl}/getbyproductidforproductdetails2?productId=${productId}`
+    );
+  }
+
   getByProductDetails(productStocksId: number): Observable<any> {
     return this.httpClient.get(
       this.apiUrl + '/getproductstockdetails?productStockId=' + productStocksId

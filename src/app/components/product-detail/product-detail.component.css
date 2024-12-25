@@ -5,3 +5,82 @@
     height: auto;
   }
   
+  .product-image-container {
+    position: relative;
+    text-align: center;
+  }
+  
+  .fixed-size-img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .change-image-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .change-image-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  
+  .product-image {
+    width: 100%; /* Fotoğrafın genişliğini kapsayıcıya göre ayarla */
+    height: 500px; /* Sabit yükseklik verelim, boyut sabit olacak */
+    object-fit: contain; /* Fotoğrafın içine tam sığmasını sağla */
+  }
+  
+  .nav-arrows {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+  }
+  
+/* Ok işaretlerinin boyutunu küçültme */
+.arrow-button {
+  font-size: 1.5rem; /* Ok simgesinin boyutunu küçült */
+  width: 40px; /* Ok simgelerinin genişliğini ayarla */
+  height: 40px; /* Ok simgelerinin yüksekliğini ayarla */
+  border-radius: 50%; /* Okları yuvarlak yap */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+  
+.arrow-button.left {
+  left: 10px; /* Sol ok konumu */
+}
+
+.arrow-button.right {
+  right: 10px; /* Sağ ok konumu */
+}
+
+.arrow-button:hover {
+  background-color: rgba(0, 0, 0, 0.7); /* Hover efekti */
+}
+
+.col-md-6{
+  padding-right: var(--bs-gutter-x);
+  padding-left: var(--bs-gutter-x);
+  margin-top: var(--bs-gutter-y);
+  margin-bottom: var(--bs-gutter-y);
+}
