@@ -80,7 +80,7 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(
       FormsModule,
       BrowserModule,
-      RouterModule,
+      RouterModule.forRoot(routes),
       ReactiveFormsModule,
       BrowserAnimationsModule,
       NgbDropdownModule,
