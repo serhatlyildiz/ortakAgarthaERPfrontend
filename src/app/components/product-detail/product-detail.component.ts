@@ -48,7 +48,7 @@ export class ProductDetailComponent implements OnInit {
     private productStocksService: ProductStocksService,
     private router: Router,
     private cartService: CartService,
-    private toastrService: ToastrService,
+    private toastrService: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -63,24 +63,28 @@ export class ProductDetailComponent implements OnInit {
   }
 
   getProductDetail(): void {
-    this.productService.GetByProductIdForProductDetails2(this.productId).subscribe({
-      next: (response) => {
-        if (response.data && response.data.length > 0) {
-          this.product = response.data[0];
-          this.productImages = this.product?.images || [];
-        }
-        this.isLoaded = true;
-      },
-      error: (err) => {
-        console.error('Product Error:', err);
-      },
-    });
+    this.productService
+      .GetByProductIdForProductDetails2(this.productId)
+      .subscribe({
+        next: (response) => {
+          if (response.data && response.data.length > 0) {
+            this.product = response.data[0];
+            this.productImages = this.product?.images || [];
+          }
+          this.isLoaded = true;
+        },
+        error: (err) => {
+          console.error('Product Error:', err);
+        },
+      });
   }
 
   getAvailableSizes(): void {
     this.productDetailsService.getAllByProductId(this.productId).subscribe({
       next: (response) => {
-        this.availableSizes = response.data.map((item: ProductDetails) => item.productSize);
+        this.availableSizes = response.data.map(
+          (item: ProductDetails) => item.productSize
+        );
       },
       error: (err) => {
         console.error('Sizes Error:', err);
@@ -105,82 +109,99 @@ export class ProductDetailComponent implements OnInit {
 
   onSizeChange(selectedSize: string): void {
     this.selectedSize = selectedSize;
-  
+
     // Renk seçimlerini sıfırla
     this.selectedColor = ''; // Seçilen rengi temizle
-    const colorInputs = document.querySelectorAll<HTMLInputElement>('input[name="color-selection"]');
+    const colorInputs = document.querySelectorAll<HTMLInputElement>(
+      'input[name="color-selection"]'
+    );
     colorInputs.forEach((input) => (input.checked = false));
-  
+
     this.updateAvailableColors(); // Mevcut renkleri güncelle
     this.updateProductImage(); // Ürün görselini güncelle
   }
-  
+
   updateAvailableColors(): void {
     // Boyut seçildiğinde ürün detayları sorgulaması
-    this.productDetailsService.getAllByProductIdAndSize(this.productId, this.selectedSize).subscribe({
-      next: (response: ListResponseModel<ProductDetails>) => {
-        if (response.success && response.data.length > 0) {
-          this.productDetailsId = response.data[0]?.productDetailsId;
-          if (this.productDetailsId) {
-            this.productStocksService.getAllByProductDetailsId(this.productDetailsId).subscribe({
-              next: (colorResponse: ProductDetailDto2[]) => {  // Dönüş tipi artık dizi
-  
-                if (colorResponse && colorResponse.length > 0) {
-                  // Renk ID'lerini availableColorIds dizisine ekle
-                  this.availableColorIds = colorResponse.map((item: ProductDetailDto2) => item.colorId);
-                  // Eğer gerekliyse resim URL'si güncellenebilir
-                  if (colorResponse[0]?.images?.[0]) {
-                    this.productImages = colorResponse[0]?.images; // İlk rengin resimlerini al
-                  }
-                } else {
-                  console.log('No available colors for this product details ID.');
-                }
-              },
-              error: (err) => {
-                console.error('Error fetching color stocks:', err);
-              },
-            });
+    this.productDetailsService
+      .getAllByProductIdAndSize(this.productId, this.selectedSize)
+      .subscribe({
+        next: (response: ListResponseModel<ProductDetails>) => {
+          if (response.success && response.data.length > 0) {
+            this.productDetailsId = response.data[0]?.productDetailsId;
+            if (this.productDetailsId) {
+              this.productStocksService
+                .getAllByProductDetailsId(this.productDetailsId)
+                .subscribe({
+                  next: (colorResponse: ProductDetailDto2[]) => {
+                    // Dönüş tipi artık dizi
+
+                    if (colorResponse && colorResponse.length > 0) {
+                      // Renk ID'lerini availableColorIds dizisine ekle
+                      this.availableColorIds = colorResponse.map(
+                        (item: ProductDetailDto2) => item.colorId
+                      );
+                      // Eğer gerekliyse resim URL'si güncellenebilir
+                      if (colorResponse[0]?.images?.[0]) {
+                        this.productImages = colorResponse[0]?.images; // İlk rengin resimlerini al
+                      }
+                    } else {
+                      console.log(
+                        'No available colors for this product details ID.'
+                      );
+                    }
+                  },
+                  error: (err) => {
+                    console.error('Error fetching color stocks:', err);
+                  },
+                });
+            }
+          } else {
+            console.log('No product details found for the selected size.');
           }
-        } else {
-          console.log('No product details found for the selected size.');
-        }
-      },
-      error: (err) => {
-        console.error('Product Details Error:', err);
-      },
-    });
+        },
+        error: (err) => {
+          console.error('Product Details Error:', err);
+        },
+      });
   }
-  
+
   isColorAvailable(color: Colors): boolean {
     return this.availableColorIds.includes(color.colorId);
   }
-  
+
   updateProductImage(): void {
-    this.productDetailsService.getAllByProductIdAndSize(this.productId, this.selectedSize).subscribe({
-      next: (response: ListResponseModel<ProductDetails>) => {
-        // API'den gelen yanıtın success durumunu kontrol et
-        if (response.success && response.data.length > 0) {
-          this.productDetailsId = response.data[0]?.productDetailsId; // İlk öğeden productDetailsId'yi al
-          if (this.productDetailsId) {
-            // getAllByProductDetailsId API çağrısı
-            this.productStocksService.getAllByProductDetailsId(this.productDetailsId).subscribe({
-              next: (colorResponse: ProductDetailDto2[]) => {  // colorResponse artık doğrudan bir dizi
-                if (colorResponse && colorResponse.length > 0) {
-                  // Renklerin resimlerini güncelle
-                  this.productImages = colorResponse[0]?.images || this.productImages;
-                }
-              },
-              error: (err) => {
-                console.error('Image Error:', err);
-              },
-            });
+    this.productDetailsService
+      .getAllByProductIdAndSize(this.productId, this.selectedSize)
+      .subscribe({
+        next: (response: ListResponseModel<ProductDetails>) => {
+          // API'den gelen yanıtın success durumunu kontrol et
+          if (response.success && response.data.length > 0) {
+            this.productDetailsId = response.data[0]?.productDetailsId; // İlk öğeden productDetailsId'yi al
+            if (this.productDetailsId) {
+              // getAllByProductDetailsId API çağrısı
+              this.productStocksService
+                .getAllByProductDetailsId(this.productDetailsId)
+                .subscribe({
+                  next: (colorResponse: ProductDetailDto2[]) => {
+                    // colorResponse artık doğrudan bir dizi
+                    if (colorResponse && colorResponse.length > 0) {
+                      // Renklerin resimlerini güncelle
+                      this.productImages =
+                        colorResponse[0]?.images || this.productImages;
+                    }
+                  },
+                  error: (err) => {
+                    console.error('Image Error:', err);
+                  },
+                });
+            }
           }
-        }
-      },
-      error: (err) => {
-        console.error('Product Image Error:', err);
-      },
-    });
+        },
+        error: (err) => {
+          console.error('Product Image Error:', err);
+        },
+      });
   }
 
   onColorChange(colorId: number): void {
@@ -198,7 +219,6 @@ export class ProductDetailComponent implements OnInit {
             this.productImages = response[0]?.images || [];
             this.currentImageIndex = 0;
             this.productStockIdForPost = response[0]?.productStocksId;
-
           } else {
             console.warn('No data found for the selected color.');
           }
@@ -211,29 +231,68 @@ export class ProductDetailComponent implements OnInit {
 
   nextImage(): void {
     if (this.productImages.length > 0) {
-      this.currentImageIndex = (this.currentImageIndex + 1) % this.productImages.length;
+      this.currentImageIndex =
+        (this.currentImageIndex + 1) % this.productImages.length;
     }
   }
 
   previousImage(): void {
     if (this.productImages.length > 0) {
-      this.currentImageIndex = (this.currentImageIndex - 1 + this.productImages.length) % this.productImages.length;
+      this.currentImageIndex =
+        (this.currentImageIndex - 1 + this.productImages.length) %
+        this.productImages.length;
     }
   }
 
   addToCartAndContinueShopping(): void {
-    this.cartForPost[0].productStockId = this.productStockIdForPost;
-    this.cartForPost[0].quantity = 1;
-    this.cartService.addToCart(this.cartForPost);
-    this.toastrService.success("Ürün Sepete Eklendi");
-    this.router.navigate(["products"]);
+    // Eğer cartForPost dizisi boşsa, yeni bir öğe ekleyin
+    if (this.cartForPost.length === 0) {
+      this.cartForPost.push({
+        productStockId: this.productStockIdForPost,
+        quantity: 1,
+      });
+    } else {
+      // Eğer dizide zaten öğe varsa, mevcut öğeyi güncelleyin
+      this.cartForPost[0].productStockId = this.productStockIdForPost;
+      this.cartForPost[0].quantity = 1;
+    }
+
+    this.cartService.addToCart(this.cartForPost).subscribe({
+      next: (response) => {
+        if (response.success) console.log(response.message);
+      },
+      error: (err) => {
+        console.error('ptrdtpatladık:', err);
+      },
+    });
+    this.toastrService.success('Ürün Sepete Eklendi');
+    this.router.navigate(['products']);
   }
 
   addToCartAndGoToCart(): void {
-    this.cartForPost[0].productStockId = this.productStockIdForPost;
-    this.cartForPost[0].quantity = 1;
-    this.cartService.addToCart(this.cartForPost);
-    this.toastrService.success("Ürün Sepete Eklendi");
-    this.router.navigate(["cart-summery"]);
+    // Eğer cartForPost dizisi boşsa, yeni bir öğe ekleyin
+    if (this.cartForPost.length === 0) {
+      this.cartForPost.push({
+        productStockId: this.productStockIdForPost,
+        quantity: 1,
+      });
+    } else {
+      // Eğer dizide zaten öğe varsa, mevcut öğeyi güncelleyin
+      this.cartForPost[0].productStockId = this.productStockIdForPost;
+      this.cartForPost[0].quantity = 1;
+    }
+
+    this.cartService.addToCart(this.cartForPost).subscribe({
+      next: (response) => {
+        if (response.success) console.log(response.message);
+      },
+      error: (err) => {
+        console.error('ptrdtpatladık:', err);
+      },
+    });
+    this.toastrService.success('Ürün Sepete Eklendi');
+    setTimeout(() => {
+      this.router.navigate(['cart-summary']);
+    }, 500); // 2000 ms = 2 saniye
   }
 }
