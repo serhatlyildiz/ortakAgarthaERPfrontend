@@ -1,6 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { LoginModule } from '../models/loginModel';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenModel } from '../models/tokenModel';
 import { SingleResponseModel } from '../models/singleResponseModel';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
@@ -9,6 +9,7 @@ import { ResponseModel } from '../models/responseModel';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { TokenInfo } from '../models/tokenInfo';
 import { isPlatformBrowser } from '@angular/common';
+import { PasswordModel } from '../models/passwordModel';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,9 @@ export class AuthService {
   apiUrl = 'http://localhost:5038/api/auth/';
   user: TokenInfo;
 
-  constructor(private httpClient: HttpClient, private router: Router,
+  constructor(
+    private httpClient: HttpClient,
+    private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -66,46 +69,47 @@ export class AuthService {
     const currentTime = Math.floor(Date.now() / 1000); // ms'yi sn'ye çevir
     return decoded.exp < currentTime;
   }
-    hasRole(roles: string[]): boolean {
-      // Tarayıcı ortamında çalıştığından emin olun
-      if (isPlatformBrowser(this.platformId)) {
-        const token = localStorage.getItem('token');
-        if (token) {
-          const decodedToken: any = jwtDecode(token);
-          const userRoles: string[] =
-            decodedToken[
-              'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-            ] || [];
-          return roles.some((role) => userRoles.includes(role));
-        }
-      }
-      return false; // Tarayıcı ortamında değilse veya token yoksa false döner
-    }
-
- getTokenInfo(): TokenInfo | null {
-  // Check if running in the browser (client-side)
-  if (isPlatformBrowser(this.platformId)) {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedToken: any = jwtDecode(token);
-      return {
-        userId: decodedToken[
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
-        ],
-        email: decodedToken['email'] || '',
-        name: decodedToken[
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
-        ] || '',
-        roles:
+  hasRole(roles: string[]): boolean {
+    // Tarayıcı ortamında çalıştığından emin olun
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        const userRoles: string[] =
           decodedToken[
             'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-          ] || [],
-      };
+          ] || [];
+        return roles.some((role) => userRoles.includes(role));
+      }
     }
+    return false; // Tarayıcı ortamında değilse veya token yoksa false döner
   }
-  return null; // Return null if not in the browser or token not found
-}
 
+  getTokenInfo(): TokenInfo | null {
+    // Check if running in the browser (client-side)
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        return {
+          userId:
+            decodedToken[
+              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+            ],
+          email: decodedToken['email'] || '',
+          name:
+            decodedToken[
+              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
+            ] || '',
+          roles:
+            decodedToken[
+              'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+            ] || [],
+        };
+      }
+    }
+    return null; // Return null if not in the browser or token not found
+  }
 
   // Token süresi dolduğunda çıkış yapma işlemi
   private startTokenExpirationTimer() {
@@ -115,7 +119,7 @@ export class AuthService {
       const expirationTime = decodedToken.exp * 1000; // Saniyeyi milisaniyeye çevir
       const currentTime = Date.now();
       const timeLeft = expirationTime - currentTime;
-  
+
       // Token süresi dolmadan 1 dakika önce logout işlemi yap
       if (timeLeft > 0) {
         setTimeout(() => {
@@ -124,7 +128,6 @@ export class AuthService {
       }
     }
   }
-  
 
   logout() {
     localStorage.removeItem('token');
@@ -138,13 +141,12 @@ export class AuthService {
     );
   }
 
-  passwordReset(
-    resetToken: string,
-    newPassword: string
-  ): Observable<ResponseModel> {
-    return this.httpClient.post<ResponseModel>(this.apiUrl + 'reset-password', {
-      resetToken,
-      newPassword,
-    });
+  passwordReset(passModel: PasswordModel): Observable<ResponseModel> {
+    console.log(passModel);
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.httpClient.post<ResponseModel>(
+      this.apiUrl + 'reset-password',
+      passModel
+    );
   }
 }

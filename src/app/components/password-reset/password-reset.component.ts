@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
+import { PasswordModel } from '../../models/passwordModel';
 
 @Component({
   selector: 'app-password-reset',
@@ -13,6 +14,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './password-reset.component.css',
 })
 export class PasswordResetComponent implements OnInit {
+  passModel: PasswordModel;
   token: string = '';
   password1: string = '';
   password2: string = '';
@@ -50,8 +52,11 @@ export class PasswordResetComponent implements OnInit {
   // Şifre sıfırlama işlemi
   password(): void {
     if (!this.isButtonEnabled) return;
+    this.passModel = { resetToken: this.token, newPassword: this.password1 };
 
-    this.authService.passwordReset(this.token, this.password1).subscribe({
+    console.log(this.passModel);
+
+    this.authService.passwordReset(this.passModel).subscribe({
       next: (response) => {
         this.toastrService.success(response.message);
         setTimeout(() => {
@@ -59,6 +64,7 @@ export class PasswordResetComponent implements OnInit {
         }, 3000);
       },
       error: (err) => {
+        console.log(err);
         this.toastrService.error(err.error?.message);
         this.isButtonEnabled = false;
       },
