@@ -31,13 +31,13 @@ export class AppComponent implements OnInit {
   constructor(private mainService: MainService) {}
 
   ngOnInit(): void {
-    this.loadSalah();
+    // this.loadSalah();
   }
 
-  loadSalah() {
-    this.mainService.loadSalah().subscribe((response) => {
-      this.vakitModel = response.data.result;
-      this.loadingSalah = true;
-    });
-  }
+  // loadSalah() {
+  //   this.mainService.loadSalah().subscribe((response) => {
+  //     this.vakitModel = response.data.result;
+  //     this.loadingSalah = true;
+  //   });
+  // }
 }

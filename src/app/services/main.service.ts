@@ -11,6 +11,7 @@ export class MainService {
   constructor(private httpClient: HttpClient) {}
 
   loadSalah(): Observable<SingleResponseModel<SalahModel>> {
+    return null;
     return this.httpClient.get<SingleResponseModel<SalahModel>>(
       'http://localhost:5038/api/helper/get-salah-time'
     );
