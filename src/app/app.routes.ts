@@ -20,8 +20,10 @@ import { ProductStockOpComponent } from './components/product-stock-op/product-s
 import { ProductStockAddComponent } from './components/product-stock-add/product-stock-add.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { ProductStatusHistoryComponent } from './components/product-status-history/product-status-history.component';
+import { ToastrModule } from 'ngx-toastr';
 
 export const routes: Routes = [
+  /*
   { path: '', pathMatch: 'full', component: ProductComponent },
   { path: 'products', component: ProductComponent },
   { path: 'products/:superCategoryId/:categoryId', component: ProductComponent },
@@ -56,6 +58,7 @@ export const routes: Routes = [
   },
   { path: 'product-stock-add', component: ProductStockAddComponent, canActivate: [LoginGuard] },
   { path: 'contact', component: ContactComponent },
+   */
 ];
 
 @NgModule({
@@ -63,10 +66,11 @@ export const routes: Routes = [
     RouterModule.forRoot(routes),
     ReactiveFormsModule,
     NgbDropdownModule,
+    ToastrModule.forRoot(),
   ],
   exports: [RouterModule],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
 })
-export class appRoutingModule {}
+export class AppRoutingModule {}
