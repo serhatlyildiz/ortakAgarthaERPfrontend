@@ -23,33 +23,53 @@ export class CartService {
   }
 
   addToCart(cartItems: CartForPost[]): Observable<ResponseModel> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders()
+      .set('Authorization', `Bearer ${token}`)
+      .set('Content-Type', 'application/json');
+
     return this.httpClient.post<ResponseModel>(
       this.apiUrl + 'add-to-cart',
       cartItems,
-      {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-        }),
-      }
+      { headers }
     );
   }
 
   getCart(): Observable<SingleResponseModel<GetCart>> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
     return this.httpClient.get<SingleResponseModel<GetCart>>(
-      this.apiUrl + 'your-cart'
+      this.apiUrl + 'your-cart',
+      { headers }
     );
   }
 
-  removeCartItem(productStockId: number): Observable<ResponseModel> {
+  clearCartItem(productStockId: number): Observable<ResponseModel> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpClient.post<ResponseModel>(
+      this.apiUrl + 'clear-cart-item',
+      { productStockId },
+      { headers }
+    );
+  }
+
+  removeItemFromCart(cartItemId: number): Observable<ResponseModel> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.httpClient.post<ResponseModel>(
       this.apiUrl + 'remove-item-from-cart',
-      { productStockId, userId: this.userId }
+      { cartItemId },
+      { headers }
     );
   }
 
   clearCart(): Observable<ResponseModel> {
-    return this.httpClient.post<ResponseModel>(this.apiUrl + 'clear-cart', {
-      userId: this.userId,
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpClient.get<ResponseModel>(this.apiUrl + 'clear-cart', {
+      headers,
     });
   }
 

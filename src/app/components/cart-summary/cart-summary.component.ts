@@ -56,10 +56,10 @@ export class CartSummaryComponent implements OnInit {
   loadCart(): void {
     this.cartService.getCart().subscribe({
       next: (response) => {
+        console.log(response);
         if (response.success) {
           this.cart = response.data;
           this.getCart = response.data.cartItems;
-          console.log(this.getCart[0].quantity);
           const productRequests = this.getCart.map((cartItem) =>
             lastValueFrom(
               this.productService.getByProductDetails(cartItem.productStocksId)
@@ -122,7 +122,7 @@ export class CartSummaryComponent implements OnInit {
 
     const updatedQuantity = item.quantity + quantityChange;
     if (updatedQuantity <= 0) {
-      this.removeItem(item);
+      this.removeItem(productStocksId);
       return;
     }
 
@@ -141,8 +141,8 @@ export class CartSummaryComponent implements OnInit {
     });
   }
 
-  removeItem(item: CartItem): void {
-    this.cartService.removeCartItem(item.productStocksId).subscribe({
+  removeItem(productStocksId: number): void {
+    this.cartService.clearCartItem(productStocksId).subscribe({
       next: () => {
         this.toastrService.success('Ürün başarıyla sepetten silindi.');
         this.loadCart();
