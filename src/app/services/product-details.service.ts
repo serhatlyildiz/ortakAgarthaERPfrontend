@@ -27,9 +27,12 @@ export class ProductDetailsService {
   }
   
 
-  getAllByProductIdAndSize(productId: number, productSize: string): Observable<ProductDetails[]> {
-    return this.http.get<ProductDetails[]>(`${this.apiUrl}/getallbyproductidandsize?productId=${productId}&productSize=${productSize}`);
+  getAllByProductIdAndSize(productId: number, size: string): Observable<ListResponseModel<ProductDetails>> {
+    return this.http.get<ListResponseModel<ProductDetails>>(
+      `${this.apiUrl}/getallbyproductidandsize?productId=${productId}&productSize=${size}`
+    );
   }
+  
 
   add(productDetails: ProductDetails): Observable<any> {
     return this.http.post(`${this.apiUrl}/add`, productDetails);
