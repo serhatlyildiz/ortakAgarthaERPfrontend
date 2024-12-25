@@ -31,7 +31,7 @@ import { ContactComponent } from './app/components/contact/contact.component';
 import { ProductStatusHistoryComponent } from './app/components/product-status-history/product-status-history.component';
 
 const routes: Routes = [
-  { path: '', component: ProductComponent },
+  { path: '', pathMatch: 'full', component: ProductComponent },
   { path: 'products', component: ProductComponent },
   { path: 'products/:superCategoryId/:categoryId', component: ProductComponent },
   { path: 'products/:superCategoryId', component: ProductComponent },
@@ -83,7 +83,7 @@ bootstrapApplication(AppComponent, {
       RouterModule.forRoot(routes),
       ReactiveFormsModule,
       BrowserAnimationsModule,
-      NgbDropdownModule
+      NgbDropdownModule,
     ),
     {
       provide: [HTTP_INTERCEPTORS],

@@ -14,4 +14,4 @@ export const routes: Routes = [];
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
 })
-export class appRoutingModule {}
+export class AppRoutingModule {}

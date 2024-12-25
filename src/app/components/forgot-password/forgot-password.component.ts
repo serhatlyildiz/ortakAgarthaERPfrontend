@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
@@ -10,9 +10,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.css',
+  styleUrls: ['./forgot-password.component.css']
 })
-export class ForgotPasswordComponent {
+export class ForgotPasswordComponent implements OnInit {
   email: string = '';
   isButtonDisabled: boolean = false;
 
@@ -21,6 +21,10 @@ export class ForgotPasswordComponent {
     private toastrService: ToastrService,
     private router: Router
   ) {}
+
+  ngOnInit(): void {
+    
+  }
 
   forgotPassword() {
     this.isButtonDisabled = true;
