@@ -134,7 +134,7 @@ export class ProductAddComponent implements OnInit {
               changedByFirstName: this.firstName, // Oturum açan kullanıcının adı alınabilir
               changedByLastName: this.lastName, // Oturum açan kullanıcının soyadı alınabilir
               email: this.tokenInfo.email, // Kullanıcı emaili
-              changeDate: new Date(), // Değişiklik tarihi
+              changeDate: new Date(new Date().getTime() + (3 * 60 * 60 * 1000)), // Değişiklik tarihi
               operations: "Ekleme", // İşlem türü
               remarks: "Yeni ürün eklendi", // İsteğe bağlı açıklama
             };
