@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CartItem } from '../models/cartItem';
 import { Observable, tap } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from './auth.service';
 import { ResponseModel } from '../models/responseModel';
 import { SingleResponseModel } from '../models/singleResponseModel';
 import { GetCart } from '../models/getcart';
@@ -13,26 +11,53 @@ import { CartForPost } from '../models/cartforpost';
 })
 export class CartService {
   private apiUrl = 'http://localhost:5038/api/cart/';
-  userId: number;
+  private cartKey = 'localCart';
 
-  constructor(
-    private httpClient: HttpClient,
-    private authService: AuthService
-  ) {
-    this.userId = this.authService.getTokenInfo()?.userId || 0;
-  }
+  constructor(private httpClient: HttpClient) {}
 
   addToCart(cartItems: CartForPost[]): Observable<ResponseModel> {
     const token = localStorage.getItem('token');
-    const headers = new HttpHeaders()
-      .set('Authorization', `Bearer ${token}`)
-      .set('Content-Type', 'application/json');
+    if (token) {
+      const headers = new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json');
 
-    return this.httpClient.post<ResponseModel>(
-      this.apiUrl + 'add-to-cart',
-      cartItems,
-      { headers }
-    );
+      return this.httpClient.post<ResponseModel>(
+        this.apiUrl + 'add-to-cart',
+        cartItems,
+        { headers }
+      );
+    } else {
+      const localCart = this.getLocalCart();
+      localCart.push({ cartItems });
+      this.setLocalCart(localCart);
+      const response: ResponseModel = {
+        message: 'Ürün yerel sepete kaydedildi.',
+        success: true,
+      };
+      return new Observable((observer) => {
+        observer.next(response);
+        observer.complete();
+      });
+    }
+  }
+
+  syncLocalCartWithServer(): void {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const localCart = this.getLocalCart();
+      if (localCart.length > 0) {
+        this.httpClient.post(this.apiUrl + "add-to-cart", localCart).subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              console.log('Yerel sepet sunucuya senkronize edildi.');
+              this.clearLocalCart(); // Local storage temizleniyor
+            }
+          },
+          error: (err) => console.error('Senkr. hatası:', err),
+        });
+      }
+    }
   }
 
   getCart(): Observable<SingleResponseModel<GetCart>> {
@@ -75,28 +100,16 @@ export class CartService {
 
   ///---------------------------------------------------------------------------------///
 
-  saveCartToLocal(cartItems: CartItem[]): void {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-  }
-
-  getCartFromLocal(): CartItem[] {
-    const cart = localStorage.getItem('cart');
+  getLocalCart(): any[] {
+    const cart = localStorage.getItem(this.cartKey);
     return cart ? JSON.parse(cart) : [];
   }
 
-  // syncLocalCartToBackend(): Observable<ResponseModel> {
-  //   const localCart = this.getCartFromLocal();
-  //   if (localCart.length === 0) {
-  //     return new Observable<ResponseModel>((observer) => {
-  //       observer.next({ success: true, message: 'Local cart is empty' });
-  //       observer.complete();
-  //     });
-  //   }
+  private setLocalCart(cart: any[]): void {
+    localStorage.setItem(this.cartKey, JSON.stringify(cart));
+  }
 
-  //   return this.addToCart(localCart).pipe(
-  //     tap(() => {
-  //       localStorage.removeItem('cart'); // Başarıyla kaydedildikten sonra temizle
-  //     })
-  //   );
-  // }
+  private clearLocalCart(): void {
+    localStorage.removeItem(this.cartKey);
+  }
 }
