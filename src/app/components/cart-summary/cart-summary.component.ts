@@ -46,11 +46,10 @@ export class CartSummaryComponent implements OnInit {
   ngOnInit(): void {
     const token = localStorage.getItem('token');
     if (!token) {
-      this.cartItems = this.cartService.getCartFromLocal();
+      this.cartItems = this.cartService.getLocalCart();
     } else {
-      // this.syncCart();
+      this.loadCart();
     }
-    this.loadCart();
   }
 
   loadCart(): void {
@@ -88,21 +87,6 @@ export class CartSummaryComponent implements OnInit {
       },
     });
   }
-
-  // syncCart(): void {
-  //   const localCart = this.cartService.getCartFromLocal();
-  //   if (localCart.length === 0) return;
-
-  //   this.cartService.addToCart(localCart).subscribe({
-  //     next: () => {
-  //       localStorage.removeItem('cart');
-  //     },
-  //     error: (error) => {
-  //       this.toastrService.error('Sepet senkronizasyonunda hata oluştu.');
-  //       console.error(error);
-  //     },
-  //   });
-  // }
 
   getByProductDetails(productStockId: number) {
     this.productService
